@@ -1,0 +1,21 @@
+{
+	"key": "pipeline-test-stores",
+	"commands": [
+		{
+			"cmd": "getText",
+			"params": {
+				"key": "userPageUrl1",
+				"selector": "div.pcont div.upanel.bl_cont a.inline_item",
+				"attribute": "href"
+			}
+		},
+		{
+			"cmd": "getText",
+			"params": {
+				"key": "userPageUrl2",
+				"selector": "div.pcont div.upanel.bl_cont a.inline_item",
+				"attribute": "href"
+			}
+		}
+	]
+}

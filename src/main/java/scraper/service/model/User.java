@@ -9,6 +9,8 @@ public class User {
 	@Id
 	public String id;
 
+	public String login;
+
 	public String email;
 
 	public String password;

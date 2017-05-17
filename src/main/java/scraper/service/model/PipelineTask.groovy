@@ -10,7 +10,7 @@ class PipelineTask {
     @Id
     public String id;
 
-    public String json;
+    public Object data;
 
     @DBRef
     public Pipeline pipeline;
@@ -18,4 +18,6 @@ class PipelineTask {
     public Date startOn;
 
     public Date endOn;
+
+    public String error;
 }

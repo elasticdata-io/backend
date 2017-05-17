@@ -1,0 +1,100 @@
+{
+	"key": "pipeline",
+	"commands": [
+		{
+			"cmd": "url",
+			"params": {
+				"urls": ["https://m.vk.com/login"]
+			}
+		},
+		{
+			"cmd": "putText",
+			"params": {
+				"selector": "input[name='email']",
+				"text": "serg.tkachenko@hotmail.com"
+			}
+		},
+		{
+			"cmd": "putText",
+			"params": {
+				"selector": "input[name='pass']",
+				"text": "!Prisoner33!"
+			}
+		},
+		{
+			"cmd": "click",
+			"params": {
+				"selector": "input.button.wide_button[type='submit']"
+			}
+		},
+		{
+			"cmd": "waitElement",
+			"params": {
+				"selector": ".ip_user_link"
+			}
+		},
+		{
+			"cmd": "url",
+			"params": {
+				"urls": ["https://m.vk.com/freecurs"]
+			}
+		},
+		{
+			"cmd": "click",
+			"params": {
+				"selector": "ul.profile_menu li a[href='/freecurs?act=members']"
+			}
+		},
+		{
+			"cmd": "loop",
+			"params": {
+				"commands": [
+					{
+						"cmd": "getText",
+						"params": {
+							"key": "userPageUrl",
+							"prefix": "https://m.vk.com",
+							"selector": "div.pcont div.upanel.bl_cont a.inline_item",
+							"attribute": "href"
+						}
+					}
+				]
+			}
+		},
+		{
+			"cmd": "loop",
+			"params": {
+				"commands": [
+					{
+						"cmd": "waitElement",
+						"params": {
+							"selector": "div.pagination a.pg_link.pg_link_sel + a"
+						}
+					},
+					{
+						"cmd": "click",
+						"params": {
+							"selector": "div.pagination a.pg_link.pg_link_sel + a"
+						}
+					},
+					{
+						"cmd": "loop",
+						"params": {
+							"commands": [
+								{
+									"cmd": "getText",
+									"params": {
+										"key": "userPageUrl",
+										"prefix": "https://m.vk.com",
+										"selector": "div.pcont div.upanel.bl_cont a.inline_item",
+										"attribute": "href"
+									}
+								}
+							]
+						}
+					}
+				]
+			}
+		}
+	]
+}

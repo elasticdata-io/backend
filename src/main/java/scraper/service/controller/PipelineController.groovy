@@ -33,6 +33,46 @@ class PipelineController {
      * @param id
      * @throws UnknownHostException
      */
+    @RequestMapping("/run-child/{childId}/{parentId}")
+    public void runChild(@PathVariable String childId, @PathVariable String parentId) throws UnknownHostException {
+        Pipeline pipelineEntityParent = pipelineRepository.findOne(parentId);
+        Pipeline pipelineEntityChild = pipelineRepository.findOne(childId);
+
+        Store prentStore = runPipeline(pipelineEntityParent, null);
+        runPipeline(pipelineEntityChild, prentStore.getData());
+    }
+
+    /**
+     *
+     * @param pipelineEntity
+     * @param runtimeData
+     * @return
+     */
+    protected Store runPipeline(Pipeline pipelineEntity, List<HashMap<String, String>> runtimeData) {
+        PipelineTask pipelineTaskParent = new PipelineTask();
+        pipelineTaskParent.startOn = new Date();
+        Store store;
+        try {
+            PipelineProcess pipelineProcess = getPipelineProcess(pipelineEntity, runtimeData);
+            pipelineProcess.run();
+            store = pipelineProcess.getStore();
+            pipelineTaskParent.data = store.getData();
+            pipelineTaskParent.pipeline = pipelineEntity;
+        } catch (all) {
+            println(all.printStackTrace());
+            pipelineTaskParent.error = all.printStackTrace();
+        }
+
+        pipelineTaskParent.endOn = new Date();
+        pipelineTaskRepository.save(pipelineTaskParent);
+        return store;
+    }
+
+    /**
+     * Runs pipeline process by pipeline id.
+     * @param id
+     * @throws UnknownHostException
+     */
     @RequestMapping("/run/{id}")
     public void run(@PathVariable String id) throws UnknownHostException {
         Pipeline pipelineEntity = pipelineRepository.findOne(id);
@@ -41,7 +81,7 @@ class PipelineController {
         pipelineTask.startOn = new Date();
 
         try {
-            PipelineProcess pipelineProcess = getPipelineProcess(pipelineEntity);
+            PipelineProcess pipelineProcess = getPipelineProcess(pipelineEntity, null);
             pipelineProcess.run();
             Store store = pipelineProcess.getStore();
             pipelineTask.data = store.getData();
@@ -60,7 +100,7 @@ class PipelineController {
      * @param pipelineEntity
      * @return
      */
-    private PipelineProcess getPipelineProcess(Pipeline pipelineEntity) {
+    private PipelineProcess getPipelineProcess(Pipeline pipelineEntity, List<HashMap<String, String>> runtimeData) {
         PipelineBuilder pipelineBuilder = new PipelineBuilder();
         Browser browser = getPipelineBrowser(pipelineEntity);
         BrowserProvider driverProvider = new BrowserProvider(webDriver: browser.create());
@@ -70,7 +110,11 @@ class PipelineController {
         if (pipelineEntity.jsonCommands) {
             pipelineBuilder.setPipelineJson(pipelineEntity.jsonCommands);
         }
-        return pipelineBuilder.setDriverProvider(driverProvider).build();
+        if (runtimeData) {
+            pipelineBuilder.setRuntimePushedData(runtimeData);
+        }
+        PipelineProcess pipelineProcess = pipelineBuilder.setDriverProvider(driverProvider).build();
+        return pipelineProcess;
     }
 
     /**

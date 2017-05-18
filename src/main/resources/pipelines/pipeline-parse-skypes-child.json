@@ -6,7 +6,14 @@
 			"params": {
 				"urls": [
 					"https://m.vk.com/login"
-				]
+				],
+				"timeout": 10
+			}
+		},
+		{
+			"cmd": "waitElement",
+			"params": {
+				"selector": "input[name='email']"
 			}
 		},
 		{
@@ -60,7 +67,8 @@
 							"ifCommand": {
 								"cmd": "waitElement",
 								"params": {
-									"selector": "a[href^='skype']"
+									"selector": "a[href^='skype']",
+									"timeout": 0
 								}
 							},
 							"trueCommands": [
@@ -68,7 +76,54 @@
 									"cmd": "getText",
 									"params": {
 										"key": "skype",
-										"selector": "a[href^='skype']"
+										"selector": "a[href^='skype']",
+										"timeout": 0
+									}
+								}
+							],
+							"falseCommands": [
+								{
+									"cmd": "condition",
+									"params": {
+										"ifCommand": {
+											"cmd": "waitElement",
+											"params": {
+												"selector": ".wide_link.al_pinfo",
+												"timeout": 0
+											}
+										},
+										"trueCommands": [
+											{
+												"cmd": "click",
+												"params": {
+													"selector": ".wide_link.al_pinfo",
+													"timeout": 0
+												}
+											},
+											{
+												"cmd": "condition",
+												"params": {
+													"ifCommand": {
+														"cmd": "waitElement",
+														"params": {
+															"selector": "a[href^='skype']"
+														}
+													},
+													"trueCommands": [
+														{
+															"cmd": "getText",
+															"params": {
+																"key": "skype",
+																"selector": "a[href^='skype']",
+																"timeout": 0
+															}
+														}
+													],
+													"falseCommands": []
+												}
+											}
+										],
+										"falseCommands": []
 									}
 								}
 							]

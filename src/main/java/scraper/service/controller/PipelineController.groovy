@@ -33,8 +33,21 @@ class PipelineController {
      * @param id
      * @throws UnknownHostException
      */
-    @RequestMapping("/run-child/{childId}/{parentId}")
-    public void runChild(@PathVariable String childId, @PathVariable String parentId) throws UnknownHostException {
+    @RequestMapping("/run-child/{childId}/{parentTaskId}")
+    void runChild(@PathVariable String childId, @PathVariable String parentTaskId) throws UnknownHostException {
+        PipelineTask pipelineParentTask = pipelineTaskRepository.findOne(parentTaskId);
+        Pipeline pipelineEntityChild = pipelineRepository.findOne(childId);
+        Store parentStore = runPipeline(pipelineEntityChild, pipelineParentTask.data as List<HashMap<String, String>>);
+        runPipeline(pipelineEntityChild, parentStore.getData());
+    }
+
+    /**
+     * Runs pipeline process by pipeline id.
+     * @param id
+     * @throws UnknownHostException
+     */
+    @RequestMapping("/run-in-sequence/{childId}/{parentId}")
+    void runInSequence(@PathVariable String childId, @PathVariable String parentId) throws UnknownHostException {
         Pipeline pipelineEntityParent = pipelineRepository.findOne(parentId);
         Pipeline pipelineEntityChild = pipelineRepository.findOne(childId);
 
@@ -74,7 +87,7 @@ class PipelineController {
      * @throws UnknownHostException
      */
     @RequestMapping("/run/{id}")
-    public void run(@PathVariable String id) throws UnknownHostException {
+    void run(@PathVariable String id) throws UnknownHostException {
         Pipeline pipelineEntity = pipelineRepository.findOne(id);
 
         PipelineTask pipelineTask = new PipelineTask();

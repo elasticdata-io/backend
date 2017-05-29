@@ -37,6 +37,7 @@ dependencies {
     compile group: 'org.mockito', name: 'mockito-all', version: '2.0.2-beta'
     compile group: 'org.junit', name: 'junit5-engine', version: '5.0.0-ALPHA'
     compile project(':scraper-core')
+    // git clone https://github.com/sergeytkachenko/scraper-core.git scraper-core
 }
 
 version = '1.0'
@@ -58,19 +59,4 @@ jar {
             'Main-Class': 'scraper.service.Application'
         )
     }
-}
-
-task cloneCore {
-    def folder = new File('scraper-core')
-    if( !folder.exists() ) {
-        def cmd = "git clone https://github.com/sergeytkachenko/scraper-core.git scraper-core"
-        def proc = cmd.execute()
-        print proc.text
-    } else {
-        print 'scraper-core folder already exists'
-    }
-}
-
-compileJava{
-    dependsOn cloneCore
 }

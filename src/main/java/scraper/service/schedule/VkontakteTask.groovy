@@ -1,9 +1,10 @@
-package scraper.service.controller
+package scraper.service.schedule
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.scheduling.annotation.Scheduled
+import org.springframework.stereotype.Component
 import scraper.core.browser.Browser
 import scraper.core.browser.BrowserFactory
 import scraper.core.browser.BrowserProvider
@@ -16,9 +17,10 @@ import scraper.service.model.PipelineTask
 import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineTaskRepository
 
-@RestController
-@RequestMapping("/api/pipeline")
-class PipelineController {
+@Component
+class VkontakteTask {
+
+    private static final Logger log = LoggerFactory.getLogger(VkontakteTask.class);
 
     private static Class DEFAULT_BROWSER = Phantom.class;
 
@@ -28,13 +30,10 @@ class PipelineController {
     @Autowired
     PipelineTaskRepository pipelineTaskRepository;
 
-    /**
-     * Runs pipeline process by pipeline id.
-     * @param id
-     * @throws UnknownHostException
-     */
-    @RequestMapping("/run/{id}")
-    void run(@PathVariable String id) throws UnknownHostException {
+    @Scheduled(cron="* */20 * * * *")
+    public void parseMessages() {
+        log.info('run parseMessages');
+        String id = "5928b48fd95579a675bbe75f";
         Pipeline pipelineEntity = pipelineRepository.findOne(id);
 
         PipelineTask pipelineTask = new PipelineTask();
@@ -53,59 +52,6 @@ class PipelineController {
 
         pipelineTask.endOn = new Date();
         pipelineTaskRepository.save(pipelineTask);
-    }
-
-    /**
-     * Runs pipeline process by pipeline id.
-     * @param id
-     * @throws UnknownHostException
-     */
-    @RequestMapping("/run-child/{childId}/{parentTaskId}")
-    void runChild(@PathVariable String childId, @PathVariable String parentTaskId) throws UnknownHostException {
-        PipelineTask pipelineParentTask = pipelineTaskRepository.findOne(parentTaskId);
-        Pipeline pipelineEntityChild = pipelineRepository.findOne(childId);
-        Store parentStore = runPipeline(pipelineEntityChild, pipelineParentTask.data as List<HashMap<String, String>>);
-        runPipeline(pipelineEntityChild, parentStore.getData());
-    }
-
-    /**
-     * Runs pipeline process by pipeline id.
-     * @param id
-     * @throws UnknownHostException
-     */
-    @RequestMapping("/run-in-sequence/{childId}/{parentId}")
-    void runInSequence(@PathVariable String childId, @PathVariable String parentId) throws UnknownHostException {
-        Pipeline pipelineEntityParent = pipelineRepository.findOne(parentId);
-        Pipeline pipelineEntityChild = pipelineRepository.findOne(childId);
-
-        Store prentStore = runPipeline(pipelineEntityParent, null);
-        runPipeline(pipelineEntityChild, prentStore.getData());
-    }
-
-    /**
-     *
-     * @param pipelineEntity
-     * @param runtimeData
-     * @return
-     */
-    protected Store runPipeline(Pipeline pipelineEntity, List<HashMap<String, String>> runtimeData) {
-        PipelineTask pipelineTaskParent = new PipelineTask();
-        pipelineTaskParent.startOn = new Date();
-        Store store;
-        try {
-            PipelineProcess pipelineProcess = getPipelineProcess(pipelineEntity, runtimeData);
-            pipelineProcess.run();
-            store = pipelineProcess.getStore();
-            pipelineTaskParent.data = store.getData();
-            pipelineTaskParent.pipeline = pipelineEntity;
-        } catch (all) {
-            println(all.printStackTrace());
-            pipelineTaskParent.error = all.printStackTrace();
-        }
-
-        pipelineTaskParent.endOn = new Date();
-        pipelineTaskRepository.save(pipelineTaskParent);
-        return store;
     }
 
     /**

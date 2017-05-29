@@ -1,0 +1,3 @@
+rootProject.name = 'scraper-service'
+
+include 'scraper-core'

@@ -1,0 +1,62 @@
+{
+	"key": "pipeline",
+	"commands": [
+		{
+			"cmd": "url",
+			"params": {
+				"urls": ["https://m.vk.com/login"]
+			}
+		},
+		{
+			"cmd": "waitElement",
+			"params": {
+				"selector": "input[name='email']"
+			}
+		},
+		{
+			"cmd": "putText",
+			"params": {
+				"selector": "input[name='email']",
+				"text": "serg.tkachenko@hotmail.com"
+			}
+		},
+		{
+			"cmd": "putText",
+			"params": {
+				"selector": "input[name='pass']",
+				"text": "!Prisoner33!"
+			}
+		},
+		{
+			"cmd": "click",
+			"params": {
+				"selector": "input.button.wide_button[type='submit']"
+			}
+		},
+		{
+			"cmd": "waitElement",
+			"params": {
+				"selector": ".ip_user_link"
+			}
+		},
+		{
+			"cmd": "url",
+			"params": {
+				"urls": ["https://m.vk.com/mail"]
+			}
+		},
+		{
+			"cmd": "waitElement",
+			"params": {
+				"selector": "#dialogs > a",
+				"timeout": 10
+			}
+		},
+		{
+			"cmd": "getScreenshot",
+			"params": {
+				"key": "screenshot"
+			}
+		}
+	]
+}

@@ -59,3 +59,18 @@ jar {
         )
     }
 }
+
+task cloneCore {
+    def folder = new File('scraper-core')
+    if( !folder.exists() ) {
+        def cmd = "git clone https://github.com/sergeytkachenko/scraper-core.git scraper-core"
+        def proc = cmd.execute()
+        print proc.text
+    } else {
+        print 'scraper-core folder already exists'
+    }
+}
+
+compileJava{
+    dependsOn cloneCore
+}

@@ -9,4 +9,6 @@ class SimpleResponse {
     public String stackTrace;
 
     public boolean success;
+
+    public String token;
 }

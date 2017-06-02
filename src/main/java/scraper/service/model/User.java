@@ -13,6 +13,12 @@ public class User {
 
 	public String email;
 
+	public String firstName;
+
+	public String secondName;
+
+	public String lastName;
+
 	public String password;
 
 	public String salt;

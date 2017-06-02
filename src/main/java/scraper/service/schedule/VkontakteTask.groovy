@@ -30,7 +30,7 @@ class VkontakteTask {
     @Autowired
     PipelineTaskRepository pipelineTaskRepository;
 
-    @Scheduled(cron="* */20 * * * *")
+//    @Scheduled(cron="* */20 * * * *")
     public void parseMessages() {
         log.info('run parseMessages');
         String id = "5928b48fd95579a675bbe75f";

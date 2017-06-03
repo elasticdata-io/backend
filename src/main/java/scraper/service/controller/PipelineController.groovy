@@ -3,6 +3,7 @@ package scraper.service.controller
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import scraper.core.browser.Browser
 import scraper.core.browser.BrowserFactory
@@ -11,10 +12,13 @@ import scraper.core.browser.provider.Phantom
 import scraper.core.pipeline.PipelineBuilder
 import scraper.core.pipeline.PipelineProcess
 import scraper.core.pipeline.data.Store
+import scraper.service.controller.reponse.SimpleResponse
 import scraper.service.model.Pipeline
 import scraper.service.model.PipelineTask
 import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineTaskRepository
+
+import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequestMapping("/api/pipeline")
@@ -27,6 +31,11 @@ class PipelineController {
 
     @Autowired
     PipelineTaskRepository pipelineTaskRepository;
+
+    @RequestMapping('/{id}')
+    Pipeline get(@PathVariable String id) {
+        return pipelineRepository.findOne(id);
+    }
 
     /**
      * Runs pipeline process by pipeline id.

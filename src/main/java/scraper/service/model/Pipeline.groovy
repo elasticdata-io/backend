@@ -1,8 +1,12 @@
 package scraper.service.model
 
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
+import org.springframework.format.annotation.DateTimeFormat
 
 @Document(collection = "pipeline")
 class Pipeline {
@@ -30,6 +34,37 @@ class Pipeline {
      */
     public String browser;
 
+    /**
+     * Description of the pipeline.
+     */
+    public String description;
+
+    /**
+     * Created on date time.
+     */
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    public Date createdOn;
+
+    /**
+     * Modified on date time.
+     */
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    public Date modifiedOn;
+
+    /**
+     * Last started on date time.
+     */
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    public Date lastStartedOn;
+
+    /**
+     * Status of the pipeline (stop|run|etc).
+     */
     @DBRef
+    public PipelineStatus status;
+
+    @DBRef
+    @JsonIgnore
     public User user;
+
 }

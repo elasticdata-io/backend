@@ -40,6 +40,7 @@ class LoginController {
         }
         String token = tokenService.makeToken(login, password);
         tokenService.registerTokenToCookie(token, response);
+        user.token = token;
         userRepository.save(user);
         String message = 'Вы успешно авторизированы, переадресация!';
         return new SimpleResponse(success: true, message: message, token: token);

@@ -24,4 +24,6 @@ public class User {
 	public String salt;
 
 	public Boolean isActive;
+
+	public String token;
 }

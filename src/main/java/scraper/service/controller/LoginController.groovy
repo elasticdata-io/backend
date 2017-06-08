@@ -15,7 +15,7 @@ import scraper.service.util.TokenService
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/api/login")
 class LoginController {
 
     private static Logger logger = LogManager.getLogger(LoginController.class);

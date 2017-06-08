@@ -58,6 +58,12 @@ class Pipeline {
     public Date lastStartedOn;
 
     /**
+     * Last completed on date time.
+     */
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    public Date lastCompletedOn;
+
+    /**
      * Status of the pipeline (stop|run|etc).
      */
     @DBRef

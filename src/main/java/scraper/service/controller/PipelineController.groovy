@@ -1,9 +1,12 @@
 package scraper.service.controller
 
+import org.springframework.amqp.core.AmqpTemplate
+import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.messaging.handler.annotation.SendTo
+import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import scraper.core.browser.Browser
 import scraper.core.browser.BrowserFactory
@@ -12,13 +15,11 @@ import scraper.core.browser.provider.Phantom
 import scraper.core.pipeline.PipelineBuilder
 import scraper.core.pipeline.PipelineProcess
 import scraper.core.pipeline.data.Store
-import scraper.service.controller.reponse.SimpleResponse
 import scraper.service.model.Pipeline
 import scraper.service.model.PipelineTask
 import scraper.service.repository.PipelineRepository
+import scraper.service.repository.PipelineStatusRepository
 import scraper.service.repository.PipelineTaskRepository
-
-import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequestMapping("/api/pipeline")
@@ -32,9 +33,23 @@ class PipelineController {
     @Autowired
     PipelineTaskRepository pipelineTaskRepository;
 
-    @RequestMapping('/{id}')
-    Pipeline get(@PathVariable String id) {
-        return pipelineRepository.findOne(id);
+    @Autowired
+    PipelineStatusRepository pipelineStatusRepository;
+
+    @Autowired
+    AmqpTemplate rabbitTemplate;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
+    /**
+     * Listener for run pipeline.
+     * @param pipelineId Running pipeline id.
+     */
+    @RabbitListener(queues = "pipeline-run-queue")
+    void runPipelineFromQueue(String pipelineId) {
+        Pipeline pipeline = runByPipelineId(pipelineId);
+        messagingTemplate.convertAndSend("/pipeline/change", pipeline);
     }
 
     /**
@@ -43,11 +58,26 @@ class PipelineController {
      * @throws UnknownHostException
      */
     @RequestMapping("/run/{id}")
-    void run(@PathVariable String id) throws UnknownHostException {
+    void addToRunQueue(@PathVariable String id) {
+        rabbitTemplate.convertAndSend("pipeline-run-queue", id);
+    }
+
+    /**
+     * Run pipeline.
+     * @param id
+     * @throws UnknownHostException
+     */
+    Pipeline runByPipelineId(String id) throws UnknownHostException {
         Pipeline pipelineEntity = pipelineRepository.findOne(id);
+        pipelineEntity.lastStartedOn = new Date();
 
         PipelineTask pipelineTask = new PipelineTask();
         pipelineTask.startOn = new Date();
+
+        pipelineEntity.status = pipelineStatusRepository.findByTitle('running');
+        pipelineRepository.save(pipelineEntity);
+
+        messagingTemplate.convertAndSend("/pipeline/change", pipelineEntity);
 
         try {
             PipelineProcess pipelineProcess = getPipelineProcess(pipelineEntity, null);
@@ -55,13 +85,19 @@ class PipelineController {
             Store store = pipelineProcess.getStore();
             pipelineTask.data = store.getData();
             pipelineTask.pipeline = pipelineEntity;
+            pipelineEntity.status = pipelineStatusRepository.findByTitle('completed');
         } catch (all) {
             println(all.printStackTrace());
             pipelineTask.error = all.printStackTrace();
+            pipelineEntity.status = pipelineStatusRepository.findByTitle('error');
         }
 
+        pipelineEntity.lastCompletedOn = new Date();
         pipelineTask.endOn = new Date();
         pipelineTaskRepository.save(pipelineTask);
+        pipelineRepository.save(pipelineEntity);
+
+        return pipelineEntity;
     }
 
     /**

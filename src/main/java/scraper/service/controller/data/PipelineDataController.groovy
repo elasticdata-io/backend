@@ -15,7 +15,7 @@ import scraper.service.repository.PipelineTaskRepository
 import scraper.service.repository.UserRepository
 
 @RestController
-@RequestMapping("/pipeline")
+@RequestMapping("/api/pipeline")
 class PipelineDataController {
 
     @Autowired

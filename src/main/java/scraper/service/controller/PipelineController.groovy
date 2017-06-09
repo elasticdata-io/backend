@@ -55,7 +55,6 @@ class PipelineController {
     /**
      * Runs pipeline process by pipeline id.
      * @param id
-     * @throws UnknownHostException
      */
     @RequestMapping("/run/{id}")
     void addToRunQueue(@PathVariable String id) {
@@ -65,33 +64,31 @@ class PipelineController {
     /**
      * Run pipeline.
      * @param id
-     * @throws UnknownHostException
      */
-    Pipeline runByPipelineId(String id) throws UnknownHostException {
+    Pipeline runByPipelineId(String id) {
         Pipeline pipelineEntity = pipelineRepository.findOne(id);
         pipelineEntity.lastStartedOn = new Date();
 
         PipelineTask pipelineTask = new PipelineTask();
         pipelineTask.startOn = new Date();
 
-        pipelineEntity.status = pipelineStatusRepository.findByTitle('running');
-        pipelineRepository.save(pipelineEntity);
-
-        messagingTemplate.convertAndSend("/pipeline/change", pipelineEntity);
-
         try {
+            pipelineEntity.status = pipelineStatusRepository.findByTitle('running');
+            pipelineRepository.save(pipelineEntity);
+            messagingTemplate.convertAndSend("/pipeline/change", pipelineEntity);
+
             PipelineProcess pipelineProcess = getPipelineProcess(pipelineEntity, null);
             pipelineProcess.run();
             Store store = pipelineProcess.getStore();
             pipelineTask.data = store.getData();
-            pipelineTask.pipeline = pipelineEntity;
             pipelineEntity.status = pipelineStatusRepository.findByTitle('completed');
         } catch (all) {
             println(all.printStackTrace());
-            pipelineTask.error = all.printStackTrace();
+            pipelineTask.error = "${all.getMessage()}. ${all.printStackTrace()}";
             pipelineEntity.status = pipelineStatusRepository.findByTitle('error');
         }
 
+        pipelineTask.pipeline = pipelineEntity;
         pipelineEntity.lastCompletedOn = new Date();
         pipelineTask.endOn = new Date();
         pipelineTaskRepository.save(pipelineTask);

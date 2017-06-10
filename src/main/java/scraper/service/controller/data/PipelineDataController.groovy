@@ -43,11 +43,11 @@ class PipelineDataController {
 
     @RequestMapping('/save')
     Pipeline add(@RequestHeader String token, @RequestParam String id, @RequestParam String key,
-                 @RequestParam String browser, @RequestParam String description, @RequestParam String jsonCommands) {
+                 @RequestParam String description, @RequestParam String jsonCommands) {
         User user = userRepository.findByToken(token);
         Pipeline pipeline = pipelineRepository.findOne(id);
         if (pipeline) {
-            pipeline.browser = browser;
+            pipeline.browser = 'phantom';
             pipeline.key = key;
             pipeline.modifiedOn = new Date();
             pipeline.description = description;
@@ -56,9 +56,14 @@ class PipelineDataController {
             return pipeline;
         }
         PipelineStatus status = pipelineStatusRepository.findByTitle('not running');
-        pipeline = new Pipeline(key: key, browser: browser, jsonCommands: jsonCommands,
+        pipeline = new Pipeline(key: key, browser: 'phantom', jsonCommands: jsonCommands,
                 user: user, description: description, createdOn: new Date(), modifiedOn: new Date(), status: status);
         pipelineRepository.save(pipeline);
         return pipeline;
+    }
+
+    @RequestMapping("/delete/{id}")
+    void delete(@PathVariable String id) {
+        pipelineRepository.delete(id);
     }
 }

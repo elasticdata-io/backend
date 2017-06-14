@@ -63,6 +63,7 @@ jar {
     }
     manifest {
         attributes (
+            "provider": 'gradle',
             "Manifest-Version": "1.0",
             'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
             'Main-Class': 'scraper.service.Application'

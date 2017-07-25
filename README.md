@@ -1,2 +1,2 @@
-# scraper-service
-Service for scraper core application
+# Барс Парсер
+Описание 

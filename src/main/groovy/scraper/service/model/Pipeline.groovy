@@ -35,6 +35,11 @@ class Pipeline {
     public String browser;
 
     /**
+     * Browser ip or domain address.
+     */
+    public String browserAddress;
+
+    /**
      * Description of the pipeline.
      */
     public String description;

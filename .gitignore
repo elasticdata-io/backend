@@ -5,3 +5,6 @@ out
 build
 screenshots
 scraper-core
+gradle
+gradlew
+gradlew.bat

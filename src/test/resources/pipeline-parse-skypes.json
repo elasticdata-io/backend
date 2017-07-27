@@ -42,10 +42,7 @@
 					{
 						"cmd": "url",
 						"params": {
-							"fromHttp": {
-								"url": "http://javascript.kiev.ua/files/tmp-urls.json",
-								"key": "url"
-							}
+							"urls": ["testUrl1", "testUrl2", "testUrl3"]
 						}
 					},
 					{

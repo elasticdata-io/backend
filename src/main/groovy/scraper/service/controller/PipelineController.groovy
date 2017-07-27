@@ -124,6 +124,17 @@ class PipelineController {
     }
 
     /**
+     * Gets last parsed data by pipeline id.
+     * @param pipelineId
+     * @return Last parsed data by pipeline id.
+     */
+    @RequestMapping("/last-task-data/{pipelineId}")
+    List<HashMap> getData(@PathVariable String pipelineId) {
+        PipelineTask pipelineTask = pipelineTaskRepository.findOneByPipelineOrderByEndOnDesc(pipelineId);
+        return pipelineTask.data;
+    }
+
+    /**
      *
      * @param pipelineEntity
      * @param runtimeData

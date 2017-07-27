@@ -7,22 +7,6 @@ targetCompatibility = 1.8
 
 mainClassName = 'scraper.service.Application'
 
-sourceSets {
-    main {
-        groovy {
-            srcDirs = ['src/main/java']
-        }
-
-        java {
-            srcDirs = []
-        }
-
-        resources {
-            srcDirs = ['src/main/resources']
-        }
-    }
-}
-
 repositories {
     mavenCentral()
 }
@@ -51,22 +35,36 @@ dependencies {
 
 version = '1.0'
 
-jar {
-    baseName = 'scraper-service'
-    from {
-        configurations.compile.collect {
-            it.isDirectory() ? it : zipTree(it)
-        }
-        configurations.runtime.collect {
-            it.isDirectory() ? it : zipTree(it)
-        }
+//jar {
+//    baseName = 'scraper-service'
+//    from {
+//        configurations.compile.collect {
+//            it.isDirectory() ? it : zipTree(it)
+//        }
+//        configurations.runtime.collect {
+//            it.isDirectory() ? it : zipTree(it)
+//        }
+//    }
+//    manifest {
+//        attributes (
+//            "provider": 'gradle',
+//            "Manifest-Version": "1.0",
+//            'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+//            'Main-Class': 'scraper.service.Application'
+//        )
+//    }
+//}
+
+
+test {
+    exclude 'scraper/service/**'
+
+    beforeTest { descriptor ->
+        logger.lifecycle("Running test: " + descriptor)
     }
-    manifest {
-        attributes (
-            "provider": 'gradle',
-            "Manifest-Version": "1.0",
-            'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
-            'Main-Class': 'scraper.service.Application'
-        )
-    }
+}
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.0.2'
 }

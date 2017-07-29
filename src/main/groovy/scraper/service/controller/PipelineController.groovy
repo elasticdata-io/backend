@@ -24,22 +24,22 @@ import scraper.service.repository.PipelineTaskRepository
 @RequestMapping("/api/pipeline")
 class PipelineController {
 
-    private static Class DEFAULT_BROWSER = Phantom.class;
+    private static Class DEFAULT_BROWSER = Phantom.class
 
     @Autowired
-    PipelineRepository pipelineRepository;
+    PipelineRepository pipelineRepository
 
     @Autowired
-    PipelineTaskRepository pipelineTaskRepository;
+    PipelineTaskRepository pipelineTaskRepository
 
     @Autowired
-    PipelineStatusRepository pipelineStatusRepository;
+    PipelineStatusRepository pipelineStatusRepository
 
     @Autowired
-    AmqpTemplate rabbitTemplate;
+    AmqpTemplate rabbitTemplate
 
     @Autowired
-    private SimpMessagingTemplate messagingTemplate;
+    private SimpMessagingTemplate messagingTemplate
 
     /**
      * Listener for run pipeline.
@@ -47,8 +47,8 @@ class PipelineController {
      */
     @RabbitListener(queues = "pipeline-run-queue")
     void runPipelineFromQueue(String pipelineId) {
-        Pipeline pipeline = runByPipelineId(pipelineId);
-        messagingTemplate.convertAndSend("/pipeline/change", pipeline);
+        Pipeline pipeline = runByPipelineId(pipelineId)
+        messagingTemplate.convertAndSend("/pipeline/change", pipeline)
     }
 
     /**
@@ -57,7 +57,7 @@ class PipelineController {
      */
     @RequestMapping("/run/{id}")
     void addToRunQueue(@PathVariable String id) {
-        rabbitTemplate.convertAndSend("pipeline-run-queue", id);
+        rabbitTemplate.convertAndSend("pipeline-run-queue", id)
     }
 
     /**
@@ -65,35 +65,35 @@ class PipelineController {
      * @param id
      */
     Pipeline runByPipelineId(String id) {
-        Pipeline pipelineEntity = pipelineRepository.findOne(id);
-        pipelineEntity.lastStartedOn = new Date();
+        Pipeline pipelineEntity = pipelineRepository.findOne(id)
+        pipelineEntity.lastStartedOn = new Date()
 
-        PipelineTask pipelineTask = new PipelineTask();
-        pipelineTask.startOn = new Date();
+        PipelineTask pipelineTask = new PipelineTask()
+        pipelineTask.startOn = new Date()
 
         try {
-            pipelineEntity.status = pipelineStatusRepository.findByTitle('running');
-            pipelineRepository.save(pipelineEntity);
-            messagingTemplate.convertAndSend("/pipeline/change", pipelineEntity);
+            pipelineEntity.status = pipelineStatusRepository.findByTitle('running')
+            pipelineRepository.save(pipelineEntity)
+            messagingTemplate.convertAndSend("/pipeline/change", pipelineEntity)
 
-            PipelineProcess pipelineProcess = getPipelineProcess(pipelineEntity, null);
-            pipelineProcess.run();
-            Store store = pipelineProcess.getStore();
-            pipelineTask.data = store.getData();
-            pipelineEntity.status = pipelineStatusRepository.findByTitle('completed');
+            PipelineProcess pipelineProcess = getPipelineProcess(pipelineEntity, null)
+            pipelineProcess.run()
+            Store store = pipelineProcess.getStore()
+            pipelineTask.data = store.getData()
+            pipelineEntity.status = pipelineStatusRepository.findByTitle('completed')
         } catch (all) {
-            println(all.printStackTrace());
-            pipelineTask.error = "${all.getMessage()}. ${all.printStackTrace()}";
-            pipelineEntity.status = pipelineStatusRepository.findByTitle('error');
+            println(all.printStackTrace())
+            pipelineTask.error = "${all.getMessage()}. ${all.printStackTrace()}"
+            pipelineEntity.status = pipelineStatusRepository.findByTitle('error')
         }
 
-        pipelineTask.pipeline = pipelineEntity;
-        pipelineEntity.lastCompletedOn = new Date();
-        pipelineTask.endOn = new Date();
-        pipelineTaskRepository.save(pipelineTask);
-        pipelineRepository.save(pipelineEntity);
+        pipelineTask.pipeline = pipelineEntity
+        pipelineEntity.lastCompletedOn = new Date()
+        pipelineTask.endOn = new Date()
+        pipelineTaskRepository.save(pipelineTask)
+        pipelineRepository.save(pipelineEntity)
 
-        return pipelineEntity;
+        return pipelineEntity
     }
 
     /**
@@ -103,10 +103,10 @@ class PipelineController {
      */
     @RequestMapping("/run-child/{childId}/{parentTaskId}")
     void runChild(@PathVariable String childId, @PathVariable String parentTaskId) throws UnknownHostException {
-        PipelineTask pipelineParentTask = pipelineTaskRepository.findOne(parentTaskId);
-        Pipeline pipelineEntityChild = pipelineRepository.findOne(childId);
-        Store parentStore = runPipeline(pipelineEntityChild, pipelineParentTask.data as List<HashMap<String, String>>);
-        runPipeline(pipelineEntityChild, parentStore.getData());
+        PipelineTask pipelineParentTask = pipelineTaskRepository.findOne(parentTaskId)
+        Pipeline pipelineEntityChild = pipelineRepository.findOne(childId)
+        Store parentStore = runPipeline(pipelineEntityChild, pipelineParentTask.data as List<HashMap<String, String>>)
+        runPipeline(pipelineEntityChild, parentStore.getData())
     }
 
     /**
@@ -116,11 +116,11 @@ class PipelineController {
      */
     @RequestMapping("/run-in-sequence/{childId}/{parentId}")
     void runInSequence(@PathVariable String childId, @PathVariable String parentId) throws UnknownHostException {
-        Pipeline pipelineEntityParent = pipelineRepository.findOne(parentId);
-        Pipeline pipelineEntityChild = pipelineRepository.findOne(childId);
+        Pipeline pipelineEntityParent = pipelineRepository.findOne(parentId)
+        Pipeline pipelineEntityChild = pipelineRepository.findOne(childId)
 
-        Store prentStore = runPipeline(pipelineEntityParent, null);
-        runPipeline(pipelineEntityChild, prentStore.getData());
+        Store prentStore = runPipeline(pipelineEntityParent, null)
+        runPipeline(pipelineEntityChild, prentStore.getData())
     }
 
     /**
@@ -130,8 +130,8 @@ class PipelineController {
      */
     @RequestMapping("/last-task-data/{pipelineId}")
     List<HashMap> getData(@PathVariable String pipelineId) {
-        PipelineTask pipelineTask = pipelineTaskRepository.findOneByPipelineOrderByEndOnDesc(pipelineId);
-        return pipelineTask.data;
+        PipelineTask pipelineTask = pipelineTaskRepository.findOneByPipelineOrderByEndOnDesc(pipelineId)
+        return pipelineTask.data
     }
 
     /**
@@ -141,23 +141,23 @@ class PipelineController {
      * @return
      */
     protected Store runPipeline(Pipeline pipelineEntity, List<HashMap<String, String>> runtimeData) {
-        PipelineTask pipelineTaskParent = new PipelineTask();
-        pipelineTaskParent.startOn = new Date();
-        Store store;
+        PipelineTask pipelineTaskParent = new PipelineTask()
+        pipelineTaskParent.startOn = new Date()
+        Store store
         try {
-            PipelineProcess pipelineProcess = getPipelineProcess(pipelineEntity, runtimeData);
-            pipelineProcess.run();
-            store = pipelineProcess.getStore();
-            pipelineTaskParent.data = store.getData();
-            pipelineTaskParent.pipeline = pipelineEntity;
+            PipelineProcess pipelineProcess = getPipelineProcess(pipelineEntity, runtimeData)
+            pipelineProcess.run()
+            store = pipelineProcess.getStore()
+            pipelineTaskParent.data = store.getData()
+            pipelineTaskParent.pipeline = pipelineEntity
         } catch (all) {
-            println(all.printStackTrace());
-            pipelineTaskParent.error = all.printStackTrace();
+            println(all.printStackTrace())
+            pipelineTaskParent.error = all.printStackTrace()
         }
 
-        pipelineTaskParent.endOn = new Date();
-        pipelineTaskRepository.save(pipelineTaskParent);
-        return store;
+        pipelineTaskParent.endOn = new Date()
+        pipelineTaskRepository.save(pipelineTaskParent)
+        return store
     }
 
     /**
@@ -166,20 +166,20 @@ class PipelineController {
      * @return
      */
     private PipelineProcess getPipelineProcess(Pipeline pipelineEntity, List<HashMap<String, String>> runtimeData) {
-        PipelineBuilder pipelineBuilder = new PipelineBuilder();
-        Browser browser = getPipelineBrowser(pipelineEntity);
-        BrowserProvider driverProvider = new BrowserProvider(webDriver: browser.create());
+        PipelineBuilder pipelineBuilder = new PipelineBuilder()
+        Browser browser = getPipelineBrowser(pipelineEntity)
+        BrowserProvider driverProvider = new BrowserProvider(webDriver: browser.create())
         if (pipelineEntity.jsonCommandsPath) {
-            pipelineBuilder.setPipelineJsonFilePath(pipelineEntity.jsonCommandsPath);
+            pipelineBuilder.setPipelineJsonFilePath(pipelineEntity.jsonCommandsPath)
         }
         if (pipelineEntity.jsonCommands) {
-            pipelineBuilder.setPipelineJson(pipelineEntity.jsonCommands);
+            pipelineBuilder.setPipelineJson(pipelineEntity.jsonCommands)
         }
         if (runtimeData) {
-            pipelineBuilder.setRuntimePushedData(runtimeData);
+            pipelineBuilder.setRuntimePushedData(runtimeData)
         }
-        PipelineProcess pipelineProcess = pipelineBuilder.setDriverProvider(driverProvider).build();
-        return pipelineProcess;
+        PipelineProcess pipelineProcess = pipelineBuilder.setDriverProvider(driverProvider).build()
+        return pipelineProcess
     }
 
     /**
@@ -188,10 +188,10 @@ class PipelineController {
      * @return
      */
     private Browser getPipelineBrowser(Pipeline pipelineEntity) {
-        def factory = new BrowserFactory();
+        def factory = new BrowserFactory()
         if (pipelineEntity && pipelineEntity.browser) {
-            return factory.createFromString(pipelineEntity.browser);
+            return factory.createFromString(pipelineEntity.browser)
         }
-        return factory.createFromClass(DEFAULT_BROWSER);
+        return factory.createFromClass(DEFAULT_BROWSER)
     }
 }

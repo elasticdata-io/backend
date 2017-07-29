@@ -1,35 +1,35 @@
 package scraper.service.util
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.CompressionCodecs;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import io.jsonwebtoken.Claims
+import io.jsonwebtoken.CompressionCodecs
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.SignatureAlgorithm
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import scraper.service.model.User
-import scraper.service.repository.UserRepository;
+import scraper.service.repository.UserRepository
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.DatatypeConverter;
+import javax.servlet.http.Cookie
+import javax.servlet.http.HttpServletResponse
+import javax.xml.bind.DatatypeConverter
 
 @Service
 public class TokenService {
 
-    private static final Logger logger = LoggerFactory.getLogger(TokenService.class);
+    private static final Logger logger = LoggerFactory.getLogger(TokenService.class)
 
-    public static final String KEY = "sad234234asd12312k_!sdasd";
+    public static final String KEY = "sad234234asd12312k_!sdasd"
 
-    public final static String EMAIL = "email";
-    public final static String LOGIN = "login";
-    public final static String FIRST_NAME = "firstName";
-    public final static String SECOND_NAME = "secondName";
+    public final static String EMAIL = "email"
+    public final static String LOGIN = "login"
+    public final static String FIRST_NAME = "firstName"
+    public final static String SECOND_NAME = "secondName"
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepository userRepository
 
     /**
      * Gets token sting.
@@ -39,16 +39,16 @@ public class TokenService {
      * @throws Exception
      */
     public String makeToken(String login, String password) throws Exception {
-        User user = userRepository.findByLogin(login);
+        User user = userRepository.findByLogin(login)
         if (user == null || user.isActive == null || !user.isActive) {
-            return null;
+            return null
         }
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        boolean isValidPassword = passwordEncoder.matches(password + user.salt, user.password);
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder()
+        boolean isValidPassword = passwordEncoder.matches(password + user.salt, user.password)
         if (!isValidPassword) {
-            return null;
+            return null
         }
-        return makeToken(login);
+        return makeToken(login)
     }
 
     /**
@@ -58,14 +58,14 @@ public class TokenService {
      * @throws Exception
      */
     public String makeToken(String login) throws Exception {
-        User user = userRepository.findByLogin(login);
+        User user = userRepository.findByLogin(login)
         if (user == null || user.isActive == null || !user.isActive) {
-            return null;
+            return null
         }
-        Date currentDate = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentDate);
-        calendar.add(Calendar.HOUR, 72);
+        Date currentDate = new Date()
+        Calendar calendar = Calendar.getInstance()
+        calendar.setTime(currentDate)
+        calendar.add(Calendar.HOUR, 72)
         String compactJws =  Jwts.builder()
                 .setId(user.id)
                 .setSubject(user.login)
@@ -76,9 +76,9 @@ public class TokenService {
                 .compressWith(CompressionCodecs.DEFLATE)
                 .signWith(SignatureAlgorithm.HS512, KEY)
                 .setExpiration(calendar.getTime())
-                .compact();
-        logger.info("make new token {}", compactJws);
-        return compactJws;
+                .compact()
+        logger.info("make new token {}", compactJws)
+        return compactJws
     }
 
     /**
@@ -87,15 +87,15 @@ public class TokenService {
      * @return User data from jwt token.
      */
     public Claims parseToken(String jwtToken) {
-        Claims claims;
+        Claims claims
         try {
             claims = Jwts.parser()
                     .setSigningKey(DatatypeConverter.parseBase64Binary(KEY))
-                    .parseClaimsJws(jwtToken).getBody();
+                    .parseClaimsJws(jwtToken).getBody()
         } catch (Exception e) {
-            return null;
+            return null
         }
-        return claims;
+        return claims
     }
 
     /**
@@ -104,8 +104,8 @@ public class TokenService {
      * @param response
      */
     public void registerTokenToCookie(String token, HttpServletResponse response) {
-        Cookie cookie = new Cookie("token", token);
-        cookie.setPath("/");
-        response.addCookie(cookie);
+        Cookie cookie = new Cookie("token", token)
+        cookie.setPath("/")
+        response.addCookie(cookie)
     }
 }

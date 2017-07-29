@@ -1,11 +1,19 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://repo.spring.io/libs-snapshot' }
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.0.0.BUILD-SNAPSHOT"
+    }
+}
+
 apply plugin: 'groovy'
 apply plugin: 'idea'
-apply plugin: 'application'
+apply plugin: 'org.springframework.boot'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-
-mainClassName = 'scraper.service.Application'
 
 repositories {
     mavenCentral()
@@ -25,7 +33,7 @@ dependencies {
     compile group: 'org.junit', name: 'junit5-engine', version: '5.0.0-ALPHA'
     compile group: 'org.springframework.amqp', name: 'spring-rabbit', version: '1.7.3.RELEASE'
     compile group: 'org.springframework', name: 'spring-websocket', version: '4.3.8.RELEASE'
-    compile group: 'org.springframework', name: 'spring-messaging', version: '4.3,8.RELEASE'
+    compile group: 'org.springframework', name: 'spring-messaging', version: '4.3.8.RELEASE'
     compile group: 'org.springframework.security', name: 'spring-security-core', version: '4.2.2.RELEASE'
     compile group: 'org.springframework.security', name: 'spring-security-config', version: '4.2.2.RELEASE'
     compile group: 'org.springframework.security', name: 'spring-security-web', version: '4.2.2.RELEASE'
@@ -33,29 +41,6 @@ dependencies {
     compile project(':scraper-core')
     // git clone https://github.com/sergeytkachenko/scraper-core.git scraper-core
 }
-
-version = '1.0'
-
-//jar {
-//    baseName = 'scraper-service'
-//    from {
-//        configurations.compile.collect {
-//            it.isDirectory() ? it : zipTree(it)
-//        }
-//        configurations.runtime.collect {
-//            it.isDirectory() ? it : zipTree(it)
-//        }
-//    }
-//    manifest {
-//        attributes (
-//            "provider": 'gradle',
-//            "Manifest-Version": "1.0",
-//            'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
-//            'Main-Class': 'scraper.service.Application'
-//        )
-//    }
-//}
-
 
 test {
     exclude 'scraper/service/**'

@@ -1,5 +1,6 @@
 package scraper.service.controller
 
+import org.apache.logging.log4j.LogManager
 import org.springframework.amqp.core.AmqpTemplate
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,6 +12,7 @@ import scraper.core.browser.Browser
 import scraper.core.browser.BrowserFactory
 import scraper.core.browser.BrowserProvider
 import scraper.core.browser.provider.Phantom
+import scraper.core.pipeline.Environment
 import scraper.core.pipeline.PipelineBuilder
 import scraper.core.pipeline.PipelineProcess
 import scraper.core.pipeline.data.Store
@@ -168,7 +170,9 @@ class PipelineController {
     private PipelineProcess getPipelineProcess(Pipeline pipelineEntity, List<HashMap<String, String>> runtimeData) {
         PipelineBuilder pipelineBuilder = new PipelineBuilder()
         Browser browser = getPipelineBrowser(pipelineEntity)
-        BrowserProvider driverProvider = new BrowserProvider(webDriver: browser.create())
+
+        Environment environment = new Environment(runningTmpDir: System.getProperty('java.io.tmpdir'))
+
         if (pipelineEntity.jsonCommandsPath) {
             pipelineBuilder.setPipelineJsonFilePath(pipelineEntity.jsonCommandsPath)
         }
@@ -178,7 +182,11 @@ class PipelineController {
         if (runtimeData) {
             pipelineBuilder.setRuntimePushedData(runtimeData)
         }
-        PipelineProcess pipelineProcess = pipelineBuilder.setDriverProvider(driverProvider).build()
+        PipelineProcess pipelineProcess = pipelineBuilder
+                .setBrowser(browser)
+                .setEnvironment(environment)
+                .setLogger(LogManager.getRootLogger())
+                .build()
         return pipelineProcess
     }
 

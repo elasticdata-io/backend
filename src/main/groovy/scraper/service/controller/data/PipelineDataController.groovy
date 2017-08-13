@@ -19,51 +19,52 @@ import scraper.service.repository.UserRepository
 class PipelineDataController {
 
     @Autowired
-    UserRepository userRepository;
+    UserRepository userRepository
 
     @Autowired
-    PipelineRepository pipelineRepository;
+    PipelineRepository pipelineRepository
 
     @Autowired
-    PipelineTaskRepository pipelineTaskRepository;
+    PipelineTaskRepository pipelineTaskRepository
 
     @Autowired
-    PipelineStatusRepository pipelineStatusRepository;
+    PipelineStatusRepository pipelineStatusRepository
 
     @RequestMapping('/{id}')
     Pipeline get(@PathVariable String id) {
-        return pipelineRepository.findOne(id);
+        return pipelineRepository.findOne(id)
     }
 
     @RequestMapping('/list')
     List<Pipeline> list(@RequestHeader("token") String token) {
-        User user = userRepository.findByToken(token);
-        return pipelineRepository.findByUser(user);
+        User user = userRepository.findByToken(token)
+        return pipelineRepository.findByUser(user)
     }
 
     @RequestMapping('/save')
     Pipeline add(@RequestHeader String token, @RequestParam String id, @RequestParam String key,
                  @RequestParam String description, @RequestParam String jsonCommands) {
-        User user = userRepository.findByToken(token);
-        Pipeline pipeline = pipelineRepository.findOne(id);
+        User user = userRepository.findByToken(token)
+        Pipeline pipeline = pipelineRepository.findOne(id)
         if (pipeline) {
-            pipeline.browser = 'phantom';
-            pipeline.key = key;
-            pipeline.modifiedOn = new Date();
-            pipeline.description = description;
-            pipeline.jsonCommands = jsonCommands;
-            pipelineRepository.save(pipeline);
-            return pipeline;
+            pipeline.browser = 'phantom'
+            pipeline.browserAddress = 'http://selenium.bars-parser.com:4444/wd/hub'
+            pipeline.key = key
+            pipeline.modifiedOn = new Date()
+            pipeline.description = description
+            pipeline.jsonCommands = jsonCommands
+            pipelineRepository.save(pipeline)
+            return pipeline
         }
-        PipelineStatus status = pipelineStatusRepository.findByTitle('not running');
+        PipelineStatus status = pipelineStatusRepository.findByTitle('not running')
         pipeline = new Pipeline(key: key, browser: 'phantom', jsonCommands: jsonCommands,
-                user: user, description: description, createdOn: new Date(), modifiedOn: new Date(), status: status);
-        pipelineRepository.save(pipeline);
-        return pipeline;
+                user: user, description: description, createdOn: new Date(), modifiedOn: new Date(), status: status)
+        pipelineRepository.save(pipeline)
+        return pipeline
     }
 
     @RequestMapping("/delete/{id}")
     void delete(@PathVariable String id) {
-        pipelineRepository.delete(id);
+        pipelineRepository.delete(id)
     }
 }

@@ -197,13 +197,13 @@ class PipelineController {
      */
     private Browser getPipelineBrowser(Pipeline pipelineEntity) {
         def factory = new BrowserFactory()
+        def config = []
+        if (pipelineEntity.browserAddress) {
+            config = [browserAddress: pipelineEntity.browserAddress]
+        }
         if (pipelineEntity && pipelineEntity.browser) {
-            def config = []
-            if (pipelineEntity.browserAddress) {
-                config = [browserAddress: pipelineEntity.browserAddress]
-            }
             return factory.createFromString(pipelineEntity.browser, config)
         }
-        return factory.createFromClass(DEFAULT_BROWSER)
+        return factory.createFromClass(DEFAULT_BROWSER, config)
     }
 }

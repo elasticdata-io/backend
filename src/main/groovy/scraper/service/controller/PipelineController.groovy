@@ -173,7 +173,7 @@ class PipelineController {
      */
     private PipelineProcess getPipelineProcess(Pipeline pipelineEntity,
            List<HashMap<String, String>> runtimeData, PipelineTask task) {
-        def logger = org.apache.log4j.LogManager.getRootLogger()
+        def logger = LogManager.getRootLogger()
         PipelineBuilder pipelineBuilder = new PipelineBuilder()
         Browser browser = getPipelineBrowser(pipelineEntity)
 

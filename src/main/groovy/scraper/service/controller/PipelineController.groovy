@@ -1,6 +1,5 @@
 package scraper.service.controller
 
-import org.apache.commons.lang.RandomStringUtils
 import org.apache.logging.log4j.LogManager
 import org.springframework.amqp.core.AmqpTemplate
 import org.springframework.amqp.rabbit.annotation.RabbitListener
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import scraper.core.browser.Browser
 import scraper.core.browser.BrowserFactory
-import scraper.core.browser.BrowserProvider
 import scraper.core.browser.provider.Phantom
 import scraper.core.pipeline.Environment
 import scraper.core.pipeline.PipelineBuilder
@@ -27,7 +25,9 @@ import scraper.service.repository.PipelineTaskRepository
 @RequestMapping("/api/pipeline")
 class PipelineController {
 
+    private static String TEMP_DIRECTORY = '/tmp/scraper-service'
     private static Class DEFAULT_BROWSER = Phantom.class
+    public static final String  = System.getProperty('java.io.tmpdir')
 
     @Autowired
     PipelineRepository pipelineRepository
@@ -176,7 +176,7 @@ class PipelineController {
         PipelineBuilder pipelineBuilder = new PipelineBuilder()
         Browser browser = getPipelineBrowser(pipelineEntity)
 
-        String tmpFolder = "${System.getProperty('java.io.tmpdir')}/${task.id}"
+        String tmpFolder = "${TEMP_DIRECTORY}/${task.id}"
         Environment environment = new Environment(runningTmpDir: tmpFolder)
 
         if (pipelineEntity.jsonCommandsPath) {

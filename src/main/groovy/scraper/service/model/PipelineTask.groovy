@@ -10,19 +10,19 @@ import org.springframework.data.mongodb.core.mapping.Document
 class PipelineTask {
 
     @Id
-    public String id;
+    public String id
 
     @JsonIgnore
-    public Object data;
+    public Object data
 
     @DBRef
-    public Pipeline pipeline;
+    public Pipeline pipeline
 
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
-    public Date startOn;
+    public Date startOn
 
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
-    public Date endOn;
+    public Date endOn
 
-    public String error;
+    public String error
 }

@@ -18,6 +18,9 @@ import scraper.service.repository.UserRepository
 @RequestMapping("/api/pipeline")
 class PipelineDataController {
 
+    public static final String DEFAULT_BROWSER_ADDRESS = 'http://selenium.bars-parser.com:4444/wd/hub'
+    public static final String DEFAULT_BROWSER = 'phantom'
+
     @Autowired
     UserRepository userRepository
 
@@ -47,8 +50,8 @@ class PipelineDataController {
         User user = userRepository.findByToken(token)
         Pipeline pipeline = pipelineRepository.findOne(id)
         if (pipeline) {
-            pipeline.browser = 'phantom'
-            pipeline.browserAddress = 'http://selenium.bars-parser.com:4444/wd/hub'
+            pipeline.browser = DEFAULT_BROWSER
+            pipeline.browserAddress = DEFAULT_BROWSER_ADDRESS
             pipeline.key = key
             pipeline.modifiedOn = new Date()
             pipeline.description = description
@@ -57,7 +60,7 @@ class PipelineDataController {
             return pipeline
         }
         PipelineStatus status = pipelineStatusRepository.findByTitle('not running')
-        pipeline = new Pipeline(key: key, browser: 'phantom', jsonCommands: jsonCommands,
+        pipeline = new Pipeline(key: key, browser: DEFAULT_BROWSER, jsonCommands: jsonCommands,
                 user: user, description: description, createdOn: new Date(), modifiedOn: new Date(), status: status)
         pipelineRepository.save(pipeline)
         return pipeline

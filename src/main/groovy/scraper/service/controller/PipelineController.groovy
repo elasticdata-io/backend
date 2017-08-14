@@ -1,5 +1,6 @@
 package scraper.service.controller
 
+import org.apache.commons.lang.RandomStringUtils
 import org.apache.logging.log4j.LogManager
 import org.springframework.amqp.core.AmqpTemplate
 import org.springframework.amqp.rabbit.annotation.RabbitListener
@@ -72,13 +73,14 @@ class PipelineController {
 
         PipelineTask pipelineTask = new PipelineTask()
         pipelineTask.startOn = new Date()
+        pipelineTaskRepository.save(pipelineTask)
 
         try {
             pipelineEntity.status = pipelineStatusRepository.findByTitle('running')
             pipelineRepository.save(pipelineEntity)
             messagingTemplate.convertAndSend("/pipeline/change", pipelineEntity)
 
-            PipelineProcess pipelineProcess = getPipelineProcess(pipelineEntity, null)
+            PipelineProcess pipelineProcess = getPipelineProcess(pipelineEntity, null, pipelineTask)
             pipelineProcess.run()
             Store store = pipelineProcess.getStore()
             pipelineTask.data = store.getData()
@@ -145,9 +147,11 @@ class PipelineController {
     protected Store runPipeline(Pipeline pipelineEntity, List<HashMap<String, String>> runtimeData) {
         PipelineTask pipelineTaskParent = new PipelineTask()
         pipelineTaskParent.startOn = new Date()
+        pipelineTaskRepository.save(pipelineTaskParent)
+
         Store store
         try {
-            PipelineProcess pipelineProcess = getPipelineProcess(pipelineEntity, runtimeData)
+            PipelineProcess pipelineProcess = getPipelineProcess(pipelineEntity, runtimeData, pipelineTaskParent)
             pipelineProcess.run()
             store = pipelineProcess.getStore()
             pipelineTaskParent.data = store.getData()
@@ -167,11 +171,13 @@ class PipelineController {
      * @param pipelineEntity
      * @return
      */
-    private PipelineProcess getPipelineProcess(Pipeline pipelineEntity, List<HashMap<String, String>> runtimeData) {
+    private PipelineProcess getPipelineProcess(Pipeline pipelineEntity,
+           List<HashMap<String, String>> runtimeData, PipelineTask task) {
         PipelineBuilder pipelineBuilder = new PipelineBuilder()
         Browser browser = getPipelineBrowser(pipelineEntity)
 
-        Environment environment = new Environment(runningTmpDir: System.getProperty('java.io.tmpdir'))
+        String tmpFolder = "${System.getProperty('java.io.tmpdir')}${task.id}"
+        Environment environment = new Environment(runningTmpDir: tmpFolder)
 
         if (pipelineEntity.jsonCommandsPath) {
             pipelineBuilder.setPipelineJsonFilePath(pipelineEntity.jsonCommandsPath)

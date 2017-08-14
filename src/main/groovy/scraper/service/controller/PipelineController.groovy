@@ -176,7 +176,7 @@ class PipelineController {
         PipelineBuilder pipelineBuilder = new PipelineBuilder()
         Browser browser = getPipelineBrowser(pipelineEntity)
 
-        String tmpFolder = "${System.getProperty('java.io.tmpdir')}${task.id}"
+        String tmpFolder = "${System.getProperty('java.io.tmpdir')}/${task.id}"
         Environment environment = new Environment(runningTmpDir: tmpFolder)
 
         if (pipelineEntity.jsonCommandsPath) {

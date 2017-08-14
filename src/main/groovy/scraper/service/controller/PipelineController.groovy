@@ -185,6 +185,7 @@ class PipelineController {
 
         logger.info("pipelineEntity.id = ${pipelineEntity.id}")
         logger.info("pipelineEntity.isTakeScreenshot = ${pipelineEntity.isTakeScreenshot}")
+        logger.info("environment.isTakeScreenshot = ${environment.isTakeScreenshot}")
 
         if (pipelineEntity.jsonCommandsPath) {
             pipelineBuilder.setPipelineJsonFilePath(pipelineEntity.jsonCommandsPath)

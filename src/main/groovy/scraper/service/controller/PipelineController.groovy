@@ -177,9 +177,10 @@ class PipelineController {
         Browser browser = getPipelineBrowser(pipelineEntity)
 
         String tmpFolder = "${TEMP_DIRECTORY}/${task.id}"
-        Environment environment = new Environment(runningTmpDir: tmpFolder)
-
-        environment.isTakeScreenshot = pipelineEntity.isTakeScreenshot
+        Environment environment = new Environment(
+                runningTmpDir: tmpFolder,
+                isTakeScreenshot: pipelineEntity.isTakeScreenshot
+        )
 
         if (pipelineEntity.jsonCommandsPath) {
             pipelineBuilder.setPipelineJsonFilePath(pipelineEntity.jsonCommandsPath)

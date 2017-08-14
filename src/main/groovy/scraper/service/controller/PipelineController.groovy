@@ -173,7 +173,6 @@ class PipelineController {
      */
     private PipelineProcess getPipelineProcess(Pipeline pipelineEntity,
            List<HashMap<String, String>> runtimeData, PipelineTask task) {
-        def logger = LogManager.getRootLogger()
         PipelineBuilder pipelineBuilder = new PipelineBuilder()
         Browser browser = getPipelineBrowser(pipelineEntity)
 
@@ -182,10 +181,6 @@ class PipelineController {
                 runningTmpDir: tmpFolder,
                 isTakeScreenshot: pipelineEntity.isTakeScreenshot
         )
-
-        logger.info("pipelineEntity.id = ${pipelineEntity.id}")
-        logger.info("pipelineEntity.isTakeScreenshot = ${pipelineEntity.isTakeScreenshot}")
-        logger.info("environment.isTakeScreenshot = ${environment.isTakeScreenshot}")
 
         if (pipelineEntity.jsonCommandsPath) {
             pipelineBuilder.setPipelineJsonFilePath(pipelineEntity.jsonCommandsPath)

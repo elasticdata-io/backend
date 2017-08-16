@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR">
+    <Properties>
+        <Property name="filePath">/tmp/scraper-core-test.log</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %msg%xEx%n"/>
+        </Console>
+        <File name="FILE" fileName="${filePath}" append="false">
+            <PatternLayout pattern="%msg%xEx%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="ERROR">
+            <AppenderRef ref="FILE" />
+        </Root>
+    </Loggers>
+</Configuration>

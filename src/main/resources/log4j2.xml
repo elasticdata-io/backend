@@ -13,8 +13,8 @@
         </File>
     </Appenders>
     <Loggers>
-        <Root level="ERROR">
-            <AppenderRef ref="FILE" />
+        <Root level="TRACE">
+            <AppenderRef ref="STDOUT" />
         </Root>
     </Loggers>
 </Configuration>

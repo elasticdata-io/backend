@@ -115,10 +115,14 @@ class PipelineController {
     void stopPipeline(@PathVariable String id) {
         def configurableContext = ((ConfigurableApplicationContext) applicationContext)
         def beanFactory = configurableContext.getBeanFactory()
-        PipelineProcess pipelineProcess = (PipelineProcess) beanFactory.getBean(id)
+        PipelineProcess pipelineProcess = (PipelineProcess) beanFactory.getSingleton(id)
+        def logger = LogManager.getRootLogger()
         if (pipelineProcess) {
+            logger.info("run stopping pipelineProcess by id: ${id}")
             pipelineProcess.stop()
+            return
         }
+        logger.info("runnning pipelineProcess by id: ${id} not found")
     }
 
     /**
@@ -128,7 +132,7 @@ class PipelineController {
     Pipeline runByPipelineId(String id) {
         def configurableContext = ((ConfigurableApplicationContext) applicationContext)
         def beanFactory = configurableContext.getBeanFactory()
-        def startedPipelineProcess = beanFactory.getBean(id) // TODO не будет ли тут валиться если бина нет такого ?
+        def startedPipelineProcess = beanFactory.getSingleton(id)
 
         Pipeline pipelineEntity = pipelineRepository.findOne(id)
         if (!startedPipelineProcess) {

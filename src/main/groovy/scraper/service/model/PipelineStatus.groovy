@@ -7,10 +7,10 @@ import org.springframework.data.mongodb.core.mapping.Document
 class PipelineStatus {
 
     @Id
-    public String id;
+    public String id
 
     /**
      * Pipeline status name.
      */
-    public String title;
+    public String title
 }

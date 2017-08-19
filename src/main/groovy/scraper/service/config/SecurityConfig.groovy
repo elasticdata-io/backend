@@ -15,11 +15,11 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
             .authorizeRequests()
             .anyRequest()
-            .permitAll();
+            .permitAll()
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication();
+        auth.inMemoryAuthentication()
     }
 }

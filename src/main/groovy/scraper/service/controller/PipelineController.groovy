@@ -1,9 +1,11 @@
 package scraper.service.controller
 
 import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.springframework.amqp.core.AmqpTemplate
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.support.DefaultListableBeanFactory
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.messaging.simp.SimpMessagingTemplate
@@ -17,11 +19,14 @@ import scraper.core.pipeline.Environment
 import scraper.core.pipeline.PipelineBuilder
 import scraper.core.pipeline.PipelineProcess
 import scraper.core.pipeline.data.Store
+import scraper.service.constants.PipelineStatuses
 import scraper.service.model.Pipeline
 import scraper.service.model.PipelineTask
 import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineStatusRepository
 import scraper.service.repository.PipelineTaskRepository
+
+import javax.annotation.PostConstruct
 
 @RestController
 @RequestMapping("/api/pipeline")
@@ -48,6 +53,16 @@ class PipelineController {
 
     @Autowired
     ApplicationContext applicationContext
+
+    Logger logger = LogManager.getRootLogger()
+
+    DefaultListableBeanFactory beanFactory
+
+    @PostConstruct
+    void initialise() {
+        def configurableContext = ((ConfigurableApplicationContext) applicationContext)
+        beanFactory = configurableContext.getBeanFactory() as DefaultListableBeanFactory
+    }
 
     /**
      * WORKER 1.
@@ -113,17 +128,20 @@ class PipelineController {
      */
     @RequestMapping("/stop/{id}")
     void stopPipeline(@PathVariable String id) {
-        def configurableContext = ((ConfigurableApplicationContext) applicationContext)
-        def beanFactory = configurableContext.getBeanFactory()
+        def pipeline = pipelineRepository.findOne(id)
+
         PipelineProcess pipelineProcess = (PipelineProcess) beanFactory.getSingleton(id)
-        def logger = LogManager.getRootLogger()
+
+        pipeline.status = pipelineStatusRepository.findByTitle(PipelineStatuses.STOPPED)
+        pipelineRepository.save(pipeline)
+
         if (pipelineProcess) {
-            logger.info("run stopping pipelineProcess by id: ${id}")
+            logger.trace("run stopping pipelineProcess by id: ${id}")
             pipelineProcess.stop()
-            beanFactory.destroyBean(id)
+            pipelineProcess.isStoped = true
             return
         }
-        logger.info("runnning pipelineProcess by id: ${id} not found")
+        logger.trace("runnning pipelineProcess by id: ${id} not found")
     }
 
     /**
@@ -131,12 +149,13 @@ class PipelineController {
      * @param id
      */
     Pipeline runByPipelineId(String id) {
-        def configurableContext = ((ConfigurableApplicationContext) applicationContext)
-        def beanFactory = configurableContext.getBeanFactory()
         def startedPipelineProcess = beanFactory.getSingleton(id)
 
         Pipeline pipelineEntity = pipelineRepository.findOne(id)
-        if (!startedPipelineProcess) {
+        if (startedPipelineProcess) {
+            if (!pipelineEntity.status.title.equals('running')) {
+                stopPipeline(pipelineEntity.id)
+            }
             return pipelineEntity
         }
         pipelineEntity.lastStartedOn = new Date()
@@ -157,12 +176,17 @@ class PipelineController {
             pipelineProcess.run()
             Store store = pipelineProcess.getStore()
             pipelineTask.data = store.getData()
-            pipelineEntity.status = pipelineStatusRepository.findByTitle('completed')
-            beanFactory.destroyBean(id)
+            String status = pipelineProcess.isStoped ? PipelineStatuses.STOPPED : PipelineStatuses.COMPLETED
+            pipelineEntity.status = pipelineStatusRepository.findByTitle(status)
         } catch (all) {
-            println(all.printStackTrace())
+            logger.error(all.printStackTrace())
             pipelineTask.error = "${all.getMessage()}. ${all.printStackTrace()}"
             pipelineEntity.status = pipelineStatusRepository.findByTitle('error')
+        }
+
+        PipelineProcess pipelineProcessed = (PipelineProcess) beanFactory.getSingleton(id)
+        if (pipelineProcessed) {
+            beanFactory.destroySingleton(id)
         }
 
         pipelineTask.pipeline = pipelineEntity
@@ -268,7 +292,7 @@ class PipelineController {
         PipelineProcess pipelineProcess = pipelineBuilder
                 .setBrowser(browser)
                 .setEnvironment(environment)
-                .setLogger(LogManager.getRootLogger())
+                .setLogger(logger)
                 .build()
         return pipelineProcess
     }

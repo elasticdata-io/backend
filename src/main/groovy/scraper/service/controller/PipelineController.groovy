@@ -4,6 +4,8 @@ import org.apache.logging.log4j.LogManager
 import org.springframework.amqp.core.AmqpTemplate
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.ApplicationContext
+import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -43,6 +45,9 @@ class PipelineController {
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate
+
+    @Autowired
+    ApplicationContext applicationContext
 
     /**
      * WORKER 1.
@@ -103,13 +108,33 @@ class PipelineController {
     }
 
     /**
+     * Stop pipeline process by pipeline id.
+     * @param id
+     */
+    @RequestMapping("/stop/{id}")
+    void stopPipeline(@PathVariable String id) {
+        def configurableContext = ((ConfigurableApplicationContext) applicationContext)
+        def beanFactory = configurableContext.getBeanFactory()
+        PipelineProcess pipelineProcess = (PipelineProcess) beanFactory.getBean(id)
+        if (pipelineProcess) {
+            pipelineProcess.stop()
+        }
+    }
+
+    /**
      * Run pipeline.
      * @param id
      */
     Pipeline runByPipelineId(String id) {
-        Pipeline pipelineEntity = pipelineRepository.findOne(id)
-        pipelineEntity.lastStartedOn = new Date()
+        def configurableContext = ((ConfigurableApplicationContext) applicationContext)
+        def beanFactory = configurableContext.getBeanFactory()
+        def startedPipelineProcess = beanFactory.getBean(id) // TODO не будет ли тут валиться если бина нет такого ?
 
+        Pipeline pipelineEntity = pipelineRepository.findOne(id)
+        if (!startedPipelineProcess) {
+            return pipelineEntity
+        }
+        pipelineEntity.lastStartedOn = new Date()
         PipelineTask pipelineTask = new PipelineTask()
         pipelineTask.startOn = new Date()
         pipelineTaskRepository.save(pipelineTask)
@@ -124,6 +149,9 @@ class PipelineController {
             Store store = pipelineProcess.getStore()
             pipelineTask.data = store.getData()
             pipelineEntity.status = pipelineStatusRepository.findByTitle('completed')
+
+            // register pipeline process in global singleton bean
+            beanFactory.registerSingleton(pipelineEntity.id, pipelineProcess)
         } catch (all) {
             println(all.printStackTrace())
             pipelineTask.error = "${all.getMessage()}. ${all.printStackTrace()}"

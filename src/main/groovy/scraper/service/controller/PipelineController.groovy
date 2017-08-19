@@ -158,6 +158,7 @@ class PipelineController {
             Store store = pipelineProcess.getStore()
             pipelineTask.data = store.getData()
             pipelineEntity.status = pipelineStatusRepository.findByTitle('completed')
+            beanFactory.destroyBean(id)
         } catch (all) {
             println(all.printStackTrace())
             pipelineTask.error = "${all.getMessage()}. ${all.printStackTrace()}"

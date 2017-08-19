@@ -138,7 +138,7 @@ class PipelineController {
         if (pipelineProcess) {
             logger.trace("run stopping pipelineProcess by id: ${id}")
             pipelineProcess.stop()
-            pipelineProcess.isStoped = true
+            pipelineProcess.isStopped = true
             return
         }
         logger.trace("runnning pipelineProcess by id: ${id} not found")
@@ -176,7 +176,7 @@ class PipelineController {
             pipelineProcess.run()
             Store store = pipelineProcess.getStore()
             pipelineTask.data = store.getData()
-            String status = pipelineProcess.isStoped ? PipelineStatuses.STOPPED : PipelineStatuses.COMPLETED
+            String status = pipelineProcess.isStopped ? PipelineStatuses.STOPPED : PipelineStatuses.COMPLETED
             pipelineEntity.status = pipelineStatusRepository.findByTitle(status)
         } catch (all) {
             logger.error(all.printStackTrace())

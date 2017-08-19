@@ -120,6 +120,7 @@ class PipelineController {
         if (pipelineProcess) {
             logger.info("run stopping pipelineProcess by id: ${id}")
             pipelineProcess.stop()
+            beanFactory.destroyScopedBean(id)
             return
         }
         logger.info("runnning pipelineProcess by id: ${id} not found")

@@ -145,13 +145,14 @@ class PipelineController {
             messagingTemplate.convertAndSend("/pipeline/change", pipelineEntity)
 
             PipelineProcess pipelineProcess = getPipelineProcess(pipelineEntity, null, pipelineTask)
+
+            // register pipeline process in global singleton bean
+            beanFactory.registerSingleton(pipelineEntity.id, pipelineProcess)
+
             pipelineProcess.run()
             Store store = pipelineProcess.getStore()
             pipelineTask.data = store.getData()
             pipelineEntity.status = pipelineStatusRepository.findByTitle('completed')
-
-            // register pipeline process in global singleton bean
-            beanFactory.registerSingleton(pipelineEntity.id, pipelineProcess)
         } catch (all) {
             println(all.printStackTrace())
             pipelineTask.error = "${all.getMessage()}. ${all.printStackTrace()}"

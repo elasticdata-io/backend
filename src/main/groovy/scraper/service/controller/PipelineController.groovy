@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.support.DefaultListableBeanFactory
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ConfigurableApplicationContext
+import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -277,7 +278,8 @@ class PipelineController {
         String tmpFolder = "${TEMP_DIRECTORY}/${task.id}"
         Environment environment = new Environment(
                 runningTmpDir: tmpFolder,
-                isTakeScreenshot: pipelineEntity.isTakeScreenshot
+                isTakeScreenshot: pipelineEntity.isTakeScreenshot,
+                pipelineId: task.id
         )
 
         if (pipelineEntity.jsonCommandsPath) {
@@ -292,7 +294,6 @@ class PipelineController {
         PipelineProcess pipelineProcess = pipelineBuilder
                 .setBrowser(browser)
                 .setEnvironment(environment)
-                .setLogger(logger)
                 .build()
         return pipelineProcess
     }

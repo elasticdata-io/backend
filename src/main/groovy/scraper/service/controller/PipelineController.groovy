@@ -1,5 +1,6 @@
 package scraper.service.controller
 
+import groovy.json.JsonSlurper
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.amqp.core.AmqpTemplate
@@ -28,6 +29,7 @@ import scraper.service.repository.PipelineStatusRepository
 import scraper.service.repository.PipelineTaskRepository
 
 import javax.annotation.PostConstruct
+import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequestMapping("/api/pipeline")
@@ -237,6 +239,30 @@ class PipelineController {
         return pipelineTask.data
     }
 
+    /**
+     * Gets last parsed data by pipeline id.
+     * @param pipelineId
+     * @return Last parsed data by pipeline id.
+     */
+    @RequestMapping("/last-task-data/csv/{pipelineId}")
+    List<HashMap> getCsvData(@PathVariable String pipelineId, HttpServletResponse response) {
+        String responseData = ''
+        PipelineTask pipelineTask = pipelineTaskRepository.findOneByPipelineOrderByEndOnDesc(pipelineId)
+        List<HashMap> list = pipelineTask.data as List<HashMap>
+        HashSet columns = new HashSet()
+        list.each { map ->
+            map.each {k, v -> columns.add(k)}
+        }
+        def encode = { e -> e == null ? '' : e instanceof String ? /"$e"/ : "$e" }
+        responseData += columns.collect { c -> encode( c ) }.join( ',' )
+        responseData += '\n'
+        responseData += list.collect { row ->
+            columns.collect { colName -> encode( row[ colName ] ) }.join( ',' )
+        }.join( '\n' )
+        response.setContentType("text/csv; charset=utf-8")
+        response.setHeader("Content-disposition", "attachment;filename=${pipelineId}.csv")
+        response.getWriter().print(responseData)
+    }
     /**
      *
      * @param pipelineEntity

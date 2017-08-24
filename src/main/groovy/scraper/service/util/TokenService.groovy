@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse
 import javax.xml.bind.DatatypeConverter
 
 @Service
-public class TokenService {
+class TokenService {
 
     private static final Logger logger = LoggerFactory.getLogger(TokenService.class)
 
@@ -38,7 +38,7 @@ public class TokenService {
      * @return Token string if password is valid.
      * @throws Exception
      */
-    public String makeToken(String login, String password) throws Exception {
+    String makeToken(String login, String password) throws Exception {
         User user = userRepository.findByLogin(login)
         if (user == null || user.isActive == null || !user.isActive) {
             return null
@@ -57,7 +57,7 @@ public class TokenService {
      * @return Token string if password is valid.
      * @throws Exception
      */
-    public String makeToken(String login) throws Exception {
+    String makeToken(String login) throws Exception {
         User user = userRepository.findByLogin(login)
         if (user == null || user.isActive == null || !user.isActive) {
             return null
@@ -86,7 +86,7 @@ public class TokenService {
      * @param jwtToken
      * @return User data from jwt token.
      */
-    public Claims parseToken(String jwtToken) {
+    Claims parseToken(String jwtToken) {
         Claims claims
         try {
             claims = Jwts.parser()
@@ -103,7 +103,7 @@ public class TokenService {
      * @param token
      * @param response
      */
-    public void registerTokenToCookie(String token, HttpServletResponse response) {
+    void registerTokenToCookie(String token, HttpServletResponse response) {
         Cookie cookie = new Cookie("token", token)
         cookie.setPath("/")
         response.addCookie(cookie)

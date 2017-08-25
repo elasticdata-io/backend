@@ -32,4 +32,9 @@ class RabbitConfiguration {
     Queue pipelineRunQueue() {
         return new Queue("pipeline-run-queue")
     }
+
+    @Bean
+    Queue pipelineRunHierarchyQueue() {
+        return new Queue("pipeline-run-hierarchy")
+    }
 }

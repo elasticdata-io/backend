@@ -5,10 +5,12 @@ import org.springframework.data.repository.query.Param;
 import scraper.service.model.Pipeline;
 import scraper.service.model.User;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface PipelineRepository extends MongoRepository<Pipeline, String> {
 
-	List<Pipeline> findByUser(@Param("user") User user);
-
+	List<Pipeline> findByUser(User user);
+	List<Pipeline> findByUserAndIdNotIn(User user, List<String> dependsOn);
+	List<Pipeline> findByDependOn(String dependOn);
 }

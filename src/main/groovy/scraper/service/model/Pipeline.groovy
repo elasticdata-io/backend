@@ -77,6 +77,12 @@ class Pipeline {
     @DBRef
     public PipelineStatus status
 
+    /**
+     * Depend on the pipeline.
+     */
+    @DBRef
+    public Pipeline dependOn
+
     @DBRef
     @JsonIgnore
     public User user

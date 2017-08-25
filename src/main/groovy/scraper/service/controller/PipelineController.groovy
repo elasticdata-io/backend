@@ -1,6 +1,5 @@
 package scraper.service.controller
 
-import groovy.json.JsonSlurper
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.amqp.core.AmqpTemplate
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.support.DefaultListableBeanFactory
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ConfigurableApplicationContext
-import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -27,6 +25,7 @@ import scraper.service.model.PipelineTask
 import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineStatusRepository
 import scraper.service.repository.PipelineTaskRepository
+import scraper.service.util.PipelineStructure
 
 import javax.annotation.PostConstruct
 import javax.servlet.http.HttpServletResponse
@@ -56,6 +55,9 @@ class PipelineController {
 
     @Autowired
     ApplicationContext applicationContext
+
+    @Autowired
+    PipelineStructure pipelineStructure
 
     Logger logger = LogManager.getRootLogger()
 
@@ -108,10 +110,29 @@ class PipelineController {
     }
 
     /**
+     * Runs hierarchy dependents pipelines.
+     * @param hierarchy
+     */
+    @RabbitListener(queues = "pipeline-run-hierarchy")
+    void runDependentsHierarchyPipelines(List<String> hierarchy) {
+        String pipelineId = hierarchy.remove(0)
+        Pipeline pipeline = runByPipelineId(pipelineId)
+        messagingTemplate.convertAndSend("/pipeline/change", pipeline)
+        if (hierarchy.size() > 0) {
+            rabbitTemplate.convertAndSend("pipeline-run-hierarchy", hierarchy)
+        }
+    }
+
+    /**
      * Build, created instance and runs pipeline by database id.
      * @param pipelineId Running pipeline id.
      */
     private void runPipelineFromQueue(String pipelineId) {
+        List<String> hierarchy = pipelineStructure.getPipelineHierarchy(pipelineId)
+        if (hierarchy.size() > 1) {
+            rabbitTemplate.convertAndSend("pipeline-run-hierarchy", hierarchy.reverse())
+            return
+        }
         Pipeline pipeline = runByPipelineId(pipelineId)
         messagingTemplate.convertAndSend("/pipeline/change", pipeline)
     }
@@ -224,8 +245,8 @@ class PipelineController {
         Pipeline pipelineEntityParent = pipelineRepository.findOne(parentId)
         Pipeline pipelineEntityChild = pipelineRepository.findOne(childId)
 
-        Store prentStore = runPipeline(pipelineEntityParent, null)
-        runPipeline(pipelineEntityChild, prentStore.getData())
+        Store parentStore = runPipeline(pipelineEntityParent, null)
+        runPipeline(pipelineEntityChild, parentStore.getData())
     }
 
     /**

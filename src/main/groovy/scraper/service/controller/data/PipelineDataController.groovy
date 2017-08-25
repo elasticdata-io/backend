@@ -46,12 +46,21 @@ class PipelineDataController {
         return pipelineRepository.findByUser(user)
     }
 
+    @RequestMapping('/list-depends/{pipelineId}')
+    List<Pipeline> listDepends(@RequestHeader("token") String token, @PathVariable String pipelineId) {
+        User user = userRepository.findByToken(token)
+        def pipelines = pipelineRepository.findByUserAndIdNotIn(user, [pipelineId])
+        return pipelines
+    }
+
     @RequestMapping('/save')
     Pipeline add(HttpServletRequest request, @RequestHeader String token, @RequestParam String id) {
         User user = userRepository.findByToken(token)
         Pipeline pipeline = pipelineRepository.findOne(id)
         String key = request.getParameter('key')
         String description = request.getParameter('description')
+        String dependOn = request.getParameter('dependOn')
+        Pipeline dependOnPipeline = dependOn ? pipelineRepository.findOne(dependOn) : null
         String jsonCommands = request.getParameter('jsonCommands')
         boolean isTakeScreenshot = request.getParameter('isTakeScreenshot') ?: false
         String browserAddress = request.getParameter('browserAddress') ?: DEFAULT_BROWSER_ADDRESS
@@ -62,6 +71,7 @@ class PipelineDataController {
             pipeline.isTakeScreenshot = isTakeScreenshot
             pipeline.key = key
             pipeline.description = description
+            pipeline.dependOn = dependOnPipeline
             pipeline.jsonCommands = jsonCommands
             pipeline.modifiedOn = new Date()
             pipelineRepository.save(pipeline)
@@ -69,7 +79,8 @@ class PipelineDataController {
         }
         PipelineStatus status = pipelineStatusRepository.findByTitle('not running')
         pipeline = new Pipeline(key: key, browser: DEFAULT_BROWSER, jsonCommands: jsonCommands,
-                user: user, description: description, createdOn: new Date(), modifiedOn: new Date(), status: status,
+                user: user, description: description, dependOn: dependOnPipeline, createdOn: new Date(),
+                modifiedOn: new Date(), status: status,
                 isTakeScreenshot: isTakeScreenshot, browserAddress: browserAddress)
         pipelineRepository.save(pipeline)
         return pipeline

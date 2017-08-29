@@ -326,7 +326,8 @@ class PipelineController {
         Environment environment = new Environment(
                 runningTmpDir: tmpFolder,
                 isTakeScreenshot: pipelineEntity.isTakeScreenshot,
-                pipelineId: task.id
+                pipelineId: task.id,
+                isDebug: pipelineEntity.isDebugMode
         )
 
         if (pipelineEntity.jsonCommandsPath) {

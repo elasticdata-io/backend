@@ -48,6 +48,11 @@ class Pipeline {
     public Boolean isTakeScreenshot
 
     /**
+     * Need to save debug information.
+     */
+    public Boolean isDebugMode
+
+    /**
      * Created on date time.
      */
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")

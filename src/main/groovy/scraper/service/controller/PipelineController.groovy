@@ -352,9 +352,9 @@ class PipelineController {
      */
     private Browser getPipelineBrowser(Pipeline pipelineEntity) {
         def factory = new BrowserFactory()
-        def config = []
+        def config = [enableImage: false]
         if (pipelineEntity.browserAddress) {
-            config = [browserAddress: pipelineEntity.browserAddress]
+            config = [browserAddress: pipelineEntity.browserAddress, enableImage: false]
         }
         if (pipelineEntity && pipelineEntity.browser) {
             return factory.createFromString(pipelineEntity.browser, config)

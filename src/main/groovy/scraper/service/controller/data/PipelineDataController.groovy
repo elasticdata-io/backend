@@ -63,12 +63,14 @@ class PipelineDataController {
         Pipeline dependOnPipeline = dependOn ? pipelineRepository.findOne(dependOn) : null
         String jsonCommands = request.getParameter('jsonCommands')
         boolean isTakeScreenshot = request.getParameter('isTakeScreenshot') ?: false
+        boolean isDebugMode = request.getParameter('isDebugMode') ?: false
         String browserAddress = request.getParameter('browserAddress') ?: DEFAULT_BROWSER_ADDRESS
         String browser = request.getParameter('browser') ?: DEFAULT_BROWSER
         if (pipeline) {
             pipeline.browser = browser
             pipeline.browserAddress = browserAddress
             pipeline.isTakeScreenshot = isTakeScreenshot
+            pipeline.isDebugMode = isDebugMode
             pipeline.key = key
             pipeline.description = description
             pipeline.dependOn = dependOnPipeline
@@ -81,7 +83,7 @@ class PipelineDataController {
         pipeline = new Pipeline(key: key, browser: DEFAULT_BROWSER, jsonCommands: jsonCommands,
                 user: user, description: description, dependOn: dependOnPipeline, createdOn: new Date(),
                 modifiedOn: new Date(), status: status,
-                isTakeScreenshot: isTakeScreenshot, browserAddress: browserAddress)
+                isTakeScreenshot: isTakeScreenshot, isDebugMode: isDebugMode, browserAddress: browserAddress)
         pipelineRepository.save(pipeline)
         return pipeline
     }

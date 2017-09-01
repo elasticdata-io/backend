@@ -15,6 +15,7 @@ import scraper.service.repository.PipelineTaskRepository
 import scraper.service.repository.UserRepository
 
 import javax.servlet.http.HttpServletRequest
+import javax.xml.ws.http.HTTPException
 
 @RestController
 @RequestMapping("/api/pipeline")
@@ -56,6 +57,9 @@ class PipelineDataController {
     @RequestMapping('/save')
     Pipeline add(HttpServletRequest request, @RequestHeader String token, @RequestParam String id) {
         User user = userRepository.findByToken(token)
+        if (!user) {
+            throw HTTPException('user not found by passed token')
+        }
         Pipeline pipeline = pipelineRepository.findOne(id)
         String key = request.getParameter('key')
         String description = request.getParameter('description')
@@ -76,6 +80,7 @@ class PipelineDataController {
             pipeline.dependOn = dependOnPipeline
             pipeline.jsonCommands = jsonCommands
             pipeline.modifiedOn = new Date()
+            pipeline.user = user
             pipelineRepository.save(pipeline)
             return pipeline
         }

@@ -80,7 +80,6 @@ class PipelineDataController {
             pipeline.dependOn = dependOnPipeline
             pipeline.jsonCommands = jsonCommands
             pipeline.modifiedOn = new Date()
-            pipeline.user = user
             pipelineRepository.save(pipeline)
             return pipeline
         }

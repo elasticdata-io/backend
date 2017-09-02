@@ -18,8 +18,10 @@ import scraper.core.browser.provider.Phantom
 import scraper.core.pipeline.Environment
 import scraper.core.pipeline.PipelineBuilder
 import scraper.core.pipeline.PipelineProcess
+import scraper.core.pipeline.data.AbstractStore
 import scraper.core.pipeline.data.Store
 import scraper.service.constants.PipelineStatuses
+import scraper.service.controller.listener.PipelineStoreObserver
 import scraper.service.model.Pipeline
 import scraper.service.model.PipelineTask
 import scraper.service.repository.PipelineRepository
@@ -183,7 +185,7 @@ class PipelineController {
             return pipelineEntity
         }
         pipelineEntity.lastStartedOn = new Date()
-        PipelineTask pipelineTask = new PipelineTask()
+        PipelineTask pipelineTask = new PipelineTask(pipeline: pipelineEntity)
         pipelineTask.startOn = new Date()
         pipelineTaskRepository.save(pipelineTask)
 
@@ -197,11 +199,18 @@ class PipelineController {
             // register pipeline process in global singleton bean
             beanFactory.registerSingleton(pipelineEntity.id, pipelineProcess)
 
+            AbstractStore store = pipelineProcess.getStore()
+
+            PipelineStoreObserver storeObserver = new PipelineStoreObserver(store, messagingTemplate, pipelineTask)
+            store.addObserver(storeObserver)
+
             pipelineProcess.run()
-            Store store = pipelineProcess.getStore()
-            pipelineTask.data = store.getData()
+
+            def dataParsed = store.getData()
+            pipelineTask.data = dataParsed
             String status = pipelineProcess.isStopped ? PipelineStatuses.STOPPED : PipelineStatuses.COMPLETED
             pipelineEntity.status = pipelineStatusRepository.findByTitle(status)
+            pipelineEntity.lastParsedLinesCount = dataParsed.size()
         } catch (all) {
             logger.error(all.printStackTrace())
             pipelineTask.error = "${all.getMessage()}. ${all.printStackTrace()}"
@@ -291,17 +300,21 @@ class PipelineController {
      * @return
      */
     protected Store runPipeline(Pipeline pipelineEntity, List<HashMap<String, String>> runtimeData) {
-        PipelineTask pipelineTaskParent = new PipelineTask()
+        PipelineTask pipelineTaskParent = new PipelineTask(pipeline: pipelineEntity)
         pipelineTaskParent.startOn = new Date()
         pipelineTaskRepository.save(pipelineTaskParent)
 
-        Store store
+        AbstractStore store
         try {
             PipelineProcess pipelineProcess = getPipelineProcess(pipelineEntity, runtimeData, pipelineTaskParent)
-            pipelineProcess.run()
             store = pipelineProcess.getStore()
-            pipelineTaskParent.data = store.getData()
-            pipelineTaskParent.pipeline = pipelineEntity
+            PipelineStoreObserver storeObserver = new PipelineStoreObserver(store, messagingTemplate, pipelineTaskParent)
+            store.addObserver(storeObserver)
+            pipelineProcess.run()
+            def dataParsed = store.getData()
+            pipelineTaskParent.data = dataParsed
+            pipelineEntity.lastParsedLinesCount = dataParsed.size()
+            pipelineRepository.save(pipelineEntity)
         } catch (all) {
             println(all.printStackTrace())
             pipelineTaskParent.error = all.printStackTrace()

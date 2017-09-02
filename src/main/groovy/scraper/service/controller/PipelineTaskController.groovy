@@ -2,6 +2,8 @@ package scraper.service.controller
 
 import org.springframework.amqp.core.AmqpTemplate
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -29,7 +31,8 @@ class PipelineTaskController {
 
     @RequestMapping("/list/{pipelineId}")
     List<PipelineTask> list(@PathVariable String pipelineId) {
-        return pipelineTaskRepository.findByPipelineOrderByEndOnDesc(pipelineId)
+        Pageable top = new PageRequest(0, 10);
+        return pipelineTaskRepository.findByPipelineOrderByEndOnDesc(pipelineId, top)
     }
 
     @RequestMapping("/data/{id}")

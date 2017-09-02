@@ -53,6 +53,11 @@ class Pipeline {
     public Boolean isDebugMode
 
     /**
+     * Count of the last parsed data lines.
+     */
+    Integer lastParsedLinesCount
+
+    /**
      * Created on date time.
      */
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")

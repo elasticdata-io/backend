@@ -27,6 +27,7 @@ import scraper.service.model.PipelineTask
 import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineStatusRepository
 import scraper.service.repository.PipelineTaskRepository
+import scraper.service.util.ElasticSearchService
 import scraper.service.util.PipelineStructure
 
 import javax.annotation.PostConstruct
@@ -39,6 +40,9 @@ class PipelineController {
     private static String TEMP_DIRECTORY = '/tmp/scraper-service'
     private static Class DEFAULT_BROWSER = Phantom.class
     public static final String  = System.getProperty('java.io.tmpdir')
+
+    @Autowired
+    ElasticSearchService elasticSearchService
 
     @Autowired
     PipelineRepository pipelineRepository
@@ -211,6 +215,7 @@ class PipelineController {
             String status = pipelineProcess.isStopped ? PipelineStatuses.STOPPED : PipelineStatuses.COMPLETED
             pipelineEntity.status = pipelineStatusRepository.findByTitle(status)
             pipelineEntity.lastParsedLinesCount = dataParsed.size()
+            uploadToElastic(dataParsed as List<HashMap<String, String>>, pipelineEntity.id, pipelineTask.id)
         } catch (all) {
             logger.error(all.printStackTrace())
             pipelineTask.error = "${all.getMessage()}. ${all.printStackTrace()}"
@@ -315,6 +320,7 @@ class PipelineController {
             pipelineTaskParent.data = dataParsed
             pipelineEntity.lastParsedLinesCount = dataParsed.size()
             pipelineRepository.save(pipelineEntity)
+            uploadToElastic(dataParsed as List<HashMap<String, String>>, pipelineEntity.id, pipelineTaskParent.id)
         } catch (all) {
             println(all.printStackTrace())
             pipelineTaskParent.error = all.printStackTrace()
@@ -374,5 +380,9 @@ class PipelineController {
             return factory.createFromString(pipelineEntity.browser, config)
         }
         return factory.createFromClass(DEFAULT_BROWSER, config)
+    }
+
+    private void uploadToElastic(List<HashMap<String, String>> list, String index, String type) {
+        elasticSearchService.bulk(list, index, type)
     }
 }

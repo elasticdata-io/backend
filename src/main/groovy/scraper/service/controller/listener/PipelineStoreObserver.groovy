@@ -19,7 +19,11 @@ class PipelineStoreObserver implements Observer {
     @Override
     void update(Observable o, Object arg) {
         def dataParsed = store.getData()
-        def data = [lastParsedLinesCount: dataParsed.size(), pipelineId: pipelineTask.pipeline.id]
+        def data = [
+                lastParsedLinesCount: dataParsed.size(),
+                pipelineId: pipelineTask.pipeline.id,
+                line: dataParsed.last()
+        ]
         messagingTemplate.convertAndSend("/pipeline/parsed-lines", data)
     }
 }

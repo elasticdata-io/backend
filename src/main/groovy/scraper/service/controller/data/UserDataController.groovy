@@ -5,13 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import scraper.service.controller.response.SimpleResponse
-import scraper.service.model.Pipeline
-import scraper.service.model.PipelineStatus
 import scraper.service.model.User
+import scraper.service.model.UserToken
 import scraper.service.repository.UserRepository
+import scraper.service.repository.UserTokenRepository
 import scraper.service.util.EmailValidator
 import scraper.service.util.TokenService
 
@@ -20,6 +19,9 @@ import javax.servlet.http.HttpServletRequest
 @RestController
 @RequestMapping("/api/user")
 class UserDataController {
+
+    @Autowired
+    UserTokenRepository userTokenRepository
 
     @Autowired
     UserRepository userRepository
@@ -36,14 +38,18 @@ class UserDataController {
         if (!claims) {
             return null
         }
-        String login = claims.get(TokenService.LOGIN)
+        String login = claims.getSubject()
         def user = userRepository.findByLogin(login)
         return user
     }
 
     @RequestMapping('/save')
     SimpleResponse save(HttpServletRequest request, @RequestHeader String token) {
-        User user = userRepository.findByToken(token)
+        Claims claims = tokenService.parseToken(token)
+        if (!claims) {
+            return null
+        }
+        User user = userRepository.findByLogin(claims.getSubject())
         String login = request.getParameter('login')
         String email = request.getParameter('email')
         String firstName = request.getParameter('firstName')
@@ -81,8 +87,12 @@ class UserDataController {
 
     @RequestMapping('/password/change')
     SimpleResponse changePassword(HttpServletRequest request, @RequestHeader String token) {
+        Claims claims = tokenService.parseToken(token)
+        if (!claims) {
+            return null
+        }
+        User user = userRepository.findByLogin(claims.getSubject())
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder()
-        User user = userRepository.findByToken(token)
         String password = request.getParameter('password')
         String passwordAgain = request.getParameter('passwordAgain')
         if (!password) {

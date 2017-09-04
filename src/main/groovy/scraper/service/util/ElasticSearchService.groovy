@@ -24,13 +24,19 @@ class ElasticSearchService {
     @Value('${elasticsearch.port}')
     Integer port
 
+    @Value('${elasticsearch.enabled}')
+    Boolean enabled
+
     TransportClient client
 
     @PostConstruct
     void init () {
+        if (!enabled) {
+            return
+        }
         try {
             Settings settings = Settings.builder()
-                    .put("client.transport.ping_timeout", "15s")
+                    .put("client.transport.ping_timeout", "150s")
                     .put("client.transport.ignore_cluster_name", true)
                     .put("client.transport.sniff", false)
                     .build()

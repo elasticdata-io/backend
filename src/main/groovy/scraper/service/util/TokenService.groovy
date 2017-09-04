@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import scraper.service.model.User
+import scraper.service.model.UserToken
 import scraper.service.repository.UserRepository
+import scraper.service.repository.UserTokenRepository
 
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
@@ -30,6 +32,9 @@ class TokenService {
 
     @Autowired
     private UserRepository userRepository
+
+    @Autowired
+    private UserTokenRepository userTokenRepository
 
     /**
      * Gets token sting.
@@ -69,10 +74,6 @@ class TokenService {
         String compactJws =  Jwts.builder()
                 .setId(user.id)
                 .setSubject(user.login)
-                .claim(EMAIL, user.email)
-                .claim(LOGIN, user.login)
-                .claim(FIRST_NAME, user.firstName)
-                .claim(SECOND_NAME, user.secondName)
                 .compressWith(CompressionCodecs.DEFLATE)
                 .signWith(SignatureAlgorithm.HS512, KEY)
                 .setExpiration(calendar.getTime())
@@ -87,18 +88,23 @@ class TokenService {
      * @return User data from jwt token.
      */
     Claims parseToken(String jwtToken) {
+        if (!jwtToken) {
+            return null
+        }
         Claims claims
         try {
             claims = Jwts.parser()
                     .setSigningKey(DatatypeConverter.parseBase64Binary(KEY))
                     .parseClaimsJws(jwtToken).getBody()
         } catch (Exception e) {
+            logger.error('token service error', e)
             return null
         }
         return claims
     }
 
     /**
+     * @deprecated
      * Registers token to cookie store.
      * @param token
      * @param response
@@ -107,5 +113,35 @@ class TokenService {
         Cookie cookie = new Cookie("token", token)
         cookie.setPath("/")
         response.addCookie(cookie)
+    }
+
+    /**
+     * Saves token to db.
+     * @param token
+     */
+    void saveToken(String token) {
+        Claims claims = parseToken(token)
+        String login = claims.getSubject()
+        User user = userRepository.findByLogin(login)
+        UserToken userToken = new UserToken(token: token, user: user, createdOn: new Date())
+        userTokenRepository.save(userToken)
+    }
+
+    /**
+     * Checks token is a valid.
+     * @param token
+     * @return
+     */
+    boolean checkToken(String token) {
+        Claims claims = parseToken(token)
+        if (!claims) {
+            return false
+        }
+        boolean isExpired = claims.getExpiration() <= new Date()
+        if (isExpired) {
+            return false
+        }
+        UserToken userToken = userTokenRepository.findByToken(token)
+        return userToken != null
     }
 }

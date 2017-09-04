@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.RestController
 import scraper.service.model.Pipeline
 import scraper.service.model.PipelineStatus
 import scraper.service.model.User
+import scraper.service.model.UserToken
 import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineStatusRepository
 import scraper.service.repository.PipelineTaskRepository
 import scraper.service.repository.UserRepository
+import scraper.service.repository.UserTokenRepository
 
 import javax.servlet.http.HttpServletRequest
 import javax.xml.ws.http.HTTPException
@@ -23,6 +25,9 @@ class PipelineDataController {
 
     public static final String DEFAULT_BROWSER_ADDRESS = 'http://selenium.bars-parser.com:4444/wd/hub'
     public static final String DEFAULT_BROWSER = 'phantom'
+
+    @Autowired
+    UserTokenRepository userTokenRepository
 
     @Autowired
     UserRepository userRepository
@@ -43,20 +48,21 @@ class PipelineDataController {
 
     @RequestMapping('/list')
     List<Pipeline> list(@RequestHeader("token") String token) {
-        User user = userRepository.findByToken(token)
-        return pipelineRepository.findByUser(user)
+        UserToken userToken = userTokenRepository.findByToken(token)
+        return pipelineRepository.findByUser(userToken.user)
     }
 
     @RequestMapping('/list-depends/{pipelineId}')
     List<Pipeline> listDepends(@RequestHeader("token") String token, @PathVariable String pipelineId) {
-        User user = userRepository.findByToken(token)
-        def pipelines = pipelineRepository.findByUserAndIdNotIn(user, [pipelineId])
+
+        def pipelines = pipelineRepository.findByUserAndIdNotIn(userToken.user, [pipelineId])
         return pipelines
     }
 
     @RequestMapping('/save')
     Pipeline add(HttpServletRequest request, @RequestHeader String token, @RequestParam String id) {
-        User user = userRepository.findByToken(token)
+        UserToken userToken = userTokenRepository.findByToken(token)
+        User user = userToken.user
         if (!user) {
             throw HTTPException('user not found by passed token')
         }

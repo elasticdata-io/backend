@@ -26,11 +26,6 @@ class TokenService {
 
     public static final String KEY = "sad234234asd12312k_!sdasd"
 
-    public final static String EMAIL = "email"
-    public final static String LOGIN = "login"
-    public final static String FIRST_NAME = "firstName"
-    public final static String SECOND_NAME = "secondName"
-
     @Autowired
     private UserRepository userRepository
 
@@ -117,18 +112,19 @@ class TokenService {
     }
 
     /**
+     * TODO check single of the responsibility
      * Saves token to db.
      * @param token
      */
-    void saveToken(String token, HttpServletRequest request) {
+    void saveUserToken(String token, HttpServletRequest request) {
         Claims claims = parseToken(token)
         String login = claims.getSubject()
         User user = userRepository.findByLogin(login)
         UserToken userToken = new UserToken(
                 token: token,
                 user: user,
-                ip: request.getHeader("X-FORWARDED-FOR") ?: request.getRemoteAddr(),
-                userAgent: request.getHeader("User-Agent"),
+                ip: request.getHeader('X-FORWARDED-FOR') ?: request.getRemoteAddr(),
+                userAgent: request.getHeader('User-Agent'),
                 createdOn: new Date())
         userTokenRepository.save(userToken)
     }

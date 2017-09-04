@@ -14,6 +14,10 @@ class UserToken {
 
     public String token
 
+    public String ip
+
+    public String userAgent
+
     @DBRef
     @JsonIgnore
     public User user

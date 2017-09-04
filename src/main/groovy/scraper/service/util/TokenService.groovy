@@ -15,6 +15,7 @@ import scraper.service.repository.UserRepository
 import scraper.service.repository.UserTokenRepository
 
 import javax.servlet.http.Cookie
+import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import javax.xml.bind.DatatypeConverter
 
@@ -119,11 +120,16 @@ class TokenService {
      * Saves token to db.
      * @param token
      */
-    void saveToken(String token) {
+    void saveToken(String token, HttpServletRequest request) {
         Claims claims = parseToken(token)
         String login = claims.getSubject()
         User user = userRepository.findByLogin(login)
-        UserToken userToken = new UserToken(token: token, user: user, createdOn: new Date())
+        UserToken userToken = new UserToken(
+                token: token,
+                user: user,
+                ip: request.getHeader("X-FORWARDED-FOR") ?: request.getRemoteAddr(),
+                userAgent: request.getHeader("User-Agent"),
+                createdOn: new Date())
         userTokenRepository.save(userToken)
     }
 

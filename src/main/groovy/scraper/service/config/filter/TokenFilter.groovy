@@ -35,7 +35,7 @@ class TokenFilter extends GenericFilterBean {
 
     private boolean checkToken(ServletRequest request) {
         HttpServletRequest httpRequest = request as HttpServletRequest
-        String token = httpRequest.getHeader(TOKEN_HEADER_NAME)
+        String token = httpRequest.getHeader(TOKEN_HEADER_NAME) ?: httpRequest.getParameter(TOKEN_HEADER_NAME)
         return tokenService.checkToken(token)
     }
 }

@@ -12,6 +12,7 @@ import scraper.service.repository.UserRepository
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import scraper.service.util.TokenService
 
+import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @RestController
@@ -27,7 +28,7 @@ class LoginController {
     private TokenService tokenService
 
     @RequestMapping
-    SimpleResponse login(@RequestParam String login, @RequestParam String password, HttpServletResponse response)
+    SimpleResponse login(@RequestParam String login, @RequestParam String password, HttpServletRequest request)
             throws Exception {
         User user = userRepository.findByLogin(login)
         String msg = String.format("Пользователь c логином '%s', или паролем, не найден.", login)
@@ -39,7 +40,7 @@ class LoginController {
             return new SimpleResponse(success: false, error: msg)
         }
         String token = tokenService.makeToken(login, password)
-        tokenService.saveToken(token)
+        tokenService.saveToken(token, request)
         String message = 'Вы успешно авторизированы, переадресация!'
         return new SimpleResponse(success: true, message: message, token: token)
     }

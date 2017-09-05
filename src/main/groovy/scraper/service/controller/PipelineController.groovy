@@ -264,41 +264,6 @@ class PipelineController {
     }
 
     /**
-     * Gets last parsed data by pipeline id.
-     * @param pipelineId
-     * @return Last parsed data by pipeline id.
-     */
-    @RequestMapping("/last-task-data/{pipelineId}")
-    List<HashMap> getData(@PathVariable String pipelineId) {
-        PipelineTask pipelineTask = pipelineTaskRepository.findOneByPipelineOrderByEndOnDesc(pipelineId)
-        return pipelineTask.data
-    }
-
-    /**
-     * Gets last parsed data by pipeline id.
-     * @param pipelineId
-     * @return Last parsed data by pipeline id.
-     */
-    @RequestMapping("/last-task-data/csv/{pipelineId}")
-    List<HashMap> getCsvData(@PathVariable String pipelineId, HttpServletResponse response) {
-        String responseData = ''
-        PipelineTask pipelineTask = pipelineTaskRepository.findOneByPipelineOrderByEndOnDesc(pipelineId)
-        List<HashMap> list = pipelineTask.data as List<HashMap>
-        HashSet columns = new HashSet()
-        list.each { map ->
-            map.each {k, v -> columns.add(k)}
-        }
-        def encode = { e -> e == null ? '' : e instanceof String ? /"$e"/ : "$e" }
-        responseData += columns.collect { c -> encode( c ) }.join( ',' )
-        responseData += '\n'
-        responseData += list.collect { row ->
-            columns.collect { colName -> encode( row[ colName ] ) }.join( ',' )
-        }.join( '\n' )
-        response.setContentType("text/csv; charset=utf-8")
-        response.setHeader("Content-disposition", "attachment;filename=${pipelineId}.csv")
-        response.getWriter().print(responseData)
-    }
-    /**
      *
      * @param pipelineEntity
      * @param runtimeData
@@ -384,5 +349,41 @@ class PipelineController {
 
     private void uploadToElastic(List<HashMap<String, String>> list, String index, String type) {
         elasticSearchService.bulk(list, index, type)
+    }
+
+    /**
+     * Gets last parsed data by pipeline id.
+     * @param pipelineId
+     * @return Last parsed data by pipeline id.
+     */
+    @RequestMapping("/data/{pipelineId}")
+    List<HashMap> getData(@PathVariable String pipelineId) {
+        PipelineTask pipelineTask = pipelineTaskRepository.findOneByPipelineOrderByEndOnDesc(pipelineId)
+        return pipelineTask.data
+    }
+
+    /**
+     * Gets last parsed data by pipeline id.
+     * @param pipelineId
+     * @return Last parsed data by pipeline id.
+     */
+    @RequestMapping("/data/csv/{pipelineId}")
+    List<HashMap> getCsvData(@PathVariable String pipelineId, HttpServletResponse response) {
+        String responseData = ''
+        PipelineTask pipelineTask = pipelineTaskRepository.findOneByPipelineOrderByEndOnDesc(pipelineId)
+        List<HashMap> list = pipelineTask.data as List<HashMap>
+        HashSet columns = new HashSet()
+        list.each { map ->
+            map.each {k, v -> columns.add(k)}
+        }
+        def encode = { e -> e == null ? '' : e instanceof String ? /"$e"/ : "$e" }
+        responseData += columns.collect { c -> encode( c ) }.join( ',' )
+        responseData += '\n'
+        responseData += list.collect { row ->
+            columns.collect { colName -> encode( row[ colName ] ) }.join( ',' )
+        }.join( '\n' )
+        response.setContentType("text/csv; charset=utf-8")
+        response.setHeader("Content-disposition", "attachment;filename=${pipelineId}.csv")
+        response.getWriter().print(responseData)
     }
 }

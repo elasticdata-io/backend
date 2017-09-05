@@ -13,7 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import scraper.service.util.TokenService
 
 import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequestMapping("/api/login")
@@ -40,7 +39,7 @@ class LoginController {
             return new SimpleResponse(success: false, error: msg)
         }
         String token = tokenService.makeToken(login, password)
-        tokenService.saveToken(token, request)
+        tokenService.saveUserToken(token, request)
         String message = 'Вы успешно авторизированы, переадресация!'
         return new SimpleResponse(success: true, message: message, token: token)
     }

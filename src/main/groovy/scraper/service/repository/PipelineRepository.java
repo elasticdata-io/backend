@@ -10,7 +10,10 @@ import java.util.List;
 
 public interface PipelineRepository extends MongoRepository<Pipeline, String> {
 
+	List<Pipeline> findByUser(String userId);
+	Pipeline findByIdAndUser(String id, String userId);
 	List<Pipeline> findByUser(User user);
+	List<Pipeline> findByUserAndIdNotIn(String userId, List<String> dependsOn);
 	List<Pipeline> findByUserAndIdNotIn(User user, List<String> dependsOn);
 	List<Pipeline> findByDependOn(String dependOn);
 }

@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RestController
 import scraper.service.model.Pipeline
 import scraper.service.model.PipelineStatus
 import scraper.service.model.User
-import scraper.service.model.UserToken
 import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineStatusRepository
 import scraper.service.repository.PipelineTaskRepository
 import scraper.service.repository.UserRepository
 import scraper.service.repository.UserTokenRepository
+import scraper.service.util.TokenService
 
 import javax.servlet.http.HttpServletRequest
 import javax.xml.ws.http.HTTPException
@@ -41,6 +41,9 @@ class PipelineDataController {
     @Autowired
     PipelineStatusRepository pipelineStatusRepository
 
+    @Autowired
+    TokenService tokenService
+
     @RequestMapping('/{id}')
     Pipeline get(@PathVariable String id) {
         return pipelineRepository.findOne(id)
@@ -48,21 +51,21 @@ class PipelineDataController {
 
     @RequestMapping('/list')
     List<Pipeline> list(@RequestHeader("token") String token) {
-        UserToken userToken = userTokenRepository.findByToken(token)
-        return pipelineRepository.findByUser(userToken.user)
+        String userId = tokenService.getUserId(token)
+        return pipelineRepository.findByUser(userId)
     }
 
     @RequestMapping('/list-depends/{pipelineId}')
     List<Pipeline> listDepends(@RequestHeader("token") String token, @PathVariable String pipelineId) {
-
-        def pipelines = pipelineRepository.findByUserAndIdNotIn(userToken.user, [pipelineId])
+        String userId = tokenService.getUserId(token)
+        def pipelines = pipelineRepository.findByUserAndIdNotIn(userId, [pipelineId])
         return pipelines
     }
 
     @RequestMapping('/save')
     Pipeline add(HttpServletRequest request, @RequestHeader String token, @RequestParam String id) {
-        UserToken userToken = userTokenRepository.findByToken(token)
-        User user = userToken.user
+        String userId = tokenService.getUserId(token)
+        User user = userRepository.findOne(userId)
         if (!user) {
             throw HTTPException('user not found by passed token')
         }

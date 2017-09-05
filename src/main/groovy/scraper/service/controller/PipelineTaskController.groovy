@@ -6,33 +6,50 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import scraper.service.model.Pipeline
 import scraper.service.model.PipelineTask
 import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineTaskRepository
+import scraper.service.util.TokenService
 
 @RestController
 @RequestMapping("/api/pipeline-task")
 class PipelineTaskController {
 
     @Autowired
-    PipelineRepository pipelineRepository;
+    PipelineRepository pipelineRepository
 
     @Autowired
-    PipelineTaskRepository pipelineTaskRepository;
-
-
-    @Autowired
-    AmqpTemplate rabbitTemplate;
+    PipelineTaskRepository pipelineTaskRepository
 
     @Autowired
-    private SimpMessagingTemplate messagingTemplate;
+    TokenService tokenService
+
+    @Autowired
+    AmqpTemplate rabbitTemplate
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate
 
     @RequestMapping("/list/{pipelineId}")
-    List<PipelineTask> list(@PathVariable String pipelineId) {
-        Pageable top = new PageRequest(0, 10);
+    List<PipelineTask> list(@PathVariable String pipelineId, @RequestHeader("token") String token) {
+        String userId = tokenService.getUserId(token)
+        Pipeline pipeline = pipelineRepository.findByIdAndUser(pipelineId, userId)
+        if (!pipeline) {
+            return null
+        }
+        Pageable top = new PageRequest(0, 10)
         return pipelineTaskRepository.findByPipelineOrderByEndOnDesc(pipelineId, top)
+    }
+
+    @RequestMapping("/delete/{id}")
+    void delete(@PathVariable String id, @RequestHeader("token") String token) {
+        if (checkPermission(id, token)) {
+            pipelineTaskRepository.delete(id)
+        }
     }
 
     @RequestMapping("/data/{id}")
@@ -41,8 +58,10 @@ class PipelineTaskController {
         return pipelineTask.data
     }
 
-    @RequestMapping("/delete/{id}")
-    void delete(@PathVariable String id) {
-        pipelineTaskRepository.delete(id)
+    private boolean checkPermission(String taskId, String token) {
+        PipelineTask task = pipelineTaskRepository.findOne(taskId)
+        String userId = tokenService.getUserId(token)
+        Pipeline pipeline = pipelineRepository.findByIdAndUser(task.pipeline.id, userId)
+        return pipeline != null
     }
 }

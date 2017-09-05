@@ -100,6 +100,19 @@ class TokenService {
     }
 
     /**
+     * Gets user id by jwt token
+     * @param jwtToken
+     * @return
+     */
+    String getUserId(String jwtToken) {
+        Claims claims = parseToken(jwtToken)
+        if (!claims) {
+            return null
+        }
+        return claims.getId()
+    }
+
+    /**
      * @deprecated
      * Registers token to cookie store.
      * @param token

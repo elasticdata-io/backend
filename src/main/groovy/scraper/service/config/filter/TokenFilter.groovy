@@ -15,10 +15,11 @@ import javax.servlet.http.HttpServletResponse
 class TokenFilter extends GenericFilterBean {
 
     String TOKEN_HEADER_NAME = 'token'
+
     String LOGIN_URI = '/api/login'
     String WS_URI = '/ws/'
 
-    String allowUrls = [LOGIN_URI, '/api/pipeline/data/', '/api/pipeline-task/data/', WS_URI]
+    List<String> allowUrls = [WS_URI, LOGIN_URI, '/api/pipeline/data/', '/api/pipeline-task/data/']
 
     @Autowired
     TokenService tokenService
@@ -28,7 +29,7 @@ class TokenFilter extends GenericFilterBean {
         HttpServletResponse httpResponse = response as HttpServletResponse
         HttpServletRequest httpRequest = request as HttpServletRequest
         String uri = httpRequest.getRequestURI()
-        boolean isAllowUrl = allowUrls.find {url -> uri.startsWith(url)}
+        boolean isAllowUrl = allowUrls.find { uri.startsWith(it) }
         if (isAllowUrl || checkToken(request)) {
             chain.doFilter(request, response)
             return

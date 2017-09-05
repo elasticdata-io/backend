@@ -214,7 +214,7 @@ class PipelineController {
             pipelineTask.data = dataParsed
             String status = pipelineProcess.isStopped ? PipelineStatuses.STOPPED : PipelineStatuses.COMPLETED
             pipelineEntity.status = pipelineStatusRepository.findByTitle(status)
-            pipelineEntity.lastParsedLinesCount = dataParsed.size()
+            pipelineEntity.parseRowsCount = dataParsed.size()
             uploadToElastic(dataParsed as List<HashMap<String, String>>, pipelineEntity.id, pipelineTask.id)
         } catch (all) {
             logger.error(all.printStackTrace())
@@ -283,7 +283,7 @@ class PipelineController {
             pipelineProcess.run()
             def dataParsed = store.getData()
             pipelineTaskParent.data = dataParsed
-            pipelineEntity.lastParsedLinesCount = dataParsed.size()
+            pipelineEntity.parseRowsCount = dataParsed.size()
             pipelineRepository.save(pipelineEntity)
             uploadToElastic(dataParsed as List<HashMap<String, String>>, pipelineEntity.id, pipelineTaskParent.id)
         } catch (all) {

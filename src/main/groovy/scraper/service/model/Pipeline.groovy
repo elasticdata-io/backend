@@ -55,7 +55,7 @@ class Pipeline {
     /**
      * Count of the last parsed data lines.
      */
-    Integer lastParsedLinesCount
+    Integer parseRowsCount
 
     /**
      * Created on date time.

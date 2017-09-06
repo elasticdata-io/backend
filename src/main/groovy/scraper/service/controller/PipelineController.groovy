@@ -358,7 +358,7 @@ class PipelineController {
      */
     @RequestMapping("/data/{pipelineId}")
     List<HashMap> getData(@PathVariable String pipelineId) {
-        PipelineTask pipelineTask = pipelineTaskRepository.findOneByPipelineOrderByEndOnDesc(pipelineId)
+        PipelineTask pipelineTask = pipelineTaskRepository.findOneByPipelineAndErrorOrderByEndOnDesc(pipelineId, null)
         return pipelineTask.data
     }
 
@@ -370,7 +370,7 @@ class PipelineController {
     @RequestMapping("/data/csv/{pipelineId}")
     List<HashMap> getCsvData(@PathVariable String pipelineId, HttpServletResponse response) {
         String responseData = ''
-        PipelineTask pipelineTask = pipelineTaskRepository.findOneByPipelineOrderByEndOnDesc(pipelineId)
+        PipelineTask pipelineTask = pipelineTaskRepository.findOneByPipelineAndErrorOrderByEndOnDesc(pipelineId, null)
         List<HashMap> list = pipelineTask.data as List<HashMap>
         HashSet columns = new HashSet()
         list.each { map ->

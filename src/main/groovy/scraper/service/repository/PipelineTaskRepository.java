@@ -12,4 +12,5 @@ public interface PipelineTaskRepository extends MongoRepository<PipelineTask, St
 	List<PipelineTask> findByPipelineOrderByEndOnDesc(String pipeline);
 	List<PipelineTask> findByPipelineOrderByEndOnDesc(String pipeline, Pageable top);
 	PipelineTask findOneByPipelineOrderByEndOnDesc(String pipeline);
+	PipelineTask findOneByPipelineAndErrorOrderByEndOnDesc(String pipeline, String error);
 }

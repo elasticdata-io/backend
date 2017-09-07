@@ -79,7 +79,7 @@ class PipelineDataController {
         boolean isDebugMode = request.getParameter('isDebugMode') ?: false
         String browserAddress = request.getParameter('browserAddress') ?: DEFAULT_BROWSER_ADDRESS
         String browser = request.getParameter('browser') ?: DEFAULT_BROWSER
-        Integer runIntervalMin = request.getParameter('runIntervalMin')
+        Integer runIntervalMin = (request.getParameter('runIntervalMin') ?: null) as Integer
         if (pipeline) {
             pipeline.browser = browser
             pipeline.browserAddress = browserAddress

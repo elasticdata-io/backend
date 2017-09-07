@@ -58,6 +58,11 @@ class Pipeline {
     Integer parseRowsCount
 
     /**
+     * The interval at which the parser will start.
+     */
+    Integer runIntervalMin
+
+    /**
      * Created on date time.
      */
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")

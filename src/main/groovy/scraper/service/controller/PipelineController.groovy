@@ -52,42 +52,11 @@ class PipelineController {
     PipelineService pipelineService
 
     /**
-     * WORKER 1.
      * Listener for run pipeline.
      * @param pipelineId Running pipeline id.
      */
     @RabbitListener(queues = "pipeline-run-queue")
     void runPipelineFromQueueWorker1(String pipelineId) {
-        runPipelineFromQueue(pipelineId)
-    }
-
-    /**
-     * WORKER 2.
-     * Listener for run pipeline.
-     * @param pipelineId Running pipeline id.
-     */
-    @RabbitListener(queues = "pipeline-run-queue")
-    void runPipelineFromQueueWorker2(String pipelineId) {
-        runPipelineFromQueue(pipelineId)
-    }
-
-    /**
-     * WORKER 3.
-     * Listener for run pipeline.
-     * @param pipelineId Running pipeline id.
-     */
-    @RabbitListener(queues = "pipeline-run-queue")
-    void runPipelineFromQueueWorker3(String pipelineId) {
-        runPipelineFromQueue(pipelineId)
-    }
-
-    /**
-     * WORKER 4.
-     * Listener for run pipeline.
-     * @param pipelineId Running pipeline id.
-     */
-    @RabbitListener(queues = "pipeline-run-queue")
-    void runPipelineFromQueueWorker4(String pipelineId) {
         runPipelineFromQueue(pipelineId)
     }
 

@@ -125,7 +125,7 @@ class PipelineService {
 
         destroyPipelineProcess(pipeline)
         if (dataList) {
-            uploadDataToElastic(dataList as List<HashMap>)
+            uploadDataToElastic(dataList as List<HashMap>, pipelineTask)
         }
     }
 

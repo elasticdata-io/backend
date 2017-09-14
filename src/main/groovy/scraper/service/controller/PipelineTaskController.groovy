@@ -42,7 +42,12 @@ class PipelineTaskController {
             return null
         }
         Pageable top = new PageRequest(0, 10)
-        return pipelineTaskRepository.findByPipelineOrderByEndOnDesc(pipelineId, top)
+        List<PipelineTask> tasks = pipelineTaskRepository.findByPipelineOrderByEndOnDesc(pipelineId, top)
+        tasks.each {task->
+            String error = task.error
+            task.error = error?.take(1000)
+        }
+        return tasks
     }
 
     @RequestMapping("/delete/{id}")

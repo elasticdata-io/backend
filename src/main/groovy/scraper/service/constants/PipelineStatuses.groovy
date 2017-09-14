@@ -2,7 +2,7 @@ package scraper.service.constants
 
 class PipelineStatuses {
 
-    public static String NOT_RUNNING = 'not running'
+    public static NOT_RUNNING = 'not running'
     public static RUNNING = 'running'
     public static COMPLETED = 'completed'
     public static ERROR = 'error'

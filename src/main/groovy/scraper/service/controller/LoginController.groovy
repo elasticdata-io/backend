@@ -10,7 +10,7 @@ import scraper.service.controller.response.SimpleResponse
 import scraper.service.model.User
 import scraper.service.repository.UserRepository
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import scraper.service.util.TokenService
+import scraper.service.auth.TokenService
 
 import javax.servlet.http.HttpServletRequest
 

@@ -1,4 +1,4 @@
-package scraper.service.util
+package scraper.service.auth
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.CompressionCodecs

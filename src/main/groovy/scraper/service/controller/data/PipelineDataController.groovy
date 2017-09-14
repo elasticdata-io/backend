@@ -14,7 +14,7 @@ import scraper.service.repository.PipelineStatusRepository
 import scraper.service.repository.PipelineTaskRepository
 import scraper.service.repository.UserRepository
 import scraper.service.repository.UserTokenRepository
-import scraper.service.util.TokenService
+import scraper.service.auth.TokenService
 
 import javax.servlet.http.HttpServletRequest
 import javax.xml.ws.http.HTTPException

@@ -8,11 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import scraper.service.controller.response.SimpleResponse
 import scraper.service.model.User
-import scraper.service.model.UserToken
 import scraper.service.repository.UserRepository
 import scraper.service.repository.UserTokenRepository
 import scraper.service.util.EmailValidator
-import scraper.service.util.TokenService
+import scraper.service.auth.TokenService
 
 import javax.servlet.http.HttpServletRequest
 

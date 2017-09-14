@@ -1,9 +1,9 @@
-package scraper.service.config.filter
+package scraper.service.config.request.filter
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.GenericFilterBean
-import scraper.service.util.TokenService
+import scraper.service.auth.TokenService
 
 import javax.servlet.FilterChain
 import javax.servlet.ServletRequest

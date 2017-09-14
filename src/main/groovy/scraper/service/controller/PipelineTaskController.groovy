@@ -13,7 +13,7 @@ import scraper.service.model.Pipeline
 import scraper.service.model.PipelineTask
 import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineTaskRepository
-import scraper.service.util.TokenService
+import scraper.service.auth.TokenService
 
 @RestController
 @RequestMapping("/api/pipeline-task")

@@ -9,7 +9,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import scraper.service.data.converter.CsvConverter
 import scraper.service.data.converter.CsvDataConverter
 import scraper.service.model.Pipeline
 import scraper.service.model.PipelineTask
@@ -55,8 +54,8 @@ class PipelineController {
      * Listener for run pipeline.
      * @param pipelineId Running pipeline id.
      */
-    @RabbitListener(queues = "pipeline-run-queue")
-    void runPipelineFromQueueWorker1(String pipelineId) {
+    @RabbitListener(queues = "pipeline-run-queue", containerFactory="multipleListenerContainerFactory")
+    void runPipelineFromQueueWorker(String pipelineId) {
         runPipelineFromQueue(pipelineId)
     }
 

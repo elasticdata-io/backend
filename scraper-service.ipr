@@ -50,6 +50,7 @@
     <modules>
       <module filepath="$PROJECT_DIR$/scraper-service.iml" fileurl="file://$PROJECT_DIR$/scraper-service.iml"/>
       <module filepath="$PROJECT_DIR$/../scraber-2/scraper-core.iml" fileurl="file://$PROJECT_DIR$/../scraber-2/scraper-core.iml"/>
+      <module filepath="$PROJECT_DIR$/scraper-core/scraper-core.iml" fileurl="file://$PROJECT_DIR$/scraper-core/scraper-core.iml"/>
     </modules>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" assert-keyword="true" jdk-15="true" project-jdk-type="JavaSDK" assert-jdk-15="true" project-jdk-name="1.8">

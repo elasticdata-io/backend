@@ -93,7 +93,7 @@ class TokenService {
                     .setSigningKey(DatatypeConverter.parseBase64Binary(KEY))
                     .parseClaimsJws(jwtToken).getBody()
         } catch (Exception e) {
-            logger.error('token resolve error', e)
+            logger.error('token resolveQueryProvider error', e)
             return null
         }
         return claims

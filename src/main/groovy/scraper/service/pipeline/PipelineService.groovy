@@ -34,7 +34,7 @@ class PipelineService {
 
     private DefaultListableBeanFactory beanFactory
 
-    private String RUN_DIRECTORY = '/tmp/scraper-resolve'
+    private String RUN_DIRECTORY = '/tmp/scraper-service'
     private Class DEFAULT_BROWSER = Phantom.class
 
     @Autowired

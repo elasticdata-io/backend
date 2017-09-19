@@ -9,7 +9,6 @@ buildscript {
 }
 
 apply plugin: 'groovy'
-apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 
 sourceCompatibility = 1.8
@@ -20,6 +19,7 @@ repositories {
 }
 
 dependencies {
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.8.3'
     compile group: 'org.elasticsearch.client', name: 'transport', version: '5.3.0'
     compile group: 'com.cloudinary', name: 'cloudinary', version: '1.0.2'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.5.3.RELEASE'
@@ -44,7 +44,7 @@ dependencies {
 }
 
 test {
-    exclude 'scraper/resolve/**'
+    exclude 'scraper/resolveQueryProvider/**'
 
     beforeTest { descriptor ->
         logger.lifecycle("Running test: " + descriptor)

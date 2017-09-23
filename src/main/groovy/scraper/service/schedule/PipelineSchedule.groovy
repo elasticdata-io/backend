@@ -44,11 +44,9 @@ class PipelineSchedule {
             }
             def lastCompletedOn = pipeline.lastCompletedOn
             def now = (new Date())
-            def nowUtcString = now.format("yyyyMMdd-HH:mm:ss.SSS", TimeZone.getTimeZone('UTC'))
-            def nowUtc = Date.parse("yyyyMMdd-HH:mm:ss.SSS", nowUtcString)
             use( TimeCategory ) {
                 def needStartTime = lastCompletedOn + pipeline.runIntervalMin.minutes
-                if (nowUtc >= needStartTime) {
+                if (now >= needStartTime) {
                     logger.info("run pipeline from schedule: ${pipeline.id}, time: ${now}")
                     rabbitTemplate.convertAndSend("pipeline-run-queue", pipeline.id)
                 }

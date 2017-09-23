@@ -10,12 +10,14 @@ import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
 import scraper.core.browser.Browser
 import scraper.core.browser.BrowserFactory
+import scraper.core.browser.BrowserProvider
 import scraper.core.browser.provider.Phantom
 import scraper.core.pipeline.Environment
 import scraper.core.pipeline.PipelineBuilder
 import scraper.core.pipeline.PipelineProcess
 import scraper.core.pipeline.data.AbstractStore
 import scraper.service.constants.PipelineStatuses
+import scraper.service.controller.listener.PipelineBrowserProviderObserver
 import scraper.service.controller.listener.PipelineStoreObserver
 import scraper.service.elastic.ElasticSearchService
 import scraper.service.model.Pipeline
@@ -218,6 +220,7 @@ class PipelineService {
 
             beanFactory.registerSingleton(pipeline.id, pipelineProcess)
             bindStoreObserver(pipelineProcess, pipelineTask)
+            bindCommandObserver(pipelineProcess, pipelineTask)
 
             pipelineProcess.run()
 
@@ -236,6 +239,12 @@ class PipelineService {
         AbstractStore store = pipelineProcess.getStore()
         PipelineStoreObserver storeObserver = new PipelineStoreObserver(store, messagingTemplate, pipelineTask)
         store.addObserver(storeObserver)
+    }
+
+    private void bindCommandObserver(PipelineProcess pipelineProcess, PipelineTask pipelineTask) {
+        BrowserProvider browserProvider = pipelineProcess.getBrowserProvider()
+        def observer = new PipelineBrowserProviderObserver(browserProvider, messagingTemplate, pipelineTask)
+        browserProvider.addObserver(observer)
     }
 
 }

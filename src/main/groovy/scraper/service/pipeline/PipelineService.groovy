@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service
 import scraper.core.browser.Browser
 import scraper.core.browser.BrowserFactory
 import scraper.core.browser.BrowserProvider
-import scraper.core.browser.provider.Phantom
+import scraper.core.browser.provider.Chrome
 import scraper.core.pipeline.Environment
 import scraper.core.pipeline.PipelineBuilder
 import scraper.core.pipeline.PipelineProcess
@@ -37,7 +37,7 @@ class PipelineService {
     private DefaultListableBeanFactory beanFactory
 
     private String RUN_DIRECTORY = '/tmp/scraper-service'
-    private Class DEFAULT_BROWSER = Phantom.class
+    private Class DEFAULT_BROWSER = Chrome.class
 
     @Autowired
     private ApplicationContext applicationContext

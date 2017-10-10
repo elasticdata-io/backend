@@ -20,7 +20,8 @@ class PipelineStoreObserver implements Observer {
     void update(Observable o, Object arg) {
         def dataParsed = store.getData()
         def data = [
-                newParseRowsCount: dataParsed.size(),
+                newParseRowsCount: store.getLinesCount(),
+                pipelineTaskId: pipelineTask.id,
                 pipelineId: pipelineTask.pipeline.id,
                 line: dataParsed.last()
         ]

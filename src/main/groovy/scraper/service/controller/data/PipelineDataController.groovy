@@ -24,7 +24,7 @@ import javax.xml.ws.http.HTTPException
 class PipelineDataController {
 
     public static final String DEFAULT_BROWSER_ADDRESS = 'http://selenium.bars-parser.com:4444/wd/hub'
-    public static final String DEFAULT_BROWSER = 'phantom'
+    public static final String DEFAULT_BROWSER = 'chrome'
 
     @Autowired
     UserTokenRepository userTokenRepository
@@ -47,6 +47,12 @@ class PipelineDataController {
     @RequestMapping('/{id}')
     Pipeline get(@PathVariable String id) {
         return pipelineRepository.findOne(id)
+    }
+
+    @RequestMapping('/{id}/commands')
+    Pipeline commands(@PathVariable String id) {
+        Pipeline pipeline = get(id)
+        String json = pipeline.jsonCommands
     }
 
     @RequestMapping('/list')

@@ -1,0 +1,2 @@
+FROM node:9.8.0
+COPY . /var/sites/scraper-service

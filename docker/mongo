@@ -1,1 +1,2 @@
 FROM mongo
+COPY docker/mongo-backup/ /tmp/backup/

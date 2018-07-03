@@ -35,10 +35,7 @@ class RabbitConfiguration {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory(host)
         connectionFactory.setUsername(user)
         connectionFactory.setPassword(password)
-        println host
-        println user
-        println password
-        println port
+        connectionFactory.setPort(Integer.parseInt(port))
         return connectionFactory
     }
 

@@ -1,9 +1,17 @@
-FROM bombascter/java8
+FROM gradle AS build
 
-COPY . /var/sites/scraper-service
+COPY --chown=gradle . /src
 
-RUN cd /var/sites/scraper-service && /opt/gradle-4.6/bin/gradle build
+WORKDIR /src
 
-ENTRYPOINT exec java -jar /var/sites/scraper-service/build/libs/scraper-service.jar
+RUN gradle build --stacktrace --continue
+
+FROM openjdk:8-jdk AS final
+
+WORKDIR /src
+
+COPY --from=build /src/build/libs/scraper-service.jar .
+
+ENTRYPOINT exec java -jar scraper-service.jar
 
 EXPOSE 8080

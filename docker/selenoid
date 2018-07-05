@@ -1,0 +1,3 @@
+FROM aerokube/selenoid:latest-release
+
+COPY docker/browsers.json /etc/selenoid/browsers.json

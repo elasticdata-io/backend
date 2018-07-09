@@ -187,10 +187,10 @@ class PipelineService {
         def factory = new BrowserFactory()
         def config = [enableImage: false]
         if (pipeline.browserAddress) {
-            config = [browserAddress: pipeline.browserAddress, enableImage: false]
+            config += [browserAddress: pipeline.browserAddress]
         }
-        if (pipeline && pipeline.browser) {
-            return factory.createFromString(pipeline.browser, config)
+        if (pipeline.isDebugMode) {
+            config += [isDebugMode: pipeline.isDebugMode]
         }
         return factory.createFromClass(DEFAULT_BROWSER, config)
     }

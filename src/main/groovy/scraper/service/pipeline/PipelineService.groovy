@@ -106,7 +106,6 @@ class PipelineService {
     }
 
     private void afterRun(PipelineTask pipelineTask, PipelineProcess pipelineProcess = null) {
-        Pipeline pipeline = pipelineTask.pipeline
         AbstractStore store = pipelineProcess ? pipelineProcess.getStore() : null
         def dataList = store ? store.getData() : null
         pipelineTask.data = dataList
@@ -118,6 +117,7 @@ class PipelineService {
         } else {
             status = pipelineProcess ? PipelineStatuses.COMPLETED : PipelineStatuses.ERROR
         }
+        Pipeline pipeline = pipelineRepository.findOne(pipelineTask.pipeline.id)
         pipeline.status = pipelineStatusRepository.findByTitle(status)
         pipeline.lastCompletedOn = new Date()
         pipeline.parseRowsCount = dataList ? dataList.size() : 0

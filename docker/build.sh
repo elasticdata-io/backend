@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# run this script from parent directory
-# docker build --no-cache -t bombascter/java8 -f java8.dockerfile .
-docker build --no-cache -t http-service -f docker/http-service .
-docker build --no-cache -t mongo -f docker/mongo .
-docker build --no-cache -t rabbitmq -f docker/rabbitmq .
+docker image rm -f bombascter/http-service
+docker build --no-cache -t bombascter/http-service -f docker/http-service .
+
+docker image rm -f bombascter/mongo
+docker build --no-cache -t bombascter/mongo -f docker/mongo .

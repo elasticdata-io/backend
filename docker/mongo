@@ -1,2 +1,9 @@
-FROM mongo
+FROM mongo:3
+
 COPY docker/mongo-backup/ /tmp/backup/
+COPY docker/mongo-backup/. /docker-entrypoint-initdb.d/
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+EXPOSE 27017
+CMD ["mongod"]

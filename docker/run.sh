@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+docker network create --subnet=172.18.0.0/16 net1
+
 # stopping previous containers
 docker rm -f http-service mongo rabbitmq
 

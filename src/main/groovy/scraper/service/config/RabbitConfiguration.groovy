@@ -60,11 +60,16 @@ class RabbitConfiguration {
 
     @Bean
     Queue pipelineRunQueue() {
-        return new Queue("pipeline-run-queue")
+        return new Queue('pipeline-run-queue')
     }
 
     @Bean
     Queue pipelineRunHierarchyQueue() {
-        return new Queue("pipeline-run-hierarchy")
+        return new Queue('pipeline-run-hierarchy')
+    }
+
+    @Bean
+    Queue finishPipelineTaskQueue() {
+        return new Queue('finish-pipeline-task')
     }
 }

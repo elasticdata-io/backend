@@ -93,6 +93,8 @@ class PipelineController {
      */
     @RequestMapping("/run/{id}")
     void addToRunQueue(@PathVariable String id) {
+        Pipeline pipeline = pipelineRepository.findOne(id)
+        if (!pipeline){}
         rabbitTemplate.convertAndSend("pipeline-run-queue", id)
     }
 

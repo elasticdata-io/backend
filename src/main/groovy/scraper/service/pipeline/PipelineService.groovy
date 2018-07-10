@@ -2,6 +2,7 @@ package scraper.service.pipeline
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.springframework.amqp.core.AmqpTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.support.DefaultListableBeanFactory
 import org.springframework.context.ApplicationContext
@@ -53,6 +54,9 @@ class PipelineService {
 
     @Autowired
     private ElasticSearchService elasticSearchService
+
+    @Autowired
+    AmqpTemplate rabbitTemplate
 
     @PostConstruct
     void initialise() {
@@ -126,6 +130,7 @@ class PipelineService {
         pipelineRepository.save(pipeline)
 
         destroyPipelineProcess(pipeline)
+        rabbitTemplate.convertAndSend('finish-pipeline-task', pipelineTask.id)
         if (dataList) {
             uploadDataToElastic(dataList as List<HashMap>, pipelineTask)
         }

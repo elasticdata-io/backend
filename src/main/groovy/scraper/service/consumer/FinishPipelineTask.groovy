@@ -34,6 +34,7 @@ class FinishPipelineTask {
     void worker(String pipelineTaskId) {
         PipelineTask pipelineTask = pipelineTaskRepository.findOne(pipelineTaskId)
         Pipeline pipeline = pipelineTask.pipeline
+        // todo: web hooks possible not one!
         PipelineHook pipelineHook = pipelineHookRepository.findOneByPipeline(pipeline)
         if (!pipelineHook) {
             return

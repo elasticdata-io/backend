@@ -27,6 +27,7 @@ import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineStatusRepository
 import scraper.service.repository.PipelineTaskRepository
 import scraper.service.util.PipelineStructure
+import scraper.service.util.ProxyAssigner
 
 import javax.annotation.PostConstruct
 
@@ -57,6 +58,9 @@ class PipelineService {
 
     @Autowired
     AmqpTemplate rabbitTemplate
+
+    @Autowired
+    ProxyAssigner proxyAssigner
 
     @PostConstruct
     void initialise() {
@@ -196,6 +200,11 @@ class PipelineService {
         }
         if (pipeline.isDebugMode) {
             config += [isDebugMode: pipeline.isDebugMode]
+        }
+        // TODO : check need proxy
+        String proxy = proxyAssigner.getProxy()
+        if (proxy) {
+            config += [proxy: proxy]
         }
         return factory.createFromClass(DEFAULT_BROWSER, config)
     }

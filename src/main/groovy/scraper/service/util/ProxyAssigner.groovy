@@ -17,6 +17,7 @@ class ProxyAssigner {
     }
 
     String normalize(String ip) {
+        return null
         return ip.replaceAll("#.*", "")
     }
 }

@@ -75,10 +75,9 @@ class PipelineService {
     private SimpMessagingTemplate messagingTemplate
 
 
-    Pipeline run(String pipelineId) {
+    void run(String pipelineId) {
         Pipeline pipeline = pipelineRepository.findOne(pipelineId)
-        Pipeline resultPipeline = runPipeline(pipeline)
-        return resultPipeline
+        runPipeline(pipeline)
     }
 
     void notifyChangePipeline(Pipeline pipeline) {
@@ -92,7 +91,6 @@ class PipelineService {
         if (pipelineProcess) {
             logger.trace("run stopping pipelineProcess by id: ${pipelineId}")
             pipelineProcess.stop()
-            pipelineProcess.isStopped = true
         } else {
             logger.trace("runnning pipelineProcess by id: ${pipelineId} not found")
         }
@@ -120,17 +118,18 @@ class PipelineService {
         notifyChangePipeline(pipeline)
     }
 
-    private void afterRun(PipelineTask pipelineTask, PipelineProcess pipelineProcess = null) {
-        AbstractStore store = pipelineProcess ? pipelineProcess.getStore() : null
+    private void afterRun(PipelineTask pipelineTask, PipelineProcess pipelineProcess) {
+        AbstractStore store = pipelineProcess.getStore() ?: null
         def dataList = store ? store.getData() : null
         pipelineTask.data = dataList
         pipelineTask.endOn = new Date()
 
-        String status = null
-        if (pipelineProcess && pipelineProcess.isStopped) {
+        String status = PipelineStatuses.COMPLETED
+        if (pipelineProcess.hasBeenStopped) {
             status = PipelineStatuses.STOPPED
-        } else {
-            status = pipelineProcess ? PipelineStatuses.COMPLETED : PipelineStatuses.ERROR
+        }
+        if (pipelineProcess.hasErrors) {
+            status = PipelineStatuses.ERROR
         }
         Pipeline pipeline = pipelineRepository.findOne(pipelineTask.pipeline.id)
         pipeline.status = pipelineStatusRepository.findByTitle(status)
@@ -139,8 +138,8 @@ class PipelineService {
 
         pipelineTaskRepository.save(pipelineTask)
         pipelineRepository.save(pipeline)
-
         destroyPipelineProcess(pipeline)
+        notifyChangePipeline(pipeline)
         rabbitTemplate.convertAndSend('finish-pipeline-task', pipelineTask.id)
         if (dataList) {
             uploadDataToElastic(dataList as List<HashMap>, pipelineTask)
@@ -168,7 +167,6 @@ class PipelineService {
     private PipelineProcess createPipelineProcess(Pipeline pipeline, List runtimeData,
         PipelineTask task) {
         PipelineBuilder pipelineBuilder = new PipelineBuilder()
-        Browser browser = getPipelineBrowser(pipeline)
 
         String tmpFolder = "${RUN_DIRECTORY}/${task.id}"
         Environment environment = new Environment(
@@ -177,7 +175,7 @@ class PipelineService {
                 pipelineId: task.id,
                 isDebug: pipeline.isDebugMode
         )
-
+        Browser browser = getPipelineBrowser(pipeline, environment)
         if (pipeline.jsonCommandsPath) {
             pipelineBuilder.setPipelineJsonFilePath(pipeline.jsonCommandsPath)
         }
@@ -199,7 +197,7 @@ class PipelineService {
      * @param pipeline
      * @return
      */
-    private Browser getPipelineBrowser(Pipeline pipeline) {
+    private Browser getPipelineBrowser(Pipeline pipeline, Environment environment) {
         def factory = new BrowserFactory()
         def config = [enableImage: false]
         if (pipeline.browserAddress) {
@@ -223,9 +221,6 @@ class PipelineService {
     private Pipeline runPipeline(Pipeline pipeline) {
         PipelineProcess runningPipelineProcess = getPipelineBean(pipeline)
         if (runningPipelineProcess) {
-//            if (!pipeline.status.title.equals(PipelineStatuses.RUNNING)) {
-//                stop(pipeline.id)
-//            }
             return pipeline
         }
         PipelineTask pipelineTask = beforeRun(pipeline)
@@ -240,15 +235,12 @@ class PipelineService {
             bindCommandObserver(pipelineProcess, pipelineTask)
 
             pipelineProcess.run()
-
-            afterRun(pipelineTask, pipelineProcess)
         } catch (all) {
             logger.error(all)
             pipelineTask.error = "${all.getMessage()}. ${all.printStackTrace()}"
-            pipelineTask.pipeline.status = pipelineStatusRepository.findByTitle('error')
-            afterRun(pipelineTask, pipelineProcess)
+            pipelineTask.pipeline.status = pipelineStatusRepository.findByTitle(PipelineStatuses.ERROR)
         }
-
+        afterRun(pipelineTask, pipelineProcess)
         return pipelineRepository.findOne(pipeline.id)
     }
 

@@ -72,8 +72,7 @@ class PipelineController {
     @RabbitListener(queues = "pipeline-run-hierarchy")
     void runDependentsHierarchyPipelines(List<String> hierarchy) {
         String pipelineId = hierarchy.remove(0)
-        Pipeline pipeline = pipelineService.run(pipelineId)
-        messagingTemplate.convertAndSend("/pipeline/change", pipeline)
+        pipelineService.run(pipelineId)
         if (hierarchy.size() > 0) {
             rabbitTemplate.convertAndSend("pipeline-run-hierarchy", hierarchy)
         }
@@ -89,8 +88,7 @@ class PipelineController {
             rabbitTemplate.convertAndSend("pipeline-run-hierarchy", hierarchy.reverse())
             return
         }
-        Pipeline pipeline = pipelineService.run(pipelineId)
-        messagingTemplate.convertAndSend("/pipeline/change", pipeline)
+        pipelineService.run(pipelineId)
     }
 
     /**
@@ -149,5 +147,13 @@ class PipelineController {
         response.setContentType("text/csv; charset=utf-8")
         response.setHeader("Content-disposition", "attachment;filename=${pipelineId}.csv")
         response.getWriter().print(responseData)
+    }
+
+    /**
+     * Kill all chromedriver instances
+     */
+    @RequestMapping("/kill-all-chrome-driver")
+    void killAllChromeDriver() {
+        Runtime.getRuntime().exec('killall chromedriver')
     }
 }

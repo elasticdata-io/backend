@@ -6,6 +6,7 @@ import org.springframework.amqp.core.AmqpTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import scraper.service.constants.PipelineStatuses
 import scraper.service.model.Pipeline
 import scraper.service.model.PipelineStatus
 import scraper.service.repository.PipelineRepository
@@ -32,10 +33,10 @@ class PipelineSchedule {
 
     @PostConstruct
     void init() {
-        runningStatus = pipelineStatusRepository.findByTitle('running')
+        runningStatus = pipelineStatusRepository.findByTitle(PipelineStatuses.RUNNING)
     }
 
-    @Scheduled(cron='0 * * * * *')
+//    @Scheduled(cron='0 * * * * *')
     void checkRunPipeline() {
         List<Pipeline> pipelines = pipelineRepository.findByStatusNot(runningStatus)
         pipelines.each { pipeline ->

@@ -25,8 +25,8 @@ class PipelineBrowserProviderObserver implements Observer {
         AbstractCommand command = commands.last()
         def data = [
                 pipelineId: pipelineTask.pipeline.id,
-                command: command.getClass().getSimpleName(),
-                params: command.toString()
+                commandExecutingName: command.getClass().getSimpleName(),
+                //params: command.toString()
         ]
         messagingTemplate.convertAndSend("/pipeline/command/execute", data)
     }

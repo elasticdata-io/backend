@@ -48,7 +48,7 @@ class PipelineSchedule {
                 def needStartTime = lastCompletedOn + pipeline.runIntervalMin.minutes
                 if (now >= needStartTime) {
                     logger.info("run pipeline from schedule: ${pipeline.id}, time: ${now}")
-                    rabbitTemplate.convertAndSend("pipeline-run-queue", pipeline.id)
+                    rabbitTemplate.convertAndSend("pipeline-run", pipeline.id)
                 }
             }
         }

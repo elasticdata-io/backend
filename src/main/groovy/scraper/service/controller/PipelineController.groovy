@@ -9,6 +9,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import scraper.service.constants.PipelineStatuses
 import scraper.service.data.converter.CsvDataConverter
 import scraper.service.model.Pipeline
 import scraper.service.model.PipelineTask
@@ -54,9 +55,14 @@ class PipelineController {
      * Listener for run pipeline.
      * @param pipelineId Running pipeline id.
      */
-    @RabbitListener(queues = "pipeline-run-queue", containerFactory="multipleListenerContainerFactory")
+    @RabbitListener(queues = "pipeline-run", containerFactory="multipleListenerContainerFactory")
     void runPipelineFromQueueWorker(String pipelineId) {
         runPipelineFromQueue(pipelineId)
+    }
+
+    @RabbitListener(queues = "pipeline-stop", containerFactory="multipleListenerContainerFactory")
+    void stopPipelineFromQueueWorker(String pipelineId) {
+        pipelineService.stop(pipelineId)
     }
 
     /**
@@ -92,10 +98,17 @@ class PipelineController {
      * @param id
      */
     @RequestMapping("/run/{id}")
-    void addToRunQueue(@PathVariable String id) {
+    Pipeline addToRunQueue(@PathVariable String id) {
         Pipeline pipeline = pipelineRepository.findOne(id)
-        if (!pipeline){}
-        rabbitTemplate.convertAndSend("pipeline-run-queue", id)
+        String statusTitle = pipeline.status.title
+        if (!pipeline || statusTitle == PipelineStatuses.PENDING || statusTitle == PipelineStatuses.RUNNING) {
+//            return
+        }
+        def pendingStatus = pipelineStatusRepository.findByTitle(PipelineStatuses.PENDING)
+        pipeline.status = pendingStatus
+        pipelineRepository.save(pipeline)
+        rabbitTemplate.convertAndSend("pipeline-run", id)
+        return pipeline
     }
 
     /**
@@ -103,8 +116,13 @@ class PipelineController {
      * @param id
      */
     @RequestMapping("/stop/{id}")
-    void stopPipeline(@PathVariable String id) {
-        pipelineService.stop(id)
+    Pipeline stopPipeline(@PathVariable String id) {
+        Pipeline pipeline = pipelineRepository.findOne(id)
+        def stoppingStatus = pipelineStatusRepository.findByTitle(PipelineStatuses.STOPPING)
+        pipeline.status = stoppingStatus
+        pipelineRepository.save(pipeline)
+        rabbitTemplate.convertAndSend("pipeline-stop", id)
+        return pipeline
     }
 
     /**
@@ -115,7 +133,7 @@ class PipelineController {
     @RequestMapping("/data/{pipelineId}")
     List<HashMap> getData(@PathVariable String pipelineId) {
         PipelineTask pipelineTask = pipelineTaskRepository.findOneByPipelineAndErrorOrderByEndOnDesc(pipelineId, null)
-        return pipelineTask.data
+        return pipelineTask.data as List<HashMap>
     }
 
     /**

@@ -14,9 +14,9 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class RabbitConfiguration {
 
-    Number CONCURRENT_CONSUMERS = 5
+    int CONCURRENT_CONSUMERS = 5
 
-    Number MAX_CONCURRENT_CONSUMERS = 10
+    int MAX_CONCURRENT_CONSUMERS = 10
 
     @Value('${spring.rabbitmq.host}')
     String host
@@ -60,7 +60,7 @@ class RabbitConfiguration {
 
     @Bean
     Queue pipelineRunQueue() {
-        return new Queue('pipeline-run-queue')
+        return new Queue('pipeline-run')
     }
 
     @Bean
@@ -71,5 +71,10 @@ class RabbitConfiguration {
     @Bean
     Queue finishPipelineTaskQueue() {
         return new Queue('finish-pipeline-task')
+    }
+
+    @Bean
+    Queue pipelineStopQueue() {
+        return new Queue('pipeline-stop')
     }
 }

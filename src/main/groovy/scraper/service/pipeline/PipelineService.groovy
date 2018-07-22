@@ -81,36 +81,43 @@ class PipelineService {
         return resultPipeline
     }
 
+    void notifyChangePipeline(Pipeline pipeline) {
+        // TODO send message only watched user
+        messagingTemplate.convertAndSend("/pipeline/change", pipeline)
+    }
+
     void stop(String pipelineId) {
         Pipeline pipeline = pipelineRepository.findOne(pipelineId)
         PipelineProcess pipelineProcess = (PipelineProcess) beanFactory.getSingleton(pipelineId)
-
-        pipeline.status = pipelineStatusRepository.findByTitle(PipelineStatuses.STOPPED)
-        pipelineRepository.save(pipeline)
-
         if (pipelineProcess) {
             logger.trace("run stopping pipelineProcess by id: ${pipelineId}")
             pipelineProcess.stop()
             pipelineProcess.isStopped = true
-            return
+        } else {
+            logger.trace("runnning pipelineProcess by id: ${pipelineId} not found")
         }
-        logger.trace("runnning pipelineProcess by id: ${pipelineId} not found")
-
+        pipeline.status = pipelineStatusRepository.findByTitle(PipelineStatuses.STOPPED)
+        pipelineRepository.save(pipeline)
+        notifyChangePipeline(pipeline)
     }
 
     private PipelineProcess getPipelineBean(Pipeline pipeline) {
-        return beanFactory.getSingleton(pipeline.id)
+        return beanFactory.getSingleton(pipeline.id) as PipelineProcess
     }
 
     private PipelineTask beforeRun(Pipeline pipeline) {
-        pipeline.lastStartedOn = new Date()
         PipelineTask pipelineTask = new PipelineTask(pipeline: pipeline)
         pipelineTask.startOn = new Date()
         pipelineTaskRepository.save(pipelineTask)
-
-        pipeline.status = pipelineStatusRepository.findByTitle(PipelineStatuses.RUNNING)
-        pipelineRepository.save(pipeline)
         return pipelineTask
+    }
+
+    private void afterRegisterPipelineProcessBean(String pipelineId) {
+        Pipeline pipeline = pipelineRepository.findOne(pipelineId)
+        pipeline.status = pipelineStatusRepository.findByTitle(PipelineStatuses.RUNNING)
+        pipeline.lastStartedOn = new Date()
+        pipelineRepository.save(pipeline)
+        notifyChangePipeline(pipeline)
     }
 
     private void afterRun(PipelineTask pipelineTask, PipelineProcess pipelineProcess = null) {
@@ -216,23 +223,19 @@ class PipelineService {
     private Pipeline runPipeline(Pipeline pipeline) {
         PipelineProcess runningPipelineProcess = getPipelineBean(pipeline)
         if (runningPipelineProcess) {
-            if (!pipeline.status.title.equals(PipelineStatuses.RUNNING)) {
-                stop(pipeline)
-            }
+//            if (!pipeline.status.title.equals(PipelineStatuses.RUNNING)) {
+//                stop(pipeline.id)
+//            }
             return pipeline
         }
-
         PipelineTask pipelineTask = beforeRun(pipeline)
-
         PipelineProcess pipelineProcess = null
-
         try {
-            // TODO send message only watched user
-            messagingTemplate.convertAndSend("/pipeline/change", pipeline)
-
             pipelineProcess = createPipelineProcess(pipeline, null, pipelineTask)
 
             beanFactory.registerSingleton(pipeline.id, pipelineProcess)
+            afterRegisterPipelineProcessBean(pipeline.id)
+
             bindStoreObserver(pipelineProcess, pipelineTask)
             bindCommandObserver(pipelineProcess, pipelineTask)
 
@@ -240,7 +243,7 @@ class PipelineService {
 
             afterRun(pipelineTask, pipelineProcess)
         } catch (all) {
-            logger.error(all.printStackTrace())
+            logger.error(all)
             pipelineTask.error = "${all.getMessage()}. ${all.printStackTrace()}"
             pipelineTask.pipeline.status = pipelineStatusRepository.findByTitle('error')
             afterRun(pipelineTask, pipelineProcess)

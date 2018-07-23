@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component
 class ProxyAssigner {
 
     String getProxy() {
+        return null
         def http = new HTTPBuilder('http://list.didsoft.com')
         def query = [email : 'bombascter@gmail.com', pass: '!Prisoner31!', pid: 'httppremium']
         def html = http.get( path : '/get', query : query ) as StringReader

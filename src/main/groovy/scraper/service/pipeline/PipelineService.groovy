@@ -119,7 +119,7 @@ class PipelineService {
     }
 
     private void afterRun(PipelineTask pipelineTask, PipelineProcess pipelineProcess) {
-        AbstractStore store = pipelineProcess.getStore() ?: null
+        AbstractStore store = pipelineProcess ? pipelineProcess.getStore() : null
         def dataList = store ? store.getData() : null
         pipelineTask.data = dataList
         pipelineTask.endOn = new Date()

@@ -73,6 +73,16 @@ class PipelineController {
     void runDependentsHierarchyPipelines(List<String> hierarchy) {
         String pipelineId = hierarchy.remove(0)
         pipelineService.run(pipelineId)
+        Pipeline pipeline = pipelineRepository.findOne(pipelineId)
+        if (pipeline.status.title == PipelineStatuses.ERROR) {
+            // notify pipeline not running because dependents pipeline has error
+            String firstPipelineId = hierarchy.last()
+            Pipeline firstPipeline = pipelineRepository.findOne(firstPipelineId)
+            firstPipeline.status = pipelineStatusRepository.findByTitle(PipelineStatuses.ERROR)
+            pipelineRepository.save(firstPipeline)
+            messagingTemplate.convertAndSend("/pipeline/change", firstPipeline)
+            return
+        }
         if (hierarchy.size() > 0) {
             rabbitTemplate.convertAndSend("pipeline-run-hierarchy", hierarchy)
         }

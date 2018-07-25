@@ -9,6 +9,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import scraper.service.auth.TokenService
 import scraper.service.constants.PipelineStatuses
 import scraper.service.data.converter.CsvDataConverter
 import scraper.service.model.Pipeline
@@ -80,7 +81,8 @@ class PipelineController {
             Pipeline firstPipeline = pipelineRepository.findOne(firstPipelineId)
             firstPipeline.status = pipelineStatusRepository.findByTitle(PipelineStatuses.ERROR)
             pipelineRepository.save(firstPipeline)
-            messagingTemplate.convertAndSend("/pipeline/change", firstPipeline)
+            String channel = '/pipeline/change/' + pipeline.user.id
+            messagingTemplate.convertAndSend(channel, firstPipeline)
             return
         }
         if (hierarchy.size() > 0) {

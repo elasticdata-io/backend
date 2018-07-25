@@ -82,7 +82,8 @@ class PipelineService {
 
     void notifyChangePipeline(Pipeline pipeline) {
         // TODO send message only watched user
-        messagingTemplate.convertAndSend("/pipeline/change", pipeline)
+        String channel = '/pipeline/change/' + pipeline.user.id
+        messagingTemplate.convertAndSend(channel, pipeline)
     }
 
     void stop(String pipelineId) {

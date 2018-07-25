@@ -41,6 +41,6 @@ class LoginController {
         String token = tokenService.makeToken(login, password)
         tokenService.saveUserToken(token, request)
         String message = 'Вы успешно авторизированы, переадресация!'
-        return new SimpleResponse(success: true, message: message, token: token)
+        return new SimpleResponse(success: true, message: message, token: token, userId: user.id)
     }
 }

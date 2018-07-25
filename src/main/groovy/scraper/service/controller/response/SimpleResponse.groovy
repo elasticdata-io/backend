@@ -11,4 +11,6 @@ class SimpleResponse {
     public boolean success
 
     public String token
+
+    public String userId
 }

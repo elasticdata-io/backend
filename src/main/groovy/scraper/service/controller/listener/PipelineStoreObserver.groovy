@@ -3,6 +3,7 @@ package scraper.service.controller.listener
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import scraper.core.pipeline.data.AbstractStore
 import scraper.service.model.PipelineTask
+import scraper.service.model.User
 
 class PipelineStoreObserver implements Observer {
 
@@ -25,6 +26,8 @@ class PipelineStoreObserver implements Observer {
                 pipelineId: pipelineTask.pipeline.id,
                 line: dataParsed.last()
         ]
-        messagingTemplate.convertAndSend("/pipeline/parsed-lines", data)
+        User user = pipelineTask.pipeline.user
+        String channel = '/pipeline/parsed-lines/' + user.id
+        messagingTemplate.convertAndSend(channel, data)
     }
 }

@@ -3,8 +3,8 @@ package scraper.service.controller.listener
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import scraper.core.browser.BrowserProvider
 import scraper.core.command.AbstractCommand
-import scraper.core.pipeline.data.AbstractStore
 import scraper.service.model.PipelineTask
+import scraper.service.model.User
 
 class PipelineBrowserProviderObserver implements Observer {
 
@@ -28,6 +28,8 @@ class PipelineBrowserProviderObserver implements Observer {
                 commandExecutingName: command.getClass().getSimpleName(),
                 //params: command.toString()
         ]
-        messagingTemplate.convertAndSend("/pipeline/command/execute", data)
+        User user = pipelineTask.pipeline.user
+        String channel = '/pipeline/command/execute/' + user.id
+        messagingTemplate.convertAndSend(channel, data)
     }
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <name>_Root Config DSL Script</name>
-  <groupId>_Root</groupId>
-  <artifactId>_Root_dsl</artifactId>
+  <name>ScraperService Config DSL Script</name>
+  <groupId>ScraperService</groupId>
+  <artifactId>ScraperService_dsl</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <parent>

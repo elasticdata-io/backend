@@ -1,0 +1,9 @@
+FROM openjdk:8-jre-alpine as final
+
+WORKDIR /src
+
+COPY scraper-service.jar .
+
+ENTRYPOINT exec java -jar scraper-service.jar
+
+EXPOSE 8080

@@ -1,4 +1,4 @@
-FROM gradle as build
+FROM gradle:4.9.0-jre10-slim as build
 
 COPY --chown=gradle . /src
 
@@ -6,7 +6,7 @@ WORKDIR /src
 
 RUN gradle build --stacktrace --continue
 
-FROM openjdk:8-jre-alpine AS final
+FROM openjdk:8-jre-alpine as final
 
 WORKDIR /src
 

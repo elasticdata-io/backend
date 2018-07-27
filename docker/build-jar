@@ -1,0 +1,7 @@
+FROM gradle:4.9.0-jre10-slim
+
+COPY --chown=gradle . /src
+
+WORKDIR /src
+
+RUN gradle build --stacktrace --continue

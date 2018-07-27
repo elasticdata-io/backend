@@ -4,5 +4,4 @@ USER root
 WORKDIR /src
 COPY . /src
 
-RUN chown -R gradle:gradle /src
 RUN gradle build --stacktrace --continue

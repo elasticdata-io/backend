@@ -1,6 +1,6 @@
 FROM gradle:4.9.0-jre10-slim
 
-COPY --chown=gradle . /src
+COPY gradle . /src
 
 WORKDIR /src
 

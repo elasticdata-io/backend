@@ -1,6 +1,8 @@
 package patches.templates
 
 import jetbrains.buildServer.configs.kotlin.v2018_1.*
+import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.ScriptBuildStep
+import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.script
 import jetbrains.buildServer.configs.kotlin.v2018_1.ui.*
 
 /*
@@ -12,5 +14,19 @@ changeTemplate(RelativeId("ScraperService")) {
     vcs {
         add(DslContext.settingsRoot.id!!)
         add(RelativeId("ScraperCore"), "+:. => scraper-core")
+    }
+
+    expectSteps {
+        script {
+            name = "build"
+            id = "RUNNER_2"
+            scriptContent = "docker build"
+        }
+    }
+    steps {
+        update<ScriptBuildStep>(0) {
+            id = "RUNNER_2"
+            scriptContent = "sh docker/buildAndPublish.sh"
+        }
     }
 }

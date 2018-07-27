@@ -1,5 +1,7 @@
 import jetbrains.buildServer.configs.kotlin.v2018_1.*
 import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.script
+import jetbrains.buildServer.configs.kotlin.v2018_1.projectFeatures.versionedSettings
+import jetbrains.buildServer.configs.kotlin.v2018_1.triggers.vcs
 import jetbrains.buildServer.configs.kotlin.v2018_1.vcs.GitVcsRoot
 
 /*
@@ -29,12 +31,44 @@ version = "2018.1"
 project {
     description = "Contains all other projects"
 
-    vcsRoot(ScraperServiceUi)
-    vcsRoot(HttpsGithubComSergeytkachenkoScraperServiceRefsHeadsMaster)
-    vcsRoot(ScraperCore)
+    features {
+        feature {
+            id = "PROJECT_EXT_1"
+            type = "ReportTab"
+            param("startPage", "coverage.zip!index.html")
+            param("title", "Code Coverage")
+            param("type", "BuildReportTab")
+        }
+        feature {
+            id = "PROJECT_EXT_2"
+            type = "OAuthProvider"
+            param("clientId", "2e3db557bb19ca24fc35")
+            param("defaultTokenScope", "public_repo,repo,repo:status,write:repo_hook")
+            param("secure:clientSecret", "zxx5c662730e9de4e494da6eb84f1633273595a19a03a0fb07c8f7913b0545acef752942c5bdd44d0c7775d03cbe80d301b")
+            param("displayName", "GitHub.com")
+            param("gitHubUrl", "https://github.com/")
+            param("providerType", "GitHub")
+        }
+    }
 
-    buildType(DockerBuild)
-    buildType(FrontendDockerBuild)
+    cleanup {
+        preventDependencyCleanup = false
+    }
+
+    subProject(ScraperService)
+}
+
+
+object ScraperService : Project({
+    name = "Scraper Service"
+    description = "Contains all other projects"
+
+    vcsRoot(ScraperService_ScraperServiceUi)
+    vcsRoot(ScraperService_HttpsGithubComSergeytkachenkoScraperServiceRefsHeadsMaster)
+    vcsRoot(ScraperService_ScraperCore)
+
+    buildType(ScraperService_DockerBuild)
+    buildType(ScraperService_FrontendDockerBuild)
 
     features {
         feature {
@@ -54,19 +88,22 @@ project {
             param("gitHubUrl", "https://github.com/")
             param("providerType", "GitHub")
         }
+        versionedSettings {
+            id = "PROJECT_EXT_3"
+        }
     }
 
     cleanup {
         preventDependencyCleanup = false
     }
-}
+})
 
-object DockerBuild : BuildType({
+object ScraperService_DockerBuild : BuildType({
     name = "scraper service docker build"
 
     vcs {
-        root(HttpsGithubComSergeytkachenkoScraperServiceRefsHeadsMaster)
-        root(ScraperCore, "+:. => scraper-core")
+        root(ScraperService_HttpsGithubComSergeytkachenkoScraperServiceRefsHeadsMaster)
+        root(ScraperService_ScraperCore, "+:. => scraper-core")
     }
 
     steps {
@@ -75,13 +112,19 @@ object DockerBuild : BuildType({
             scriptContent = "sh docker/buildAndPublish.sh"
         }
     }
+
+    triggers {
+        vcs {
+            branchFilter = ""
+        }
+    }
 })
 
-object FrontendDockerBuild : BuildType({
+object ScraperService_FrontendDockerBuild : BuildType({
     name = "frontend docker build"
 
     vcs {
-        root(ScraperServiceUi)
+        root(ScraperService_ScraperServiceUi)
     }
 
     steps {
@@ -95,9 +138,15 @@ object FrontendDockerBuild : BuildType({
             scriptContent = "sh docker/build-and-publish.sh"
         }
     }
+
+    triggers {
+        vcs {
+            branchFilter = ""
+        }
+    }
 })
 
-object HttpsGithubComSergeytkachenkoScraperServiceRefsHeadsMaster : GitVcsRoot({
+object ScraperService_HttpsGithubComSergeytkachenkoScraperServiceRefsHeadsMaster : GitVcsRoot({
     name = "https://github.com/sergeytkachenko/scraper-service#refs/heads/master"
     url = "https://github.com/sergeytkachenko/scraper-service"
     authMethod = password {
@@ -106,7 +155,7 @@ object HttpsGithubComSergeytkachenkoScraperServiceRefsHeadsMaster : GitVcsRoot({
     }
 })
 
-object ScraperCore : GitVcsRoot({
+object ScraperService_ScraperCore : GitVcsRoot({
     name = "scraper-core"
     url = "https://github.com/sergeytkachenko/scraper-core"
     authMethod = password {
@@ -115,7 +164,7 @@ object ScraperCore : GitVcsRoot({
     }
 })
 
-object ScraperServiceUi : GitVcsRoot({
+object ScraperService_ScraperServiceUi : GitVcsRoot({
     name = "scraper-service-ui"
     url = "https://github.com/sergeytkachenko/scraper-service-ui"
     authMethod = password {

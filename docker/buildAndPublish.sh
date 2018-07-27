@@ -7,3 +7,4 @@ docker image rm -f bombascter/http-service
 docker build -t bombascter/http-service -f docker/build-service .
 docker login -u bombascter -p '!Prisoner31!'
 docker push bombascter/http-service
+docker image rm -f bombascter/http-service

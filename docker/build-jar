@@ -1,6 +1,7 @@
 FROM gradle:4.9.0-jre10-slim
 
 COPY . /src
+RUN sudo chown -R gradle:gradle /src
 
 WORKDIR /src
 

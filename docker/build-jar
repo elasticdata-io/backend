@@ -1,6 +1,6 @@
 FROM gradle:4.9.0-jre10-slim
 
-COPY gradle . /src
+COPY . /src
 
 WORKDIR /src
 

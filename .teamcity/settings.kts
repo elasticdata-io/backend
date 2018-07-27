@@ -29,10 +29,12 @@ version = "2018.1"
 project {
     description = "Contains all other projects"
 
+    vcsRoot(ScraperServiceUi)
     vcsRoot(HttpsGithubComSergeytkachenkoScraperServiceRefsHeadsMaster)
     vcsRoot(ScraperCore)
 
     buildType(DockerBuild)
+    buildType(FrontendDockerBuild)
 
     features {
         feature {
@@ -60,7 +62,7 @@ project {
 }
 
 object DockerBuild : BuildType({
-    name = "docker build"
+    name = "scraper service docker build"
 
     vcs {
         root(HttpsGithubComSergeytkachenkoScraperServiceRefsHeadsMaster)
@@ -75,12 +77,32 @@ object DockerBuild : BuildType({
     }
 })
 
+object FrontendDockerBuild : BuildType({
+    name = "frontend docker build"
+
+    vcs {
+        root(ScraperServiceUi)
+    }
+
+    steps {
+        script {
+            name = "rm old image"
+            scriptContent = "docker image rm -f bombascter/scraper-service-ui"
+        }
+        script {
+            name = "docker build"
+            executionMode = BuildStep.ExecutionMode.ALWAYS
+            scriptContent = "sh docker/build-and-publish.sh"
+        }
+    }
+})
+
 object HttpsGithubComSergeytkachenkoScraperServiceRefsHeadsMaster : GitVcsRoot({
     name = "https://github.com/sergeytkachenko/scraper-service#refs/heads/master"
     url = "https://github.com/sergeytkachenko/scraper-service"
     authMethod = password {
         userName = "sergeytkachenko"
-        password = "credentialsJSON:0c935f6e-f163-48ba-994e-a46778d0d17f"
+        password = "zxx92f6c0a65afd1b5813686530571b64e2558fcea802b887df680d77a56a0cf93bf01244d58d103eee775d03cbe80d301b"
     }
 })
 
@@ -89,6 +111,15 @@ object ScraperCore : GitVcsRoot({
     url = "https://github.com/sergeytkachenko/scraper-core"
     authMethod = password {
         userName = "sergeytkachenko"
-        password = "credentialsJSON:414a5929-5412-4bbe-bf25-84da1a3f8f70"
+        password = "zxxdceefe22550305cc25803215f2bba88d"
+    }
+})
+
+object ScraperServiceUi : GitVcsRoot({
+    name = "scraper-service-ui"
+    url = "https://github.com/sergeytkachenko/scraper-service-ui"
+    authMethod = password {
+        userName = "serg.tkachenko@hotmail.com"
+        password = "zxxdceefe22550305cc25803215f2bba88d"
     }
 })

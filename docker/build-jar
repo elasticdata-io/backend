@@ -1,11 +1,8 @@
-FROM gradle:4.9.0-jre10-slim
+FROM gradle
 
 USER root
+WORKDIR /src
+COPY . /src
 
-COPY . /tmp/src
-
-RUN chown -R gradle:gradle /tmp/src
-
-WORKDIR /tmp/src
-
+RUN chown -R gradle:gradle /src
 RUN gradle build --stacktrace --continue

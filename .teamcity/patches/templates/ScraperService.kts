@@ -11,5 +11,6 @@ accordingly, and delete the patch script.
 changeTemplate(RelativeId("ScraperService")) {
     vcs {
         add(DslContext.settingsRoot.id!!)
+        add(RelativeId("ScraperCore"))
     }
 }

@@ -2,6 +2,7 @@ package patches.buildTypes
 
 import jetbrains.buildServer.configs.kotlin.v2018_1.*
 import jetbrains.buildServer.configs.kotlin.v2018_1.BuildType
+import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.script
 import jetbrains.buildServer.configs.kotlin.v2018_1.ui.*
 
 /*
@@ -16,6 +17,13 @@ create(DslContext.projectId, BuildType({
     vcs {
         root(DslContext.settingsRoot)
         root(RelativeId("ScraperCore"), "+:. => scraper-core")
+    }
+
+    steps {
+        script {
+            name = "docker build"
+            scriptContent = "sh docker/buildAndPublish.sh"
+        }
     }
 }))
 

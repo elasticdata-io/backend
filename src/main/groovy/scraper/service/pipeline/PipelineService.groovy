@@ -207,10 +207,11 @@ class PipelineService {
         if (pipeline.isDebugMode) {
             config += [isDebugMode: pipeline.isDebugMode]
         }
-        // TODO : check need proxy
-        String proxy = proxyAssigner.getProxy()
-        if (proxy) {
-            config += [proxy: proxy]
+        if (pipeline.needProxy) {
+            String proxy = proxyAssigner.getProxy()
+            if (proxy) {
+                config += [proxy: proxy]
+            }
         }
         return factory.createFromClass(DEFAULT_BROWSER, config)
     }

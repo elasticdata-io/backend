@@ -2,6 +2,7 @@ package scraper.service.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.sun.org.apache.xpath.internal.operations.Bool
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
@@ -61,6 +62,8 @@ class Pipeline {
      * The interval at which the parser will start.
      */
     Integer runIntervalMin
+
+    Boolean needProxy = false
 
     /**
      * Created on date time.

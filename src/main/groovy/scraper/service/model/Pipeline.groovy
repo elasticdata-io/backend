@@ -54,6 +54,11 @@ class Pipeline {
     public Boolean isDebugMode
 
     /**
+     * Need proxy rotation for pipeline
+     */
+    public Boolean needProxy
+
+    /**
      * Count of the last parsed data lines.
      */
     Integer parseRowsCount
@@ -62,8 +67,6 @@ class Pipeline {
      * The interval at which the parser will start.
      */
     Integer runIntervalMin
-
-    Boolean needProxy = false
 
     /**
      * Created on date time.

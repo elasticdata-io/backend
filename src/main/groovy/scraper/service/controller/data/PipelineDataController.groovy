@@ -81,9 +81,9 @@ class PipelineDataController {
         String dependOn = request.getParameter('dependOn')
         Pipeline dependOnPipeline = dependOn ? pipelineRepository.findOne(dependOn) : null
         String jsonCommands = request.getParameter('jsonCommands')
-        boolean isTakeScreenshot = request.getParameter('isTakeScreenshot') ?: false
-        boolean isDebugMode = request.getParameter('isDebugMode') ?: false
-        boolean needProxy = request.getParameter('needProxy') ?: false
+        boolean isTakeScreenshot = request.getParameter('isTakeScreenshot') == "true" ?: false
+        boolean isDebugMode = request.getParameter('isDebugMode') == "true" ?: false
+        boolean needProxy = request.getParameter('needProxy') == "true" ?: false
         String browserAddress = request.getParameter('browserAddress') ?: DEFAULT_BROWSER_ADDRESS
         String browser = request.getParameter('browser') ?: DEFAULT_BROWSER
         Integer runIntervalMin = (request.getParameter('runIntervalMin') ?: null) as Integer

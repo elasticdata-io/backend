@@ -2,6 +2,8 @@ package scraper.service.consumer
 
 import groovy.json.JsonBuilder
 import groovyx.net.http.HTTPBuilder
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -20,6 +22,8 @@ class FinishPipelineTask {
     final String DOWNLOAD_LINK = '#DOWNLOAD_LINK#'
     final String TOTAL_RECORDS = '#TOTAL_RECORDS#'
 
+    private Logger logger = LogManager.getRootLogger()
+
     @Autowired
     PipelineTaskRepository pipelineTaskRepository
 
@@ -37,6 +41,7 @@ class FinishPipelineTask {
         // todo: web hooks possible not one!
         PipelineHook pipelineHook = pipelineHookRepository.findOneByPipeline(pipeline)
         if (!pipelineHook) {
+            logger.info("HOOKS not fond. pipeline: ${pipeline.id}")
             return
         }
         String url = pipelineHook.hookUrl
@@ -48,8 +53,11 @@ class FinishPipelineTask {
         data = data.replaceAll(DOWNLOAD_LINK, "/api/pipeline-task/data/${pipelineTask.id}")
         data = data.replaceAll(TOTAL_RECORDS, list.size() as String)
         def http = new HTTPBuilder(url)
+        logger.info("start hooks ${url}, pipeline: ${pipeline.id}")
         try {
             http.post(body: data)
-        } catch (ignored) {}
+        } catch (e) {
+            logger.error(e)
+        }
     }
 }

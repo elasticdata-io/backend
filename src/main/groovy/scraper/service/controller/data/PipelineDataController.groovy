@@ -83,6 +83,7 @@ class PipelineDataController {
         String jsonCommands = request.getParameter('jsonCommands')
         boolean isTakeScreenshot = request.getParameter('isTakeScreenshot') ?: false
         boolean isDebugMode = request.getParameter('isDebugMode') ?: false
+        boolean needProxy = request.getParameter('needProxy') ?: false
         String browserAddress = request.getParameter('browserAddress') ?: DEFAULT_BROWSER_ADDRESS
         String browser = request.getParameter('browser') ?: DEFAULT_BROWSER
         Integer runIntervalMin = (request.getParameter('runIntervalMin') ?: null) as Integer
@@ -97,6 +98,7 @@ class PipelineDataController {
             pipeline.jsonCommands = jsonCommands
             pipeline.modifiedOn = new Date()
             pipeline.runIntervalMin = runIntervalMin
+            pipeline.needProxy = needProxy
             pipelineRepository.save(pipeline)
             return pipeline
         }
@@ -104,7 +106,8 @@ class PipelineDataController {
         pipeline = new Pipeline(key: key, browser: DEFAULT_BROWSER, jsonCommands: jsonCommands,
                 user: user, description: description, dependOn: dependOnPipeline, createdOn: new Date(),
                 modifiedOn: new Date(), status: status, runIntervalMin: runIntervalMin,
-                isTakeScreenshot: isTakeScreenshot, isDebugMode: isDebugMode, browserAddress: browserAddress)
+                isTakeScreenshot: isTakeScreenshot, isDebugMode: isDebugMode,
+                browserAddress: browserAddress, needProxy: needProxy)
         pipelineRepository.save(pipeline)
         return pipeline
     }

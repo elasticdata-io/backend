@@ -25,7 +25,7 @@ class ProxyService {
         }
         def jsonSlurper = new JsonSlurper()
         def object = jsonSlurper.parseText(data)
-        logger.info("proxy found")
+        logger.info("proxy found, data: ${data}")
         return object as ProxyModel
     }
 }

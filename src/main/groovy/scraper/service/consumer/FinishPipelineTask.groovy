@@ -1,7 +1,16 @@
 package scraper.service.consumer
 
 import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper
 import groovyx.net.http.HTTPBuilder
+import org.apache.http.HttpEntity
+import org.apache.http.NameValuePair
+import org.apache.http.client.entity.UrlEncodedFormEntity
+import org.apache.http.client.methods.CloseableHttpResponse
+import org.apache.http.client.methods.HttpPost
+import org.apache.http.impl.client.CloseableHttpClient
+import org.apache.http.impl.client.HttpClients
+import org.apache.http.message.BasicNameValuePair
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.amqp.rabbit.annotation.RabbitListener
@@ -52,12 +61,23 @@ class FinishPipelineTask {
         data = data.replaceAll(PIPELINE_TASK_ID, pipelineTask.id)
         data = data.replaceAll(DOWNLOAD_LINK, "/api/pipeline-task/data/${pipelineTask.id}")
         data = data.replaceAll(TOTAL_RECORDS, list.size() as String)
-        def http = new HTTPBuilder(url)
+        def jsonSlurper = new JsonSlurper()
+        def dataList = jsonSlurper.parseText(data)
+        CloseableHttpClient httpClient = HttpClients.createDefault()
+        HttpPost httpPost = new HttpPost(url)
+        List<NameValuePair> urlParameters = new ArrayList<NameValuePair>()
+        dataList.each { key, value ->
+            urlParameters.add(new BasicNameValuePair(key, value))
+        }
+        HttpEntity postParams = new UrlEncodedFormEntity(urlParameters)
+        httpPost.setEntity(postParams)
         logger.info("start hooks ${url}, pipeline: ${pipeline.id}")
         try {
-            http.post(body: data)
+            httpClient.execute(httpPost)
+            httpClient.close()
         } catch (e) {
             logger.error(e)
+            httpClient.close()
         }
     }
 }

@@ -19,6 +19,7 @@ class ProxyAssigner {
     String proxyTor
 
     String getProxy() {
+        logger.info("proxy tor: ${proxyTor}")
         return proxyTor
     }
 }

@@ -6,5 +6,6 @@ class ProxyModel {
     int port
     int pingTimeout
     boolean pingSuccess
+    boolean isOnlyHttp
     long counter
 }

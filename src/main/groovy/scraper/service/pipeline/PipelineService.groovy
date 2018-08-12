@@ -90,10 +90,10 @@ class PipelineService {
         Pipeline pipeline = pipelineRepository.findOne(pipelineId)
         PipelineProcess pipelineProcess = (PipelineProcess) beanFactory.getSingleton(pipelineId)
         if (pipelineProcess) {
-            logger.trace("run stopping pipelineProcess by id: ${pipelineId}")
+            logger.trace("run stopping pipelineProcess by pipelineId: ${pipelineId}")
             pipelineProcess.stop()
         } else {
-            logger.trace("runnning pipelineProcess by id: ${pipelineId} not found")
+            logger.trace("runnning pipelineProcess by pipelineId: ${pipelineId} not found")
         }
         pipeline.status = pipelineStatusRepository.findByTitle(PipelineStatuses.STOPPED)
         pipelineRepository.save(pipeline)

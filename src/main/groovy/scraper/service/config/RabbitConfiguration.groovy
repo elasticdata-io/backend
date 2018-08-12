@@ -45,6 +45,7 @@ class RabbitConfiguration {
         factory.setConnectionFactory(connectionFactory())
         factory.setConcurrentConsumers(CONCURRENT_CONSUMERS)
         factory.setMaxConcurrentConsumers(MAX_CONCURRENT_CONSUMERS)
+        factory.setDefaultRequeueRejected(false)
         return factory
     }
 

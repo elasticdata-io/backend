@@ -126,10 +126,10 @@ class PipelineService {
         pipelineTask.endOn = new Date()
 
         String status = PipelineStatuses.COMPLETED
-        if (pipelineProcess.hasBeenStopped) {
+        if (pipelineProcess?.hasBeenStopped) {
             status = PipelineStatuses.STOPPED
         }
-        if (pipelineProcess.hasErrors) {
+        if (!pipelineProcess || pipelineProcess?.hasErrors) {
             status = PipelineStatuses.ERROR
         }
         Pipeline pipeline = pipelineRepository.findOne(pipelineTask.pipeline.id)

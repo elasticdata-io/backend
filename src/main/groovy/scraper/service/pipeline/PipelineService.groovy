@@ -100,8 +100,12 @@ class PipelineService {
         notifyChangePipeline(pipeline)
     }
 
-    private PipelineProcess getPipelineBean(Pipeline pipeline) {
-        return beanFactory.getSingleton(pipeline.id) as PipelineProcess
+    private PipelineProcess getPipelineProcessBean(Pipeline pipeline) {
+        return getPipelineProcessBeanById(pipeline.id)
+    }
+
+    PipelineProcess getPipelineProcessBeanById(String pipelineId) {
+        return beanFactory.getSingleton(pipelineId) as PipelineProcess
     }
 
     private PipelineTask beforeRun(Pipeline pipeline) {
@@ -221,7 +225,7 @@ class PipelineService {
      * @param pipeline
      */
     private Pipeline runPipeline(Pipeline pipeline) {
-        PipelineProcess runningPipelineProcess = getPipelineBean(pipeline)
+        PipelineProcess runningPipelineProcess = getPipelineProcessBean(pipeline)
         if (runningPipelineProcess) {
             return pipeline
         }

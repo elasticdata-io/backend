@@ -100,7 +100,7 @@ class TokenService {
     }
 
     /**
-     * Gets user id by jwt token
+     * Gets user pipelineId by jwt token
      * @param jwtToken
      * @return
      */

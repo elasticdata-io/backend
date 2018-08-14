@@ -14,6 +14,7 @@ import scraper.service.constants.PipelineStatuses
 import scraper.service.data.converter.CsvDataConverter
 import scraper.service.model.Pipeline
 import scraper.service.model.PipelineTask
+import scraper.service.pipeline.PipelineInputService
 import scraper.service.pipeline.PipelineService
 import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineStatusRepository
@@ -52,9 +53,12 @@ class PipelineController {
     @Autowired
     PipelineService pipelineService
 
+    @Autowired
+    PipelineInputService pipelineInputService
+
     /**
      * Listener for run pipeline.
-     * @param pipelineId Running pipeline id.
+     * @param pipelineId Running pipeline pipelineId.
      */
     @RabbitListener(queues = "pipeline-run", containerFactory="multipleListenerContainerFactory")
     void runPipelineFromQueueWorker(String pipelineId) {
@@ -91,8 +95,8 @@ class PipelineController {
     }
 
     /**
-     * Build, created instance and runs pipeline by database id.
-     * @param pipelineId Running pipeline id.
+     * Build, created instance and runs pipeline by database pipelineId.
+     * @param pipelineId Running pipeline pipelineId.
      */
     private void runPipelineFromQueue(String pipelineId) {
         List<String> hierarchy = pipelineStructure.getPipelineHierarchy(pipelineId)
@@ -104,7 +108,7 @@ class PipelineController {
     }
 
     /**
-     * Runs pipeline process by pipeline id.
+     * Runs pipeline process by pipeline pipelineId.
      * @param id
      */
     @RequestMapping("/run/{id}")
@@ -122,7 +126,7 @@ class PipelineController {
     }
 
     /**
-     * Stop pipeline process by pipeline id.
+     * Stop pipeline process by pipeline pipelineId.
      * @param id
      */
     @RequestMapping("/stop/{id}")
@@ -136,9 +140,9 @@ class PipelineController {
     }
 
     /**
-     * Gets last parsed data by pipeline id.
+     * Gets last parsed data by pipeline pipelineId.
      * @param pipelineId
-     * @return Last parsed data by pipeline id.
+     * @return Last parsed data by pipeline pipelineId.
      */
     @RequestMapping("/data/{pipelineId}")
     List<HashMap> getData(@PathVariable String pipelineId) {
@@ -147,9 +151,9 @@ class PipelineController {
     }
 
     /**
-     * Gets last parsed data by pipeline id.
+     * Gets last parsed data by pipeline pipelineId.
      * @param pipelineId
-     * @return Last parsed data by pipeline id.
+     * @return Last parsed data by pipeline pipelineId.
      */
     @RequestMapping("/data/csv/{pipelineId}")
     List<HashMap> getCsvData(@PathVariable String pipelineId, HttpServletResponse response) {
@@ -167,5 +171,10 @@ class PipelineController {
     @RequestMapping("/kill-all-chrome-driver")
     void killAllChromeDriver() {
         Runtime.getRuntime().exec('killall chromedriver')
+    }
+
+    @RequestMapping("/user-input/{pipelineId}/{key}")
+    Object getUserInput(@PathVariable String pipelineId, @PathVariable String key) {
+        return pipelineInputService.findUserInput(pipelineId, key)
     }
 }

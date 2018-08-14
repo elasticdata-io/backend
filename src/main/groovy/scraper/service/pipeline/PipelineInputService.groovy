@@ -30,4 +30,22 @@ class PipelineInputService {
         } as ExternalInputCommand
         return externalInputCommand?.userInput
     }
+
+    List<UserInput> findUserInputs(String pipelineId) {
+        PipelineProcess pipelineProcess = pipelineService.getPipelineProcessBeanById(pipelineId)
+        if (!pipelineProcess) {
+            return
+        }
+        List<UserInput> userInputs = new ArrayList<>()
+        pipelineProcess.commands.each {command ->
+            if (command instanceof ExternalInputCommand) {
+                def externalInputCommand = command as ExternalInputCommand
+                def userInput = externalInputCommand?.userInput
+                if (userInput) {
+                    userInputs.add(userInput)
+                }
+            }
+        }
+        return userInputs
+    }
 }

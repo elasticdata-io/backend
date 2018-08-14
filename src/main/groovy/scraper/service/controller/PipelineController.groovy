@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import scraper.core.command.input.UserInput
 import scraper.service.auth.TokenService
 import scraper.service.constants.PipelineStatuses
 import scraper.service.data.converter.CsvDataConverter
@@ -173,8 +176,11 @@ class PipelineController {
         Runtime.getRuntime().exec('killall chromedriver')
     }
 
-    @RequestMapping("/user-input/{pipelineId}/{key}")
-    Object getUserInput(@PathVariable String pipelineId, @PathVariable String key) {
-        return pipelineInputService.findUserInput(pipelineId, key)
+    @RequestMapping(value = "/user-input/set-text/{pipelineId}/{key}", method = RequestMethod.POST)
+    void setTextToUserInput(@PathVariable String pipelineId, @PathVariable String key, @RequestParam String text) {
+        UserInput userInput = pipelineInputService.findUserInput(pipelineId, key)
+        if (userInput) {
+            userInput.text = text
+        }
     }
 }

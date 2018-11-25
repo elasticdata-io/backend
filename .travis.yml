@@ -4,7 +4,7 @@ services:
   - docker
 
 before_install:
-  - echo -e "machine github.com\n  login serg.tkachenko@hotmail.com\n  password '!Prisoner31!'" > ~/.netrc
+  - echo -e "machine github.com\n login e8b723f95b4b3803a16c23fa60327ba3b98c50c8" > ~/.netrc
   - git submodule update --init --recursive
   - docker build -t bombascter/test -f docker/http-service .
 

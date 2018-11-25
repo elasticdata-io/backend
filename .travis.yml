@@ -3,6 +3,10 @@ sudo: required
 services:
   - docker
 
+git:
+  submodules:
+    false
+
 before_install:
   - echo -e "machine github.com\n login e8b723f95b4b3803a16c23fa60327ba3b98c50c8" > ~/.netrc
   - git submodule update --init --recursive

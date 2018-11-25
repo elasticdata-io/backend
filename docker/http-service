@@ -1,4 +1,4 @@
-FROM gradle:4.9.0-jre10-slim as build
+FROM gradle:4.10.2-jre8-slim as build
 
 COPY --chown=gradle . /src
 

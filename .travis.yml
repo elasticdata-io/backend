@@ -1,0 +1,10 @@
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker build -t bombascter/test -f docker/http-service .
+
+script:
+  - docker ps -a

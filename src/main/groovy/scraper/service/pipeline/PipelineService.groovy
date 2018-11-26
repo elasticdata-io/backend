@@ -204,7 +204,7 @@ class PipelineService {
      */
     private Browser getPipelineBrowser(Pipeline pipeline, Environment environment) {
         def factory = new BrowserFactory()
-        def config = [enableImage: false]
+        def config = [enableImage: true]
         if (pipeline.browserAddress) {
             config += [browserAddress: pipeline.browserAddress]
         }

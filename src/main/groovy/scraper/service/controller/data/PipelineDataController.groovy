@@ -23,7 +23,7 @@ import javax.xml.ws.http.HTTPException
 @RequestMapping("/api/pipeline")
 class PipelineDataController {
 
-    public static final String DEFAULT_BROWSER_ADDRESS = 'http://selenium.bars-parser.com:4444/wd/hub'
+    public static final String DEFAULT_BROWSER_ADDRESS = 'http://selenoid:4444/wd/hub'
     public static final String DEFAULT_BROWSER = 'chrome'
 
     @Autowired

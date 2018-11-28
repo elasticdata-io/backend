@@ -26,6 +26,4 @@ public class User {
 	public Boolean isActive;
 
 	public Boolean isAdmin;
-
-	public String token;
 }

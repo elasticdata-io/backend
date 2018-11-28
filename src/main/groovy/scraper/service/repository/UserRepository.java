@@ -7,5 +7,4 @@ import scraper.service.model.User;
 public interface UserRepository extends MongoRepository<User, String> {
 
 	User findByLogin(@Param("login") String login);
-	User findByToken(@Param("token") String token);
 }

@@ -77,7 +77,6 @@ class UserDataController {
             user.email = email
             userRepository.save(user)
             def newToken = tokenService.makeToken(login)
-            user.token = newToken
             userRepository.save(user)
             return new SimpleResponse(success: true, message: 'this user has been saved', token: newToken)
         }

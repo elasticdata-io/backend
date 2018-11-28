@@ -78,6 +78,7 @@ class UserDataController {
             userRepository.save(user)
             def newToken = tokenService.makeToken(login)
             userRepository.save(user)
+            tokenService.saveUserToken(newToken, request)
             return new SimpleResponse(success: true, message: 'this user has been saved', token: newToken)
         }
         return new SimpleResponse(success: false, error: 'User not found')

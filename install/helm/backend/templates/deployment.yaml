@@ -36,7 +36,7 @@ spec:
               mountPath: /tmp/scraper-service
           env:
             - name: MONGODB_HOST
-              value: mongo.mongo
+              value: mongodb.mongodb
             - name: MONGODB_PORT
               value: "27017"
             - name: MONGODB_USER

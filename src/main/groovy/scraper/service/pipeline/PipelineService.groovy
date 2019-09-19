@@ -211,7 +211,7 @@ class PipelineService {
         if (pipeline.isDebugMode) {
             config += [isDebugMode: pipeline.isDebugMode]
         }
-        if (pipeline.needProxy) {
+        if (false && pipeline.needProxy) {
             String proxy = proxyAssigner.getProxy()
             if (proxy) {
                 config += [proxy: proxy]

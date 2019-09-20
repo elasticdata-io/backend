@@ -40,14 +40,18 @@ spec:
             node(label) {
                 stage('checkout') {
 
-                    checkout scm
-                    checkout([$class: 'GitSCM',
-                              branches: [[name: env.BRANCH_NAME]],
-                              extensions: scm.extensions + [[$class: 'CleanCheckout']],
-                              doGenerateSubmoduleConfigurations: false,
-                              submoduleCfg: [],
-                              userRemoteConfigs: [[credentialsId: 'github-user-password', url: 'https://github.com/sergeytkachenko/scraper-core.git']]
-                    ])
+                    dir('scraper-service') {
+                        checkout scm
+                    }
+                    dir('scraper-service/scraper-core') {
+                        checkout([$class: 'GitSCM',
+                                  branches: [[name: env.BRANCH_NAME]],
+                                  extensions: scm.extensions + [[$class: 'CleanCheckout']],
+                                  doGenerateSubmoduleConfigurations: false,
+                                  submoduleCfg: [],
+                                  userRemoteConfigs: [[credentialsId: 'github-user-password', url: 'https://github.com/sergeytkachenko/scraper-core.git']]
+                        ])
+                    }
 
                     stage('application project') {
 

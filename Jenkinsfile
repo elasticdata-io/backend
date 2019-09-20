@@ -40,19 +40,13 @@ spec:
             node(label) {
                 stage('checkout') {
 
-                    dir('scraper-service') {
-                        checkout scm
-                    }
+                    checkout scm
 
                     dir('scraper-core') {
                         checkout([$class: 'GitSCM',
-                                  userRemoteConfigs: [[credentialsId: 'github-user-password', url: 'https://github.com/sergeytkachenko/scraper-core.git']]
+                            userRemoteConfigs: [[credentialsId: 'github-user-password', url: 'https://github.com/sergeytkachenko/scraper-core.git']]
                         ])
                     }
-
-                    sh 'ls -l'
-                    sh 'mv scraper-core scraper-service/scraper-core'
-                    sh 'ls -l'
 
                     stage('application project') {
 

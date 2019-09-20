@@ -43,6 +43,10 @@ spec:
                     dir('scraper-service') {
                         checkout scm
                     }
+
+                    sh 'ls -l'
+                    sh 'ls -l scraper-service'
+
                     dir('scraper-service/scraper-core') {
                         checkout([$class: 'GitSCM',
                                   branches: [[name: env.BRANCH_NAME]],

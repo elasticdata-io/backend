@@ -6,7 +6,7 @@ import org.elasticsearch.action.bulk.BulkRequestBuilder
 import org.elasticsearch.action.bulk.BulkResponse
 import org.elasticsearch.client.transport.TransportClient
 import org.elasticsearch.common.settings.Settings
-import org.elasticsearch.common.transport.InetSocketTransportAddress
+//import org.elasticsearch.common.transport.InetSocketTransportAddress
 import org.elasticsearch.transport.client.PreBuiltTransportClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -41,8 +41,8 @@ class ElasticSearchService {
                     .put("client.transport.sniff", false)
                     .build()
             def address = InetAddress.getByName(host)
-            client = new PreBuiltTransportClient(settings)
-                    .addTransportAddress(new InetSocketTransportAddress(address, port))
+           // client = new PreBuiltTransportClient(settings)
+            //        .addTransportAddress(new InetSocketTransportAddress(address, port))
         } catch (all) {
             logger.error(all)
         }

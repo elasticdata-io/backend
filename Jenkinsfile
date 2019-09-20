@@ -41,7 +41,7 @@ spec:
                 stage('checkout') {
 
                     checkout scm
-                    dir('scraper-service') {
+                    dir('scraper-service/scraper-core') {
                         checkout([$class: 'GitSCM',
                                   branches: [[name: env.BRANCH_NAME]],
                                   extensions: scm.extensions + [[$class: 'CleanCheckout']],

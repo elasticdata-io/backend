@@ -46,10 +46,6 @@ spec:
 
                     dir('scraper-core') {
                         checkout([$class: 'GitSCM',
-                                  branches: [[name: env.BRANCH_NAME]],
-                                  extensions: scm.extensions + [[$class: 'CleanCheckout']],
-                                  doGenerateSubmoduleConfigurations: false,
-                                  submoduleCfg: [],
                                   userRemoteConfigs: [[credentialsId: 'github-user-password', url: 'https://github.com/sergeytkachenko/scraper-core.git']]
                         ])
                     }

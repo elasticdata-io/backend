@@ -44,10 +44,7 @@ spec:
                         checkout scm
                     }
 
-                    sh 'ls -l'
-                    sh 'ls -l scraper-service'
-
-                    dir('scraper-service/scraper-core') {
+                    dir('scraper-core') {
                         checkout([$class: 'GitSCM',
                                   branches: [[name: env.BRANCH_NAME]],
                                   extensions: scm.extensions + [[$class: 'CleanCheckout']],
@@ -56,6 +53,10 @@ spec:
                                   userRemoteConfigs: [[credentialsId: 'github-user-password', url: 'https://github.com/sergeytkachenko/scraper-core.git']]
                         ])
                     }
+
+                    sh 'ls -l'
+                    sh 'mv scraper-core scraper-service/scraper-core'
+                    sh 'ls -l'
 
                     stage('application project') {
 

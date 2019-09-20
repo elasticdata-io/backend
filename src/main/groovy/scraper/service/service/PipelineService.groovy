@@ -264,7 +264,7 @@ class PipelineService {
 
     Pipeline findById(String id) {
         Optional<Pipeline> pipeline = pipelineRepository.findById(id)
-        return pipeline.present ? pipeline : null
+        return pipeline.present ? pipeline.get() : null
     }
 
 }

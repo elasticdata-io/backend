@@ -13,7 +13,7 @@ class PipelineTaskService {
 
     PipelineTask findById(String id) {
         Optional<PipelineTask> pipeline = pipelineTaskRepository.findById(id)
-        return pipeline.present ? pipeline : null
+        return pipeline.present ? pipeline.get() : null
     }
 
 }

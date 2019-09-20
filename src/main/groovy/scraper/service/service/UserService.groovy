@@ -13,7 +13,7 @@ class UserService {
 
     User findById(String id) {
         Optional<User> user = userRepository.findById(id)
-        return user.present ? user : null
+        return user.present ? user.get() : null
     }
 
 }

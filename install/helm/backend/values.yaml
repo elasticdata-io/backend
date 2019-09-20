@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: registry.container-registry:5000/scraper-backend
+  repository: localhost:32000/scraper-backend
   tag: latest
   pullPolicy: Always
 

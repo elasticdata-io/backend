@@ -53,10 +53,10 @@ spec:
                         container('docker') {
                             env.DOCKER_TAG = "${BRANCH_NAME}_${BUILD_NUMBER}"
                             stage('build application') {
-                                sh 'docker build -f install/Dockerfile -t registry.container-registry:5000/scraper-backend .'
+                                sh 'docker build -f install/Dockerfile -t localhost:32000/scraper-backend .'
                             }
                             stage('publish application') {
-                                sh 'docker push registry.container-registry:5000/scraper-backend'
+                                sh 'docker push localhost:32000/scraper-backend'
                             }
                             stage('rm application') {
 

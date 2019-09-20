@@ -15,6 +15,8 @@ import scraper.service.repository.PipelineTaskRepository
 import scraper.service.repository.UserRepository
 import scraper.service.repository.UserTokenRepository
 import scraper.service.auth.TokenService
+import scraper.service.service.PipelineService
+import scraper.service.service.UserService
 
 import javax.servlet.http.HttpServletRequest
 import javax.xml.ws.http.HTTPException
@@ -36,17 +38,23 @@ class PipelineDataController {
     PipelineRepository pipelineRepository
 
     @Autowired
+    PipelineService pipelineService
+
+    @Autowired
     PipelineTaskRepository pipelineTaskRepository
 
     @Autowired
     PipelineStatusRepository pipelineStatusRepository
 
     @Autowired
+    UserService userService
+
+    @Autowired
     TokenService tokenService
 
     @RequestMapping('/{id}')
     Pipeline get(@PathVariable String id) {
-        return pipelineRepository.findOne(id)
+        return pipelineService.findById(id)
     }
 
     @RequestMapping('/{id}/commands')
@@ -71,15 +79,15 @@ class PipelineDataController {
     @RequestMapping('/save')
     Pipeline add(HttpServletRequest request, @RequestHeader String token, @RequestParam String id) {
         String userId = tokenService.getUserId(token)
-        User user = userRepository.findOne(userId)
+        User user = userService.findById(userId)
         if (!user) {
             throw HTTPException('user not found by passed token')
         }
-        Pipeline pipeline = pipelineRepository.findOne(id)
+        Pipeline pipeline = pipelineService.findById(id)
         String key = request.getParameter('key')
         String description = request.getParameter('description')
         String dependOn = request.getParameter('dependOn')
-        Pipeline dependOnPipeline = dependOn ? pipelineRepository.findOne(dependOn) : null
+        Pipeline dependOnPipeline = dependOn ? pipelineService.findById(dependOn) : null
         String jsonCommands = request.getParameter('jsonCommands')
         boolean isTakeScreenshot = request.getParameter('isTakeScreenshot') == "true" ?: false
         boolean isDebugMode = request.getParameter('isDebugMode') == "true" ?: false

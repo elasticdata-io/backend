@@ -14,6 +14,7 @@ import scraper.service.model.PipelineTask
 import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineTaskRepository
 import scraper.service.auth.TokenService
+import scraper.service.service.PipelineTaskService
 
 @RestController
 @RequestMapping("/api/pipeline-task")
@@ -21,6 +22,9 @@ class PipelineTaskController {
 
     @Autowired
     PipelineRepository pipelineRepository
+
+    @Autowired
+    PipelineTaskService pipelineTaskService
 
     @Autowired
     PipelineTaskRepository pipelineTaskRepository
@@ -59,12 +63,12 @@ class PipelineTaskController {
 
     @RequestMapping("/data/{id}")
     List<HashMap> getData(@PathVariable String id) {
-        PipelineTask pipelineTask = pipelineTaskRepository.findOne(id)
+        PipelineTask pipelineTask = pipelineTaskService.findById(id)
         return pipelineTask.data
     }
 
     private boolean checkPermission(String taskId, String token) {
-        PipelineTask task = pipelineTaskRepository.findOne(taskId)
+        PipelineTask task = pipelineTaskService.findById(taskId)
         String userId = tokenService.getUserId(token)
         Pipeline pipeline = pipelineRepository.findByIdAndUser(task.pipeline.id, userId)
         return pipeline != null

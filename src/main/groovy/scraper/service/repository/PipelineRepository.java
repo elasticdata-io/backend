@@ -1,16 +1,16 @@
 package scraper.service.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.repository.query.Param;
 import scraper.service.model.Pipeline;
 import scraper.service.model.PipelineStatus;
 import scraper.service.model.User;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface PipelineRepository extends MongoRepository<Pipeline, String> {
 
+	Optional<Pipeline> findById(String id);
 	List<Pipeline> findByUser(String userId);
 	Pipeline findByIdAndUser(String id, String userId);
 	List<Pipeline> findByUser(User user);

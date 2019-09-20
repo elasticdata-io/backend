@@ -12,13 +12,12 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import scraper.core.command.input.UserInput
-import scraper.service.auth.TokenService
 import scraper.service.constants.PipelineStatuses
 import scraper.service.data.converter.CsvDataConverter
 import scraper.service.model.Pipeline
 import scraper.service.model.PipelineTask
-import scraper.service.pipeline.PipelineInputService
-import scraper.service.pipeline.PipelineService
+import scraper.service.service.PipelineInputService
+import scraper.service.service.PipelineService
 import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineStatusRepository
 import scraper.service.repository.PipelineTaskRepository
@@ -81,11 +80,11 @@ class PipelineController {
     void runDependentsHierarchyPipelines(List<String> hierarchy) {
         String pipelineId = hierarchy.remove(0)
         pipelineService.run(pipelineId)
-        Pipeline pipeline = pipelineRepository.findOne(pipelineId)
+        Pipeline pipeline = pipelineService.findById(pipelineId)
         if (pipeline.status.title == PipelineStatuses.ERROR) {
             // notify pipeline not running because dependents pipeline has error
             String firstPipelineId = hierarchy.last()
-            Pipeline firstPipeline = pipelineRepository.findOne(firstPipelineId)
+            Pipeline firstPipeline = pipelineService.findById(firstPipelineId)
             firstPipeline.status = pipelineStatusRepository.findByTitle(PipelineStatuses.ERROR)
             pipelineRepository.save(firstPipeline)
             String channel = '/pipeline/change/' + pipeline.user.id
@@ -116,7 +115,7 @@ class PipelineController {
      */
     @RequestMapping("/run/{id}")
     Pipeline addToRunQueue(@PathVariable String id) {
-        Pipeline pipeline = pipelineRepository.findOne(id)
+        Pipeline pipeline = pipelineService.findById(id)
         String statusTitle = pipeline.status.title
         if (!pipeline || statusTitle == PipelineStatuses.PENDING || statusTitle == PipelineStatuses.RUNNING) {
 //            return
@@ -134,7 +133,7 @@ class PipelineController {
      */
     @RequestMapping("/stop/{id}")
     Pipeline stopPipeline(@PathVariable String id) {
-        Pipeline pipeline = pipelineRepository.findOne(id)
+        Pipeline pipeline = pipelineService.findById(id)
         def stoppingStatus = pipelineStatusRepository.findByTitle(PipelineStatuses.STOPPING)
         pipeline.status = stoppingStatus
         pipelineRepository.save(pipeline)

@@ -21,6 +21,7 @@ import scraper.service.model.PipelineHook
 import scraper.service.model.PipelineTask
 import scraper.service.repository.PipelineHookRepository
 import scraper.service.repository.PipelineTaskRepository
+import scraper.service.service.PipelineTaskService
 
 @Component
 class FinishPipelineTask {
@@ -34,7 +35,7 @@ class FinishPipelineTask {
     private Logger logger = LogManager.getRootLogger()
 
     @Autowired
-    PipelineTaskRepository pipelineTaskRepository
+    PipelineTaskService pipelineTaskService
 
     @Autowired
     PipelineHookRepository pipelineHookRepository
@@ -45,7 +46,7 @@ class FinishPipelineTask {
      */
     @RabbitListener(queues = "finish-pipeline-task", containerFactory="multipleListenerContainerFactory")
     void worker(String pipelineTaskId) {
-        PipelineTask pipelineTask = pipelineTaskRepository.findOne(pipelineTaskId)
+        PipelineTask pipelineTask = pipelineTaskService.findById(pipelineTaskId)
         Pipeline pipeline = pipelineTask.pipeline
         // todo: web hooks possible not one!
         PipelineHook pipelineHook = pipelineHookRepository.findOneByPipeline(pipeline)

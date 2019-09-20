@@ -1,4 +1,4 @@
-package scraper.service.pipeline
+package scraper.service.service
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -76,7 +76,7 @@ class PipelineService {
 
 
     void run(String pipelineId) {
-        Pipeline pipeline = pipelineRepository.findOne(pipelineId)
+        Pipeline pipeline = findById(pipelineId)
         runPipeline(pipeline)
     }
 
@@ -87,7 +87,7 @@ class PipelineService {
     }
 
     void stop(String pipelineId) {
-        Pipeline pipeline = pipelineRepository.findOne(pipelineId)
+        Pipeline pipeline = findById(pipelineId)
         PipelineProcess pipelineProcess = (PipelineProcess) beanFactory.getSingleton(pipelineId)
         if (pipelineProcess) {
             logger.trace("run stopping pipelineProcess by pipelineId: ${pipelineId}")
@@ -116,7 +116,7 @@ class PipelineService {
     }
 
     private void afterRegisterPipelineProcessBean(String pipelineId) {
-        Pipeline pipeline = pipelineRepository.findOne(pipelineId)
+        Pipeline pipeline = findById(pipelineId)
         pipeline.status = pipelineStatusRepository.findByTitle(PipelineStatuses.RUNNING)
         pipeline.lastStartedOn = new Date()
         pipelineRepository.save(pipeline)
@@ -136,7 +136,7 @@ class PipelineService {
         if (!pipelineProcess || pipelineProcess?.hasErrors) {
             status = PipelineStatuses.ERROR
         }
-        Pipeline pipeline = pipelineRepository.findOne(pipelineTask.pipeline.id)
+        Pipeline pipeline = findById(pipelineTask.pipeline.id)
         pipeline.status = pipelineStatusRepository.findByTitle(status)
         pipeline.lastCompletedOn = new Date()
         pipeline.parseRowsCount = dataList ? dataList.size() : 0
@@ -247,7 +247,7 @@ class PipelineService {
             pipelineTask.pipeline.status = pipelineStatusRepository.findByTitle(PipelineStatuses.ERROR)
         }
         afterRun(pipelineTask, pipelineProcess)
-        return pipelineRepository.findOne(pipeline.id)
+        return findById(pipeline.id)
     }
 
     private void bindStoreObserver(PipelineProcess pipelineProcess, PipelineTask pipelineTask) {
@@ -260,6 +260,11 @@ class PipelineService {
         BrowserProvider browserProvider = pipelineProcess.getBrowserProvider()
         def observer = new PipelineBrowserProviderObserver(browserProvider, messagingTemplate, pipelineTask)
         browserProvider.addObserver(observer)
+    }
+
+    Pipeline findById(String id) {
+        Optional<Pipeline> pipeline = pipelineRepository.findById(id)
+        return pipeline.present ? pipeline : null
     }
 
 }

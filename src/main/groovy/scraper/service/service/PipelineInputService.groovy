@@ -1,4 +1,4 @@
-package scraper.service.pipeline
+package scraper.service.service
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service
 import scraper.core.command.input.UserInput
 import scraper.core.command.input.ExternalInputCommand
 import scraper.core.pipeline.PipelineProcess
+import scraper.service.service.PipelineService
 
 @Service
 class PipelineInputService {

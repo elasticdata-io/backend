@@ -43,7 +43,7 @@ spec:
                     checkout scm
                     dir('scraper-service') {
                         checkout([$class: 'GitSCM',
-                                  branches: scm.branches,
+                                  branches: [[name: env.BRANCH_NAME]],
                                   extensions: scm.extensions + [[$class: 'CleanCheckout']],
                                   doGenerateSubmoduleConfigurations: false,
                                   submoduleCfg: [],

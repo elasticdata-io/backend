@@ -1,11 +1,11 @@
 package scraper.service.service
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 import scraper.service.model.User
 import scraper.service.repository.UserRepository
 
-@Component
+@Service
 class UserService {
 
     @Autowired

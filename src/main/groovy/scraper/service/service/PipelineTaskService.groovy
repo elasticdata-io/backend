@@ -1,14 +1,15 @@
 package scraper.service.service
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 import scraper.service.model.PipelineTask
+import scraper.service.repository.PipelineTaskRepository
 
-@Component
+@Service
 class PipelineTaskService {
 
     @Autowired
-    PipelineTaskRepository
+    PipelineTaskRepository pipelineTaskRepository
 
     PipelineTask findById(String id) {
         Optional<PipelineTask> pipeline = pipelineTaskRepository.findById(id)

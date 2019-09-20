@@ -53,7 +53,7 @@ spec:
                         container('docker') {
                             env.DOCKER_TAG = "${BRANCH_NAME}_${BUILD_NUMBER}"
                             stage('build application') {
-                                sh 'docker build -f install/Dockerfile -t localhost:32000/scraper-backend .'
+                                sh 'docker build -f install/Dockerfile -t localhost:32000/scraper-backend:${DOCKER_TAG} .'
                             }
                             stage('publish application') {
                                 sh 'docker push localhost:32000/scraper-backend'
@@ -87,6 +87,7 @@ spec:
                             --version 1.0.${BUILD_NUMBER}\
                             --install backend \
                             --namespace scraper \
+                            --set image.tag=${DOCKER_TAG} \
                             install/helm/backend"
                             }
                         }

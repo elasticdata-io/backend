@@ -10,7 +10,7 @@ FROM openjdk:8-jre-alpine as final
 
 WORKDIR /src
 
-COPY --from=build /src/build/libs/scraper-service.jar .
+COPY --from=build /src/build/libs/scraper-service-0.0.1-SNAPSHOT.jar scraper-service.jar
 
 ENTRYPOINT exec java -jar scraper-service.jar
 

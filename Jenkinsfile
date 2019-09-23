@@ -34,6 +34,11 @@ spec:
     volumeMounts:
       - name: kubeconfig
         mountPath: "/opt/.kube"
+  - name: kubectl
+    image: lachlanevenson/k8s-kubectl:v1.16.0
+    command:
+    - cat
+    tty: true
   - name: docker
     image: docker
     volumeMounts:
@@ -66,6 +71,12 @@ spec:
                             }
                             stage('rm application') {
 
+                            }
+                        }
+
+                        container('kubectl') {
+                            stage('test') {
+                                sh "kubectl get nodes"
                             }
                         }
                         container('k8s-helm-2') {

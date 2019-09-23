@@ -81,6 +81,7 @@ spec:
                                 sh 'helm init --wait --client-only'
                             }
                             stage('helm upgrade backend') {
+                                sh 'helm delete --purge backend'
                                 sh "helm upgrade --name backend \
                                     -f install/helm/backend/values.yaml \
                                     -f install/helm/backend/${VALUES_FILE} \

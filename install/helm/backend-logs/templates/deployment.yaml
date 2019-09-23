@@ -1,0 +1,56 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "backend-logs.fullname" . }}
+  labels:
+{{ include "backend-logs.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: backend-logs
+      app.kubernetes.io/name: {{ include "backend-logs.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "backend-logs.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      volumes:
+        - name: logs-storage
+          persistentVolumeClaim:
+            claimName: pvc-logs
+        - name: default-nginx
+          configMap:
+            name: default-nginx
+            items:
+              - key: default.nginx.config
+                path: default.conf
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "nginx"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          volumeMounts:
+            - name: logs-storage
+              mountPath: /usr/share/nginx/html
+            - name: default-nginx
+              mountPath: /etc/nginx/conf.d
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

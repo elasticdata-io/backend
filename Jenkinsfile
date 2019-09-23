@@ -75,9 +75,6 @@ spec:
                                     env.KUBECONFIG = '/opt/.kube/prod-kube-config'
                                 }
                             }
-                            stage('helm init') {
-                                sh 'helm init --wait --client-only'
-                            }
                             stage('helm upgrade backend') {
                                 sh 'helm delete --purge backend'
                                 sh "helm upgrade --name backend \

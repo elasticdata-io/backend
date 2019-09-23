@@ -78,6 +78,7 @@ spec:
                                     -f install/helm/backend/${VALUES_FILE} \
                                     --version 1.0.${BUILD_NUMBER}\
                                     --namespace scraper \
+                                    --set image.tag=${DOCKER_TAG} \
                                     install/helm/backend"
                             }
                             stage('helm upgrade backend-logs') {

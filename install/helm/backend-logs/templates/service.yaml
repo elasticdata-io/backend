@@ -1,9 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "backend-logs.fullname" . }}
+  name: {{ include "backend-logs.fullname" . }}
   labels:
-{{ include "backend-logs.labels" . | indent 4 }}
+    app.kubernetes.io/name: {{ include "backend-logs.name" . }}
+    helm.sh/chart: {{ include "backend-logs.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   type: {{ .Values.service.type }}
   ports:

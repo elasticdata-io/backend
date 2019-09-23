@@ -80,8 +80,8 @@ spec:
                             stage('helm init') {
                                 sh 'helm init --wait --client-only'
                             }
-                            stage('helm install backend') {
-                                sh "helm install --name backend \
+                            stage('helm upgrade backend') {
+                                sh "helm upgrade --name backend \
                                     -f install/helm/backend/values.yaml \
                                     -f install/helm/backend/${VALUES_FILE} \
                                     --version 1.0.${BUILD_NUMBER}\
@@ -89,8 +89,9 @@ spec:
                                     --set image.tag=${DOCKER_TAG} \
                                     install/helm/backend"
                             }
-                            stage('helm install backend-logs') {
-                                sh "helm install --name backend-logs \
+                            stage('helm upgrade backend-logs') {
+                                sh 'helm delete --purge backend-logs'
+                                sh "helm upgrade --name backend-logs \
                                     -f install/helm/backend-logs/values.yaml \
                                     -f install/helm/backend-logs/${VALUES_FILE} \
                                     --version 1.0.${BUILD_NUMBER}\

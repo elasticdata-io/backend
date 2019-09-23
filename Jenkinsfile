@@ -17,6 +17,9 @@ spec:
   - name: kubeconfig
     hostPath:
       path: /opt/kubernetes/storage/.kube
+  - name: tmp
+    hostPath:
+      path: /tmp/kubectl
   containers:
   - name: k8s-helm
     image: lachlanevenson/k8s-helm:v3.0.0-beta.3
@@ -34,11 +37,16 @@ spec:
     volumeMounts:
       - name: kubeconfig
         mountPath: "/opt/.kube"
+      - name: tmp
+        mountPath: "/tmp/kubectl"
   - name: kubectl
     image: lachlanevenson/k8s-kubectl:v1.16.0
     command:
     - cat
     tty: true
+    volumeMounts:
+      - name: tmp
+        mountPath: "/tmp/kubectl"
   - name: docker
     image: docker
     volumeMounts:
@@ -86,33 +94,15 @@ spec:
                                 }
                             }
                             stage('helm delete backend') {
-                                sh "helm delete --purge backend"
+                                sh "helm template backend install/helm/backend >> /tmp/kubectl/backend.yaml"
                             }
                             stage('helm delete backend-logs') {
-                                sh "helm delete --purge backend-logs"
+                                sh "helm template backend-logs install/helm/backend-logs >> /tmp/kubectl/backend-logs.yaml"
                             }
                         }
-                        container('k8s-helm') {
-                            stage('SET ENV') {
-                                if (env.BRANCH_NAME == 'master') {
-                                    env.VALUES_FILE = 'values-prod.yaml'
-                                }
-                            }
-                            stage('helm upgrade backend') {
-                                sh "helm upgrade backend \
-                                    -f install/helm/backend/values.yaml \
-                                    -f install/helm/backend/${VALUES_FILE} \
-                                    --version 1.0.${BUILD_NUMBER}\
-                                    --namespace scraper \
-                                    install/helm/backend"
-                            }
-                            stage('helm upgrade backend-logs') {
-                                sh "helm upgrade backend-logs \
-                                    -f install/helm/backend-logs/values.yaml \
-                                    -f install/helm/backend-logs/${VALUES_FILE} \
-                                    --version 1.0.${BUILD_NUMBER}\
-                                    --namespace scraper \
-                                    install/helm/backend-logs"
+                        container('kubectl') {
+                            stage('test') {
+                                sh "ls -l /opt/kubectl"
                             }
                         }
                     }

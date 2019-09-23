@@ -76,7 +76,6 @@ spec:
                                 }
                             }
                             stage('helm upgrade backend') {
-                                sh 'helm delete --purge backend'
                                 sh "helm upgrade --name backend \
                                     -f install/helm/backend/values.yaml \
                                     -f install/helm/backend/${VALUES_FILE} \
@@ -85,7 +84,6 @@ spec:
                                     install/helm/backend"
                             }
                             stage('helm upgrade backend-logs') {
-                                sh 'helm delete --purge backend-logs'
                                 sh "helm upgrade --name backend-logs \
                                     -f install/helm/backend-logs/values.yaml \
                                     -f install/helm/backend-logs/${VALUES_FILE} \

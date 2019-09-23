@@ -61,6 +61,17 @@ spec:
                             }
                         }
                         container('k8s-helm') {
+                            stage('SET ENV') {
+                                if (env.BRANCH_NAME == 'dev') {
+                                    env.VALUES_FILE = 'values.yaml'
+                                }
+                                if (env.BRANCH_NAME == 'test') {
+                                    env.VALUES_FILE = 'values-test.yaml'
+                                }
+                                if (env.BRANCH_NAME == 'master') {
+                                    env.VALUES_FILE = 'values-prod.yaml'
+                                }
+                            }
                             stage('helm upgrade backend') {
                                 sh "helm upgrade --install backend \
                                     -f install/helm/backend/values.yaml \

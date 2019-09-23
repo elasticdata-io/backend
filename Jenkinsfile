@@ -80,15 +80,24 @@ spec:
                             stage('helm init') {
                                 sh 'helm init --wait --client-only'
                             }
-                            stage('helm upgrade') {
+                            stage('helm upgrade backend') {
                                 sh "helm upgrade \
-                            -f install/helm/backend/values.yaml \
-                            -f install/helm/backend/${VALUES_FILE} \
-                            --version 1.0.${BUILD_NUMBER}\
-                            --install backend \
-                            --namespace scraper \
-                            --set image.tag=${DOCKER_TAG} \
-                            install/helm/backend"
+                                    -f install/helm/backend/values.yaml \
+                                    -f install/helm/backend/${VALUES_FILE} \
+                                    --version 1.0.${BUILD_NUMBER}\
+                                    --install backend \
+                                    --namespace scraper \
+                                    --set image.tag=${DOCKER_TAG} \
+                                    install/helm/backend"
+                            }
+                            stage('helm upgrade backend-logs') {
+                                sh "helm upgrade \
+                                    -f install/helm/backend-logs/values.yaml \
+                                    -f install/helm/backend-logs/${VALUES_FILE} \
+                                    --version 1.0.${BUILD_NUMBER}\
+                                    --install backend-logs \
+                                    --namespace scraper \
+                                    install/helm/backend-logs"
                             }
                         }
                     }

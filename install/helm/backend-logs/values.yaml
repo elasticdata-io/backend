@@ -1,7 +1,3 @@
-# Default values for backend-logs.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
 replicaCount: 1
 
 image:
@@ -14,24 +10,6 @@ fullnameOverride: ""
 service:
   type: ClusterIP
   port: 80
-
-ingress:
-  enabled: true
-  annotations:
-    ingress.kubernetes.io/ssl-redirect: "false"
-    ingress.kubernetes.io/rewrite-target: /
-  hosts:
-    - host: applogs.elasticdata.io
-      paths:
-        - path: /
-          backend:
-            serviceName: backend-logs
-            servicePort: 80
-
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

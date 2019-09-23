@@ -19,7 +19,7 @@ service:
 ingress:
   enabled: true
   annotations: {}
-  host: scrap.elasticdata.io
+  host: app.elasticdata.io
 
   tls: []
   #  - secretName: chart-example-tls

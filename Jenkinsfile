@@ -26,6 +26,14 @@ spec:
     volumeMounts:
       - name: kubeconfig
         mountPath: "/opt/.kube"
+  - name: k8s-helm-2
+    image: lachlanevenson/k8s-helm:v2.12.3
+    command:
+    - cat
+    tty: true
+    volumeMounts:
+      - name: kubeconfig
+        mountPath: "/opt/.kube"
   - name: docker
     image: docker
     volumeMounts:
@@ -60,19 +68,23 @@ spec:
 
                             }
                         }
-                        container('k8s-helm') {
+                        container('k8s-helm-2') {
                             stage('SET ENV') {
-                                if (env.BRANCH_NAME == 'dev') {
-                                    env.VALUES_FILE = 'values.yaml'
-                                    env.KUBECONFIG = '~/.kube/config'
-                                }
-                                if (env.BRANCH_NAME == 'test') {
-                                    env.VALUES_FILE = 'values-test.yaml'
-                                    env.KUBECONFIG = '/opt/.kube/test-kube-config'
-                                }
                                 if (env.BRANCH_NAME == 'master') {
                                     env.VALUES_FILE = 'values-prod.yaml'
-                                    env.KUBECONFIG = '/opt/.kube/prod-kube-config'
+                                }
+                            }
+                            stage('helm delete backend') {
+                                sh "helm delete --purge backend"
+                            }
+                            stage('helm delete backend-logs') {
+                                sh "helm delete --purge backend-logs"
+                            }
+                        }
+                        container('k8s-helm') {
+                            stage('SET ENV') {
+                                if (env.BRANCH_NAME == 'master') {
+                                    env.VALUES_FILE = 'values-prod.yaml'
                                 }
                             }
                             stage('helm upgrade backend') {

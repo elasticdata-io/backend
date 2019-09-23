@@ -1,14 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "backend-logs.fullname" . }}
+  name: {{ include "backend-logs.fullname" . }}
   labels:
-{{ include "backend-logs.labels" . | indent 4 }}
+    app.kubernetes.io/name: {{ include "backend-logs.name" . }}
+    helm.sh/chart: {{ include "backend-logs.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: backend-logs
       app.kubernetes.io/name: {{ include "backend-logs.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:

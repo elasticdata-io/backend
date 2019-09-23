@@ -76,7 +76,7 @@ spec:
                                 }
                             }
                             stage('helm upgrade backend') {
-                                sh "helm upgrade --name backend \
+                                sh "helm upgrade backend \
                                     -f install/helm/backend/values.yaml \
                                     -f install/helm/backend/${VALUES_FILE} \
                                     --version 1.0.${BUILD_NUMBER}\
@@ -84,7 +84,7 @@ spec:
                                     install/helm/backend"
                             }
                             stage('helm upgrade backend-logs') {
-                                sh "helm upgrade --name backend-logs \
+                                sh "helm upgrade backend-logs \
                                     -f install/helm/backend-logs/values.yaml \
                                     -f install/helm/backend-logs/${VALUES_FILE} \
                                     --version 1.0.${BUILD_NUMBER}\

@@ -54,7 +54,9 @@ class PipelineDataController {
 
     @RequestMapping('/{id}')
     Pipeline get(@PathVariable String id) {
-        return pipelineService.findById(id)
+        Pipeline pipeline = pipelineService.findById(id)
+        pipeline.status = pipeline.status ?: new PipelineStatus()
+        return pipeline
     }
 
     @RequestMapping('/{id}/commands')

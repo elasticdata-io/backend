@@ -19,7 +19,7 @@ spec:
       path: /opt/kubernetes/storage/.kube
   containers:
   - name: k8s-helm
-    image: lachlanevenson/k8s-helm:v2.12.3
+    image: lachlanevenson/k8s-helm:v3.0.0-beta.3
     command:
     - cat
     tty: true

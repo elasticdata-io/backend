@@ -2,6 +2,7 @@ package scraper.service.controller.data
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
@@ -90,7 +91,7 @@ class PipelineDataController {
         String userId = tokenService.getUserId(token)
         User user = userService.findById(userId)
         if (!user) {
-            throw HTTPException('user not found by passed token')
+            throw new Exception('user not found by passed token')
         }
         Pipeline pipeline = pipelineService.findById(id)
         String key = request.getParameter('key')
@@ -131,6 +132,13 @@ class PipelineDataController {
 
     @RequestMapping("/delete/{id}")
     void delete(@PathVariable String id) {
-        pipelineRepository.delete(id)
+        def pipeline = pipelineRepository.findById(id)
+        pipelineRepository.delete(pipeline.get())
+    }
+
+
+    @GetMapping("uuid")
+    UUID uuid() {
+        return UUID.randomUUID()
     }
 }

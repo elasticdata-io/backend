@@ -72,7 +72,7 @@ class PipelineDataController {
     @RequestMapping('/list')
     List<Pipeline> list(@RequestHeader("token") String token) {
         String userId = tokenService.getUserId(token)
-        List<Pipeline> pipelines = pipelineRepository.findByUser(userId)
+        List<Pipeline> pipelines = pipelineRepository.findByUserOrderByCreatedOnDesc(userId)
         pipelines.forEach({ pipeline ->
             pipeline.status = pipeline.status ?: new PipelineStatus()
         })

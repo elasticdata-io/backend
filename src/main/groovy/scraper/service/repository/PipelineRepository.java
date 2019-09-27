@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface PipelineRepository extends MongoRepository<Pipeline, String> {
 
 	Optional<Pipeline> findById(String id);
-	List<Pipeline> findByUser(String userId);
+	List<Pipeline> findByUserOrderByCreatedOnDesc(String userId);
 	Pipeline findByIdAndUser(String id, String userId);
 	List<Pipeline> findByUser(User user);
 	List<Pipeline> findByUserAndIdNotIn(String userId, List<String> dependsOn);

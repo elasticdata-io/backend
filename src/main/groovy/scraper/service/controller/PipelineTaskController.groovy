@@ -46,7 +46,7 @@ class PipelineTaskController {
             return null
         }
         Pageable top = new PageRequest(0, 10)
-        List<PipelineTask> tasks = pipelineTaskRepository.findByPipelineOrderByEndOnDesc(pipelineId, top)
+        List<PipelineTask> tasks = pipelineTaskRepository.findByPipelineOrderByStartOnDesc(pipelineId, top)
         tasks.each {task->
             String error = task.error
             task.error = error?.take(1000)

@@ -34,10 +34,9 @@ dependencies {
 
     compile group: 'org.springframework.data', name: 'spring-data-mongodb', version: '2.1.10.RELEASE'
 
-    compile group: 'org.springframework.security', name: 'spring-security-core', version: '4.0.4.RELEASE'
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.8.2'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.8.2'
-    compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.7.0'
+
     compile group: 'javax.xml.ws', name: 'jaxws-api', version: '2.3.1'
     
     compile group: 'org.mockito', name: 'mockito-all', version: '2.0.2-beta'
@@ -47,9 +46,25 @@ dependencies {
 
     compile group: 'org.springframework', name: 'spring-websocket', version: '5.0.3.RELEASE'
     compile group: 'org.springframework', name: 'spring-messaging', version: '5.0.3.RELEASE'
-    compile group: 'org.springframework.security', name: 'spring-security-core', version: '5.0.1.RELEASE'
-    compile group: 'org.springframework.security', name: 'spring-security-config', version: '4.2.2.RELEASE'
-    compile group: 'org.springframework.security', name: 'spring-security-web', version: '5.0.1.RELEASE'
+
+//    compile group: 'org.springframework.security', name: 'spring-security-core', version: '5.0.1.RELEASE'
+//    compile group: 'org.springframework.security', name: 'spring-security-config', version: '4.2.2.RELEASE'
+//    compile group: 'org.springframework.security', name: 'spring-security-web', version: '5.0.1.RELEASE'
+//    compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.7.0'
+////    compile group: 'org.springframework.security', name: 'spring-security-core', version: '4.0.4.RELEASE'
+
+    compile 'org.springframework.boot:spring-boot-starter-security'
+    compile 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.7.RELEASE'
+
+    compile 'org.springframework.security:spring-security-core'
+    compile 'org.springframework.security:spring-security-config'
+    compile 'org.springframework.security:spring-security-web'
+    compile 'org.springframework.security:spring-security-jwt'
+    compile 'org.springframework.security:spring-security-oauth2-client'
+    compile 'org.springframework.security:spring-security-oauth2-jose'
+    compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.7.0'
+
+
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.4'
     compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.5.0-RC2'
     compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'

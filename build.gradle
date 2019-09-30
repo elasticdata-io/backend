@@ -64,6 +64,7 @@ dependencies {
     compile 'org.springframework.security:spring-security-oauth2-jose'
     compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.7.0'
 
+    compile group: 'io.micrometer', name: 'micrometer-registry-prometheus', version: '1.1.1'
 
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.4'
     compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.5.0-RC2'

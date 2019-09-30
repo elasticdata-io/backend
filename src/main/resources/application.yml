@@ -1,0 +1,81 @@
+spring.main.allow-bean-definition-overriding: true
+server:
+  use-forward-headers: true
+  port: ${SPRING_SERVER_PORT:8085}
+  servlet:
+    context-path: /api
+security:
+  facebookSignInCallbackUrl: ${FACEBOOK_SIGNIN_CALLBACK_URL:http://localhost:8080/auth/enter/}
+  googleSignInCallbackUrl: ${GOOGLE_SIGNIN_CALLBACK_URL:http://localhost:8080/auth/enter/}
+elasticsearch:
+  host: ${ES_HOST_NAME:localhost}
+  httpPort: ${ES_HTTP_PORT:9200}
+  tcpPort: ${ES_TCP_PORT:9300}
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: ${GOOGLE_CLIENT_ID:572905585351-nmk760t5cb2733s01des49oh87anu55h.apps.googleusercontent.com}
+            clientSecret: ${GOOGLE_CLIENT_SECRET:RJ7Ea7EB3Z2omvCnLhzDpcPJ}
+            scope:
+              - openid
+              - email
+              - profile
+          facebook:
+            client-id: 482057982609857
+            client-secret: 5d476573f827cc15ab26e426daf9d9e6
+            scope:
+              - email
+              - public_profile
+  redis:
+    host: ${REDIS_HOST:k8s}
+    password:
+    port: ${REDIS_PORT:6379}
+  session:
+    store-type: NONE
+  elasticsearch:
+    rest:
+      uris: ${ES_HOST_NAME:localhost}:${ES_HTTP_PORT:9200}
+  data:
+    mongodb:
+      database: ${MONGODB_DB:scraper-service}
+      host: ${MONGODB_HOST:mongo}
+      port: ${MONGODB_PORT:27017}
+      username: ${MONGODB_USER:guest}
+      password: ${MONGODB_PASSWORD:guest}
+      authentication-database: ${MONGODB_AUTH_DB:admin}
+  rabbitmq:
+    host: ${RABBITMQ_HOST_NAME:k8s}
+    port: ${RABBITMQ_PORT:30403}
+    username: ${RABBITMQ_USER:user}
+    password: ${RABBITMQ_PASSWORD:password}
+  resources:
+    chain:
+      strategy:
+        content:
+          enabled: true
+logging:
+  level:
+    ROOT: ${SPRING_LOG_LEVEL:INFO}
+    org:
+      springframework:
+        security:
+          oauth2: DEBUG
+jwt.secret: secret-key-jwt-123
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+
+proxy.tor: ${PROXY_TOR:rotating-proxy:5566}
+proxy.service.url: ${PROXY_SERVICE_URL:http://localhost:8081/proxy/fast}
+
+elasticsearch.enabled: false
+elasticsearch.host: 37.57.124.190
+elasticsearch.port: 9300
+
+selenium.default.address: ${SELENIUM_DEFAULT_ADDRESS:http://selenoid.selenoid:4444/wd/hub}
+selenium.default.browser: ${SELENIUM_DEFAULT_BROWSER:chrome}

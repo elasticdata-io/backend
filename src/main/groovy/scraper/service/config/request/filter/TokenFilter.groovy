@@ -17,9 +17,9 @@ class TokenFilter extends GenericFilterBean {
     String TOKEN_HEADER_NAME = 'token'
 
     String LOGIN_URI = '/api/login'
-    String WS_URI = '/ws/'
+    String WS_URI = '/api/ws'
 
-    List<String> allowUrls = [WS_URI, LOGIN_URI, '/api/pipeline/data/', '/api/pipeline-task/data/', '/api/pipeline/run/']
+    List<String> allowUrls = [WS_URI, LOGIN_URI, '/api/pipeline/data', '/api/pipeline-task/data', '/api/pipeline/run']
 
     @Autowired
     TokenService tokenService
@@ -30,7 +30,11 @@ class TokenFilter extends GenericFilterBean {
         HttpServletRequest httpRequest = request as HttpServletRequest
         String uri = httpRequest.getRequestURI()
         boolean isAllowUrl = allowUrls.find { uri.startsWith(it) }
-        if (isAllowUrl || checkToken(request)) {
+        if (isAllowUrl) {
+            chain.doFilter(request, response)
+            return
+        }
+        if (checkToken(request)) {
             chain.doFilter(request, response)
             return
         }

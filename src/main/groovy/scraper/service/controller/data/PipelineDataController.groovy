@@ -25,7 +25,7 @@ import scraper.service.service.UserService
 import javax.servlet.http.HttpServletRequest
 
 @RestController
-@RequestMapping("/api/pipeline")
+@RequestMapping("/pipeline")
 class PipelineDataController {
 
     @Value('${selenium.default.address}')

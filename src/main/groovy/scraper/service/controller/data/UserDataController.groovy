@@ -16,7 +16,7 @@ import scraper.service.auth.TokenService
 import javax.servlet.http.HttpServletRequest
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 class UserDataController {
 
     @Autowired

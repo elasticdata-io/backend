@@ -17,7 +17,7 @@ import scraper.service.auth.TokenService
 import scraper.service.service.PipelineTaskService
 
 @RestController
-@RequestMapping("/api/pipeline-task")
+@RequestMapping("/pipeline-task")
 class PipelineTaskController {
 
     @Autowired

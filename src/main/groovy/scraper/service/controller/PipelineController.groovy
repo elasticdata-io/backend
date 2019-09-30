@@ -26,7 +26,7 @@ import scraper.service.util.PipelineStructure
 import javax.servlet.http.HttpServletResponse
 
 @RestController
-@RequestMapping("/api/pipeline")
+@RequestMapping("/pipeline")
 class PipelineController {
 
     private Logger logger = LogManager.getRootLogger()

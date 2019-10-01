@@ -17,8 +17,8 @@ spring:
       client:
         registration:
           google:
-            clientId: ${GOOGLE_CLIENT_ID:572905585351-nmk760t5cb2733s01des49oh87anu55h.apps.googleusercontent.com}
-            clientSecret: ${GOOGLE_CLIENT_SECRET:RJ7Ea7EB3Z2omvCnLhzDpcPJ}
+            clientId: ${GOOGLE_CLIENT_ID:996609081064-lgqc18ir273nq6e7g5gn2n5n0g1d90co.apps.googleusercontent.com}
+            clientSecret: ${GOOGLE_CLIENT_SECRET:qu83RghnUFOSdUeYnNRCk03p}
             scope:
               - openid
               - email

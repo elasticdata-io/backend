@@ -18,6 +18,7 @@ import scraper.service.model.User
 import scraper.service.repository.UserRepository
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import scraper.service.auth.TokenService
+import scraper.service.service.UserService
 
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
@@ -34,6 +35,9 @@ class LoginController {
 
     @Value('${security.facebookSignInCallbackUrl}')
     private String facebookSignInCallbackUrl
+
+    @Autowired
+    private UserService userService
 
     @Autowired
     private UserRepository userRepository
@@ -72,18 +76,13 @@ class LoginController {
     }
 
     @GetMapping("/oauth2/code/google")
-    RedirectView googleLogIn(OAuth2AuthenticationToken authentication) {
-        OAuth2User principal = authentication.getPrincipal()
-        //User user = userService.upsertUserFromGoogleSignIn(principal)
-        //UserProfile defaultUserProfile = userProfileService.createDefaultUserProfile(user)
-        Map<String, String> userProfilePayload = new HashMap<>()
-        //userProfilePayload.put("initialUserProfileId", defaultUserProfile.id.toString())
-        //userProfilePayload.put("currentUserProfileId", defaultUserProfile.id.toString())
-        //userProfilePayload.put("userId", user.id.toString())
-        //String token = tokenService.generateToken(defaultUserProfile, userProfilePayload)
+    RedirectView googleLogIn(OAuth2AuthenticationToken authentication, HttpServletRequest request) {
+        User user = userService.createOrUpdateFromGoogle(authentication.getPrincipal())
         RedirectView redirectView = new RedirectView()
-        //redirectView.setUrl(googleSignInCallbackUrl + user.id + "?token=" + token)
-        redirectView.setUrl(googleSignInCallbackUrl)
+        String token = tokenService.makeToken(user.login)
+        tokenService.saveUserToken(token, request)
+        def redirectUrl = googleSignInCallbackUrl + "${user.id}?token=${token}"
+        redirectView.setUrl(redirectUrl)
         return redirectView
     }
 

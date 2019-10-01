@@ -23,6 +23,11 @@ public class User {
 
 	public String salt;
 
+	public String picture;
+
+	public String googleUserId;
+	public String facebookUserId;
+
 	public Boolean isActive;
 
 	public Boolean isAdmin;

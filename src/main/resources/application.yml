@@ -5,8 +5,8 @@ server:
   servlet:
     context-path: /api
 security:
-  facebookSignInCallbackUrl: ${FACEBOOK_SIGNIN_CALLBACK_URL:http://localhost:8080/auth/enter/}
-  googleSignInCallbackUrl: ${GOOGLE_SIGNIN_CALLBACK_URL:http://localhost:8080/auth/enter/}
+  facebookSignInCallbackUrl: ${FACEBOOK_SIGNIN_CALLBACK_URL:http://localhost:8080/#/enter/}
+  googleSignInCallbackUrl: ${GOOGLE_SIGNIN_CALLBACK_URL:http://localhost:8080/#/enter/}
 elasticsearch:
   host: ${ES_HOST_NAME:localhost}
   httpPort: ${ES_HTTP_PORT:9200}

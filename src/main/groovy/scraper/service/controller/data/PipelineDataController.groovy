@@ -1,5 +1,6 @@
 package scraper.service.controller.data
 
+import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -140,7 +141,8 @@ class PipelineDataController {
 
 
     @GetMapping("uuid")
-    UUID uuid() {
-        return UUID.randomUUID()
+    String uuid() {
+        ObjectId id = new ObjectId()
+        return id.toString()
     }
 }

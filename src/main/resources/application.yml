@@ -7,10 +7,10 @@ server:
 security:
   facebookSignInCallbackUrl: ${FACEBOOK_SIGNIN_CALLBACK_URL:http://localhost:8080/#/enter/}
   googleSignInCallbackUrl: ${GOOGLE_SIGNIN_CALLBACK_URL:http://localhost:8080/#/enter/}
-elasticsearch:
-  host: ${ES_HOST_NAME:localhost}
-  httpPort: ${ES_HTTP_PORT:9200}
-  tcpPort: ${ES_TCP_PORT:9300}
+#elasticsearch:
+#  host: ${ES_HOST_NAME:localhost}
+#  httpPort: ${ES_HTTP_PORT:9200}
+#  tcpPort: ${ES_TCP_PORT:9300}
 spring:
   security:
     oauth2:
@@ -29,15 +29,15 @@ spring:
             scope:
               - email
               - public_profile
-  redis:
-    host: ${REDIS_HOST:k8s}
-    password:
-    port: ${REDIS_PORT:6379}
+#  redis:
+#    host: ${REDIS_HOST:k8s}
+#    password:
+#    port: ${REDIS_PORT:6379}
   session:
     store-type: NONE
-  elasticsearch:
-    rest:
-      uris: ${ES_HOST_NAME:localhost}:${ES_HTTP_PORT:9200}
+#  elasticsearch:
+#    rest:
+#      uris: ${ES_HOST_NAME:localhost}:${ES_HTTP_PORT:9200}
   data:
     mongodb:
       database: ${MONGODB_DB:scraper-service}
@@ -65,6 +65,9 @@ logging:
           oauth2: DEBUG
 jwt.secret: secret-key-jwt-123
 management:
+  health:
+    elasticsearch:
+      enabled: false
   endpoints:
     web:
       exposure:

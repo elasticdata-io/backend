@@ -15,7 +15,3 @@ spec:
             backend:
               serviceName: {{ template "backend.fullname" . }}
               servicePort: {{ .Values.service.port }}
-          - path: /ws
-            backend:
-              serviceName: {{ template "backend.fullname" . }}
-              servicePort: {{ .Values.service.port }}

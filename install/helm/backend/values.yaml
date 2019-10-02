@@ -48,3 +48,10 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+livenessProbe:
+  initialDelaySeconds: 90
+  periodSeconds: 10
+readinessProbe:
+  initialDelaySeconds: 60
+  periodSeconds: 15

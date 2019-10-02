@@ -55,6 +55,18 @@ spec:
               value: password
             - name: PROXY_TOR
               value: rotation.elasticdata.io:30200
+          livenessProbe:
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds:  {{ .Values.livenessProbe.periodSeconds }}
+            httpGet:
+              path: /api/liveness
+              port: http
+          readinessProbe:
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            httpGet:
+              path: /api/actuator/health
+              port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

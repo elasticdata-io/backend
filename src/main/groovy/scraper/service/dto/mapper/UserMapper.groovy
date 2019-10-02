@@ -1,4 +1,4 @@
-package scraper.service.dto.model.mapper
+package scraper.service.dto.mapper
 
 import org.springframework.stereotype.Component
 import scraper.service.dto.model.user.UserDto

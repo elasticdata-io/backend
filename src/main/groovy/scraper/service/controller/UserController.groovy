@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import scraper.service.dto.model.mapper.UserMapper
+import scraper.service.dto.mapper.UserMapper
 import scraper.service.dto.model.user.UserDto
 import scraper.service.service.UserService
 

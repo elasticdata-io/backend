@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import scraper.service.dto.mapper.PipelineMapper
+import scraper.service.dto.model.user.PipelineDto
 import scraper.service.model.Pipeline
 import scraper.service.model.PipelineStatus
 import scraper.service.model.User
@@ -60,26 +62,28 @@ class PipelineDataController {
     TokenService tokenService
 
     @RequestMapping('/{id}')
-    Pipeline get(@PathVariable String id) {
+    PipelineDto get(@PathVariable String id) {
         Pipeline pipeline = pipelineService.findById(id)
         pipeline.status = pipeline.status ?: new PipelineStatus()
-        return pipeline
+        return PipelineMapper.toPipelineDto(pipeline)
     }
 
     @RequestMapping('/{id}/commands')
     Pipeline commands(@PathVariable String id) {
-        Pipeline pipeline = get(id)
+        PipelineDto pipeline = get(id)
         String json = pipeline.jsonCommands
     }
 
     @RequestMapping('/list')
-    List<Pipeline> list(@RequestHeader("token") String token) {
+    List<PipelineDto> list(@RequestHeader("token") String token) {
         String userId = tokenService.getUserId(token)
         List<Pipeline> pipelines = pipelineRepository.findByUserOrderByCreatedOnDesc(userId)
         pipelines.forEach({ pipeline ->
             pipeline.status = pipeline.status ?: new PipelineStatus()
         })
-        return pipelines
+        return pipelines.collect {pipeline ->
+            return PipelineMapper.toPipelineDto(pipeline)
+        }
     }
 
     @RequestMapping('/list-depends/{pipelineId}')

@@ -59,6 +59,11 @@ class Pipeline {
     public Boolean needProxy
 
     /**
+     * Count of the all tasks of this pipeline.
+     */
+    Integer tasksTotal
+
+    /**
      * Count of the last parsed data lines.
      */
     Integer parseRowsCount

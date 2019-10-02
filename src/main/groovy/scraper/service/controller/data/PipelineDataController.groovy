@@ -127,7 +127,7 @@ class PipelineDataController {
             pipeline.runIntervalMin = runIntervalMin
             pipeline.needProxy = needProxy
             pipelineRepository.save(pipeline)
-            return pipeline
+            return PipelineMapper.toPipelineDto(pipeline)
         }
         PipelineStatus status = pipelineStatusRepository.findByTitle('not running')
         pipeline = new Pipeline(key: key, browser: SELENIUM_DEFAULT_BROWSER, jsonCommands: jsonCommands,

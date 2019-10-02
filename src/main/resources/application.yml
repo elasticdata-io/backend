@@ -47,7 +47,7 @@ spring:
       password: ${MONGODB_PASSWORD:guest}
       authentication-database: ${MONGODB_AUTH_DB:admin}
   rabbitmq:
-    host: ${RABBITMQ_HOST_NAME:k8s}
+    host: ${RABBITMQ_HOST:k8s}
     port: ${RABBITMQ_PORT:30403}
     username: ${RABBITMQ_USER:user}
     password: ${RABBITMQ_PASSWORD:password}

@@ -55,6 +55,8 @@ spec:
               value: password
             - name: PROXY_TOR
               value: rotation.elasticdata.io:30200
+            - name: SPRING_SERVER_PORT
+              value: {{ .Values.env.SPRING_SERVER_PORT }}
           livenessProbe:
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds:  {{ .Values.livenessProbe.periodSeconds }}

@@ -56,5 +56,4 @@ readinessProbe:
   initialDelaySeconds: 60
   periodSeconds: 15
 
-env:
-  SPRING_SERVER_PORT: 8080
+env: {}

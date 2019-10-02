@@ -57,6 +57,10 @@ spec:
               value: rotation.elasticdata.io:30200
             - name: SPRING_SERVER_PORT
               value: {{ .Values.service.port | quote }}
+            - name: GOOGLE_SIGNIN_CALLBACK_URL
+              value: {{ .Values.env.GOOGLE_SIGNIN_CALLBACK_URL }}
+            - name: FACEBOOK_SIGNIN_CALLBACK_URL
+              value: {{ .Values.env.FACEBOOK_SIGNIN_CALLBACK_URL }}
           livenessProbe:
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds:  {{ .Values.livenessProbe.periodSeconds }}

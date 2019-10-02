@@ -56,4 +56,6 @@ readinessProbe:
   initialDelaySeconds: 60
   periodSeconds: 15
 
-env: {}
+env:
+  GOOGLE_SIGNIN_CALLBACK_URL: http://app.elasticdata.io:8080/#/enter/
+  FACEBOOK_SIGNIN_CALLBACK_URL: http://app.elasticdata.io:8080/#/enter/

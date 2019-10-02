@@ -24,7 +24,7 @@ import scraper.service.repository.PipelineTaskRepository
 import scraper.service.service.PipelineTaskService
 
 @Component
-class FinishPipelineTask {
+class FinishPipelineTaskConsumer {
 
     final String DATA_MARKER = '#DATA#'
     final String PIPELINE_KEY = '#PIPELINE_KEY#'

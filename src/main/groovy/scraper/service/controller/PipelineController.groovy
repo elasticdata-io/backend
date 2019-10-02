@@ -3,7 +3,6 @@ package scraper.service.controller
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.amqp.core.AmqpTemplate
-import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.web.bind.annotation.PathVariable
@@ -14,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController
 import scraper.core.command.input.UserInput
 import scraper.service.constants.PipelineStatuses
 import scraper.service.data.converter.CsvDataConverter
+import scraper.service.dto.mapper.PipelineMapper
+import scraper.service.dto.model.user.PipelineDto
 import scraper.service.model.Pipeline
 import scraper.service.model.PipelineTask
 import scraper.service.service.PipelineInputService
@@ -21,7 +22,7 @@ import scraper.service.service.PipelineService
 import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineStatusRepository
 import scraper.service.repository.PipelineTaskRepository
-import scraper.service.util.PipelineStructure
+import scraper.service.util.PipelineStructureService
 
 import javax.servlet.http.HttpServletResponse
 
@@ -44,10 +45,7 @@ class PipelineController {
     AmqpTemplate rabbitTemplate
 
     @Autowired
-    SimpMessagingTemplate messagingTemplate
-
-    @Autowired
-    PipelineStructure pipelineStructure
+    PipelineStructureService pipelineStructure
 
     @Autowired
     CsvDataConverter csvConverter
@@ -59,72 +57,24 @@ class PipelineController {
     PipelineInputService pipelineInputService
 
     /**
-     * Listener for run pipeline.
-     * @param pipelineId Running pipeline pipelineId.
-     */
-    @RabbitListener(queues = "pipeline-run", containerFactory="multipleListenerContainerFactory")
-    void runPipelineFromQueueWorker(String pipelineId) {
-        runPipelineFromQueue(pipelineId)
-    }
-
-    @RabbitListener(queues = "pipeline-stop", containerFactory="multipleListenerContainerFactory")
-    void stopPipelineFromQueueWorker(String pipelineId) {
-        pipelineService.stop(pipelineId)
-    }
-
-    /**
-     * Runs hierarchy dependents pipelines.
-     * @param hierarchy
-     */
-    @RabbitListener(queues = "pipeline-run-hierarchy")
-    void runDependentsHierarchyPipelines(List<String> hierarchy) {
-        String pipelineId = hierarchy.remove(0)
-        pipelineService.run(pipelineId)
-        Pipeline pipeline = pipelineService.findById(pipelineId)
-        if (pipeline.status.title == PipelineStatuses.ERROR) {
-            // notify pipeline not running because dependents pipeline has error
-            String firstPipelineId = hierarchy.last()
-            Pipeline firstPipeline = pipelineService.findById(firstPipelineId)
-            firstPipeline.status = pipelineStatusRepository.findByTitle(PipelineStatuses.ERROR)
-            pipelineRepository.save(firstPipeline)
-            String channel = '/pipeline/change/' + pipeline.user.id
-            messagingTemplate.convertAndSend(channel, firstPipeline)
-            return
-        }
-        if (hierarchy.size() > 0) {
-            rabbitTemplate.convertAndSend("pipeline-run-hierarchy", hierarchy)
-        }
-    }
-
-    /**
-     * Build, created instance and runs pipeline by database pipelineId.
-     * @param pipelineId Running pipeline pipelineId.
-     */
-    private void runPipelineFromQueue(String pipelineId) {
-        List<String> hierarchy = pipelineStructure.getPipelineHierarchy(pipelineId)
-        if (hierarchy.size() > 1) {
-            rabbitTemplate.convertAndSend("pipeline-run-hierarchy", hierarchy.reverse())
-            return
-        }
-        pipelineService.run(pipelineId)
-    }
-
-    /**
      * Runs pipeline process by pipeline pipelineId.
      * @param id
      */
     @RequestMapping("/run/{id}")
-    Pipeline addToRunQueue(@PathVariable String id) {
+    PipelineDto addToRunQueue(@PathVariable String id) {
         Pipeline pipeline = pipelineService.findById(id)
         String statusTitle = pipeline.status.title
-        if (!pipeline || statusTitle == PipelineStatuses.PENDING || statusTitle == PipelineStatuses.RUNNING) {
+        if (statusTitle == PipelineStatuses.PENDING || statusTitle == PipelineStatuses.RUNNING) {
 //            return
+        }
+        if (!pipeline) {
+            return
         }
         def pendingStatus = pipelineStatusRepository.findByTitle(PipelineStatuses.PENDING)
         pipeline.status = pendingStatus
         pipelineRepository.save(pipeline)
         rabbitTemplate.convertAndSend("pipeline-run", id)
-        return pipeline
+        return PipelineMapper.toPipelineDto(pipeline)
     }
 
     /**

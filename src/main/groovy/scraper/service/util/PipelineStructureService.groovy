@@ -8,9 +8,9 @@ import scraper.service.model.Pipeline
 import scraper.service.service.PipelineService
 
 @Service
-class PipelineStructure {
+class PipelineStructureService {
 
-    private static final Logger logger = LoggerFactory.getLogger(PipelineStructure.class)
+    private static final Logger logger = LoggerFactory.getLogger(PipelineStructureService.class)
 
     @Autowired
     private PipelineService pipelineService

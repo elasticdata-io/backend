@@ -26,7 +26,7 @@ import scraper.service.model.PipelineTask
 import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineStatusRepository
 import scraper.service.repository.PipelineTaskRepository
-import scraper.service.util.PipelineStructure
+import scraper.service.util.PipelineStructureService
 import scraper.service.util.ProxyAssigner
 
 import javax.annotation.PostConstruct
@@ -69,7 +69,7 @@ class PipelineService {
     }
 
     @Autowired
-    private PipelineStructure pipelineStructure
+    private PipelineStructureService pipelineStructure
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate
@@ -266,6 +266,10 @@ class PipelineService {
     Pipeline findById(String id) {
         Optional<Pipeline> pipeline = pipelineRepository.findById(id)
         return pipeline.present ? pipeline.get() : null
+    }
+
+    void save(Pipeline pipeline) {
+        pipelineRepository.save(pipeline)
     }
 
 }

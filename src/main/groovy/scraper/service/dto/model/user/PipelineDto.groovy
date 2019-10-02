@@ -21,4 +21,5 @@ class PipelineDto {
     PipelineDto dependOn
     String userId
     String jsonCommands
+    Number lastParseRowsCount
 }

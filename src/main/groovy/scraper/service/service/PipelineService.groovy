@@ -139,6 +139,7 @@ class PipelineService {
         Pipeline pipeline = findById(pipelineTask.pipeline.id)
         pipeline.status = pipelineStatusRepository.findByTitle(status)
         pipeline.lastCompletedOn = new Date()
+        pipeline.tasksTotal = pipeline.tasksTotal + 1
         pipeline.parseRowsCount = dataList ? dataList.size() : 0
 
         pipelineTaskRepository.save(pipelineTask)

@@ -87,14 +87,16 @@ class PipelineDataController {
     }
 
     @RequestMapping('/list-depends/{pipelineId}')
-    List<Pipeline> listDepends(@RequestHeader("token") String token, @PathVariable String pipelineId) {
+    List<PipelineDto> listDepends(@RequestHeader("token") String token, @PathVariable String pipelineId) {
         String userId = tokenService.getUserId(token)
         def pipelines = pipelineRepository.findByUserAndIdNotIn(userId, [pipelineId])
-        return pipelines
+        return pipelines.collect {pipeline ->
+            return PipelineMapper.toPipelineDto(pipeline)
+        }
     }
 
     @PostMapping('/save')
-    Pipeline add(HttpServletRequest request, @RequestHeader String token, @RequestParam String id) {
+    PipelineDto add(HttpServletRequest request, @RequestHeader String token, @RequestParam String id) {
         String userId = tokenService.getUserId(token)
         User user = userService.findById(userId)
         if (!user) {
@@ -134,7 +136,7 @@ class PipelineDataController {
                 isTakeScreenshot: isTakeScreenshot, isDebugMode: isDebugMode,
                 browserAddress: browserAddress, needProxy: needProxy)
         pipelineRepository.save(pipeline)
-        return pipeline
+        return PipelineMapper.toPipelineDto(pipeline)
     }
 
     @DeleteMapping("/delete/{id}")

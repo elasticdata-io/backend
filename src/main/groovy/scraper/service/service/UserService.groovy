@@ -42,7 +42,8 @@ class UserService {
                     lastName: lastName,
                     googleUserId: googleUserId,
                     picture: picture,
-                    login: email
+                    login: email,
+                    isActive: true,
             )
             userRepository.save(user)
         }

@@ -3,6 +3,7 @@ package scraper.service.service
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Service
+import scraper.service.auth.TokenService
 import scraper.service.model.User
 import scraper.service.repository.UserRepository
 
@@ -10,11 +11,19 @@ import scraper.service.repository.UserRepository
 class UserService {
 
     @Autowired
+    TokenService tokenService
+
+    @Autowired
     UserRepository userRepository
 
     User findById(String id) {
         Optional<User> user = userRepository.findById(id)
         return user.present ? user.get() : null
+    }
+
+    User findByToken(String token) {
+        String userId = tokenService.getUserId(token)
+        return findById(userId)
     }
 
     User createOrUpdateFromGoogle(OAuth2User principal) {

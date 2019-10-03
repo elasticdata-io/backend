@@ -33,12 +33,12 @@ class PipelineRunnerConsumer {
      * Listener for run pipeline.
      * @param pipelineId Running pipeline pipelineId.
      */
-    @RabbitListener(queues = "pipeline-run", containerFactory="multipleListenerContainerFactory")
+    @RabbitListener(queues = QueueConstants.PIPELINE_RUN, containerFactory="defaultContainerFactory")
     void runPipelineFromQueueWorker(String pipelineId) {
         runPipelineFromQueue(pipelineId)
     }
 
-    @RabbitListener(queues = "pipeline-stop", containerFactory="multipleListenerContainerFactory")
+    @RabbitListener(queues = QueueConstants.PIPELINE_STOP, containerFactory="defaultContainerFactory")
     void stopPipelineFromQueueWorker(String pipelineId) {
         pipelineService.stop(pipelineId)
     }
@@ -47,7 +47,7 @@ class PipelineRunnerConsumer {
      * Runs hierarchy dependents pipelines.
      * @param hierarchy
      */
-    @RabbitListener(queues = "pipeline-run-hierarchy")
+    @RabbitListener(queues = QueueConstants.PIPELINE_RUN_HIERARCHY, containerFactory="defaultContainerFactory")
     void runDependentsHierarchyPipelines(List<String> hierarchy) {
         String pipelineId = hierarchy.remove(0)
         pipelineService.run(pipelineId)
@@ -63,7 +63,7 @@ class PipelineRunnerConsumer {
             return
         }
         if (hierarchy.size() > 0) {
-            rabbitTemplate.convertAndSend("pipeline-run-hierarchy", hierarchy)
+            rabbitTemplate.convertAndSend(QueueConstants.PIPELINE_RUN_HIERARCHY, hierarchy)
         }
     }
 
@@ -74,7 +74,7 @@ class PipelineRunnerConsumer {
     private void runPipelineFromQueue(String pipelineId) {
         List<String> hierarchy = pipelineStructureService.getPipelineHierarchy(pipelineId)
         if (hierarchy.size() > 1) {
-            rabbitTemplate.convertAndSend("pipeline-run-hierarchy", hierarchy.reverse())
+            rabbitTemplate.convertAndSend(QueueConstants.PIPELINE_RUN_HIERARCHY, hierarchy.reverse())
             return
         }
         pipelineService.run(pipelineId)

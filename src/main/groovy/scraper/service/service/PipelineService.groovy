@@ -139,7 +139,7 @@ class PipelineService {
         Pipeline pipeline = findById(pipelineTask.pipeline.id)
         pipeline.status = pipelineStatusRepository.findByTitle(status)
         pipeline.lastCompletedOn = new Date()
-        pipeline.tasksTotal = pipeline.tasksTotal + 1
+        pipeline.tasksTotal = (pipeline.tasksTotal ?: 0) + 1
         pipeline.parseRowsCount = dataList ? dataList.size() : 0
 
         pipelineTaskRepository.save(pipelineTask)
@@ -245,9 +245,19 @@ class PipelineService {
         } catch (all) {
             logger.error(all)
             pipelineTask.error = "${all.getMessage()}. ${all.printStackTrace()}"
-            pipelineTask.pipeline.status = pipelineStatusRepository.findByTitle(PipelineStatuses.ERROR)
+            def errorStatus = pipelineStatusRepository.findByTitle(PipelineStatuses.ERROR)
+            pipelineTask.pipeline.status = errorStatus
+            pipelineTaskRepository.save(pipelineTask)
         }
-        afterRun(pipelineTask, pipelineProcess)
+
+        try {
+            afterRun(pipelineTask, pipelineProcess)
+        } catch (all) {
+            logger.error(all)
+            def errorStatus = pipelineStatusRepository.findByTitle(PipelineStatuses.ERROR)
+            pipeline.status = errorStatus
+            pipelineRepository.save(pipeline)
+        }
         return findById(pipeline.id)
     }
 

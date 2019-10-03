@@ -51,6 +51,7 @@ spring:
     port: ${RABBITMQ_PORT:30403}
     username: ${RABBITMQ_USER:user}
     password: ${RABBITMQ_PASSWORD:password}
+    topicExchangeName: ${RABBITMQ_EXCHANGE_NAME:test-exchange}
   resources:
     chain:
       strategy:

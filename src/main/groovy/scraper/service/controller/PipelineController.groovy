@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import scraper.core.command.input.UserInput
 import scraper.service.constants.PipelineStatuses
+import scraper.service.consumer.QueueConstants
 import scraper.service.data.converter.CsvDataConverter
 import scraper.service.dto.mapper.PipelineMapper
 import scraper.service.dto.model.user.PipelineDto
@@ -63,7 +64,7 @@ class PipelineController {
     @RequestMapping("/run/{id}")
     PipelineDto addToRunQueue(@PathVariable String id) {
         Pipeline pipeline = pipelineService.findById(id)
-        String statusTitle = pipeline.status.title
+        String statusTitle = pipeline.status?.title
         if (statusTitle == PipelineStatuses.PENDING || statusTitle == PipelineStatuses.RUNNING) {
 //            return
         }
@@ -73,7 +74,7 @@ class PipelineController {
         def pendingStatus = pipelineStatusRepository.findByTitle(PipelineStatuses.PENDING)
         pipeline.status = pendingStatus
         pipelineRepository.save(pipeline)
-        rabbitTemplate.convertAndSend("pipeline-run", id)
+        rabbitTemplate.convertAndSend(QueueConstants.PIPELINE_RUN, id)
         return PipelineMapper.toPipelineDto(pipeline)
     }
 
@@ -87,7 +88,7 @@ class PipelineController {
         def stoppingStatus = pipelineStatusRepository.findByTitle(PipelineStatuses.STOPPING)
         pipeline.status = stoppingStatus
         pipelineRepository.save(pipeline)
-        rabbitTemplate.convertAndSend("pipeline-stop", id)
+        rabbitTemplate.convertAndSend(QueueConstants.PIPELINE_STOP, id)
         return pipeline
     }
 

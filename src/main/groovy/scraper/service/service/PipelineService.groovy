@@ -2,8 +2,9 @@ package scraper.service.service
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.springframework.amqp.core.AmqpTemplate
+import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.beans.factory.support.DefaultListableBeanFactory
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ConfigurableApplicationContext
@@ -18,6 +19,7 @@ import scraper.core.pipeline.PipelineBuilder
 import scraper.core.pipeline.PipelineProcess
 import scraper.core.pipeline.data.AbstractStore
 import scraper.service.constants.PipelineStatuses
+import scraper.service.consumer.QueueConstants
 import scraper.service.controller.listener.PipelineBrowserProviderObserver
 import scraper.service.controller.listener.PipelineStoreObserver
 import scraper.service.elastic.ElasticSearchService
@@ -41,6 +43,9 @@ class PipelineService {
     private String RUN_DIRECTORY = '/tmp/scraper-service'
     private Class DEFAULT_BROWSER = Chrome.class
 
+    @Value('${selenium.default.address}')
+    String SELENIUM_DEFAULT_ADDRESS
+
     @Autowired
     private ApplicationContext applicationContext
 
@@ -56,8 +61,11 @@ class PipelineService {
     @Autowired
     private ElasticSearchService elasticSearchService
 
+    @Value('${spring.rabbitmq.topicExchangeName}')
+    String topicExchangeName
+
     @Autowired
-    AmqpTemplate rabbitTemplate
+    RabbitTemplate rabbitTemplate
 
     @Autowired
     ProxyAssigner proxyAssigner
@@ -146,7 +154,7 @@ class PipelineService {
         pipelineRepository.save(pipeline)
         destroyPipelineProcess(pipeline)
         notifyChangePipeline(pipeline)
-        rabbitTemplate.convertAndSend('finish-pipeline-task', pipelineTask.id)
+        rabbitTemplate.convertAndSend(topicExchangeName, QueueConstants.PIPELINE_TASK_FINISH, pipelineTask.id)
         if (dataList) {
             uploadDataToElastic(dataList as List<HashMap>, pipelineTask)
         }
@@ -205,10 +213,10 @@ class PipelineService {
      */
     private Browser getPipelineBrowser(Pipeline pipeline, Environment environment) {
         def factory = new BrowserFactory()
-        def config = [enableImage: true]
-        if (pipeline.browserAddress) {
-            config += [browserAddress: pipeline.browserAddress]
-        }
+        def config = [
+                enableImage: true,
+                browserAddress: pipeline.browserAddress ?: SELENIUM_DEFAULT_ADDRESS
+        ]
         if (pipeline.isDebugMode) {
             config += [isDebugMode: pipeline.isDebugMode]
         }

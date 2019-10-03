@@ -44,8 +44,9 @@ dependencies {
 
     compile group: 'org.springframework.amqp', name: 'spring-rabbit', version: '2.1.5.RELEASE'
 
-    compile group: 'org.springframework', name: 'spring-websocket', version: '5.0.3.RELEASE'
-    compile group: 'org.springframework', name: 'spring-messaging', version: '5.0.3.RELEASE'
+
+    compile group: 'org.springframework', name: 'spring-websocket', version: '5.2.0.RELEASE'
+    compile group: 'org.springframework', name: 'spring-messaging', version: '5.2.0.RELEASE'
 
 //    compile group: 'org.springframework.security', name: 'spring-security-core', version: '5.0.1.RELEASE'
 //    compile group: 'org.springframework.security', name: 'spring-security-config', version: '4.2.2.RELEASE'

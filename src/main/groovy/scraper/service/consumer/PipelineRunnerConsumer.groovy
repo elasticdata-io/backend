@@ -1,8 +1,9 @@
 package scraper.service.consumer
 
-import org.springframework.amqp.core.AmqpTemplate
 import org.springframework.amqp.rabbit.annotation.RabbitListener
+import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Component
 import scraper.service.constants.PipelineStatuses
@@ -15,7 +16,7 @@ import scraper.service.util.PipelineStructureService
 class PipelineRunnerConsumer {
 
     @Autowired
-    AmqpTemplate rabbitTemplate
+    RabbitTemplate rabbitTemplate
 
     @Autowired
     SimpMessagingTemplate messagingTemplate
@@ -29,16 +30,19 @@ class PipelineRunnerConsumer {
     @Autowired
     PipelineStructureService pipelineStructureService
 
+    @Value('${spring.rabbitmq.topicExchangeName}')
+    String topicExchangeName
+
     /**
      * Listener for run pipeline.
      * @param pipelineId Running pipeline pipelineId.
      */
-    @RabbitListener(queues = QueueConstants.PIPELINE_RUN, containerFactory="defaultContainerFactory")
+    @RabbitListener(queues = QueueConstants.PIPELINE_RUN, containerFactory="defaultConnectionFactory")
     void runPipelineFromQueueWorker(String pipelineId) {
         runPipelineFromQueue(pipelineId)
     }
 
-    @RabbitListener(queues = QueueConstants.PIPELINE_STOP, containerFactory="defaultContainerFactory")
+    @RabbitListener(queues = QueueConstants.PIPELINE_STOP, containerFactory="defaultConnectionFactory")
     void stopPipelineFromQueueWorker(String pipelineId) {
         pipelineService.stop(pipelineId)
     }
@@ -47,7 +51,7 @@ class PipelineRunnerConsumer {
      * Runs hierarchy dependents pipelines.
      * @param hierarchy
      */
-    @RabbitListener(queues = QueueConstants.PIPELINE_RUN_HIERARCHY, containerFactory="defaultContainerFactory")
+    @RabbitListener(queues = QueueConstants.PIPELINE_RUN_HIERARCHY, containerFactory="defaultConnectionFactory")
     void runDependentsHierarchyPipelines(List<String> hierarchy) {
         String pipelineId = hierarchy.remove(0)
         pipelineService.run(pipelineId)
@@ -63,7 +67,7 @@ class PipelineRunnerConsumer {
             return
         }
         if (hierarchy.size() > 0) {
-            rabbitTemplate.convertAndSend(QueueConstants.PIPELINE_RUN_HIERARCHY, hierarchy)
+            rabbitTemplate.convertAndSend(topicExchangeName, QueueConstants.PIPELINE_RUN_HIERARCHY, hierarchy)
         }
     }
 
@@ -74,7 +78,7 @@ class PipelineRunnerConsumer {
     private void runPipelineFromQueue(String pipelineId) {
         List<String> hierarchy = pipelineStructureService.getPipelineHierarchy(pipelineId)
         if (hierarchy.size() > 1) {
-            rabbitTemplate.convertAndSend(QueueConstants.PIPELINE_RUN_HIERARCHY, hierarchy.reverse())
+            rabbitTemplate.convertAndSend(topicExchangeName, QueueConstants.PIPELINE_RUN_HIERARCHY, hierarchy.reverse())
             return
         }
         pipelineService.run(pipelineId)

@@ -2,9 +2,9 @@ package scraper.service.controller
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.springframework.amqp.core.AmqpTemplate
+import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.messaging.simp.SimpMessagingTemplate
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -33,6 +33,9 @@ class PipelineController {
 
     private Logger logger = LogManager.getRootLogger()
 
+    @Value('${spring.rabbitmq.topicExchangeName}')
+    String topicExchangeName
+
     @Autowired
     PipelineRepository pipelineRepository
 
@@ -43,7 +46,7 @@ class PipelineController {
     PipelineStatusRepository pipelineStatusRepository
 
     @Autowired
-    AmqpTemplate rabbitTemplate
+    RabbitTemplate rabbitTemplate
 
     @Autowired
     PipelineStructureService pipelineStructure
@@ -74,7 +77,7 @@ class PipelineController {
         def pendingStatus = pipelineStatusRepository.findByTitle(PipelineStatuses.PENDING)
         pipeline.status = pendingStatus
         pipelineRepository.save(pipeline)
-        rabbitTemplate.convertAndSend(QueueConstants.PIPELINE_RUN, id)
+        rabbitTemplate.convertAndSend(topicExchangeName, QueueConstants.PIPELINE_RUN, id)
         return PipelineMapper.toPipelineDto(pipeline)
     }
 
@@ -88,7 +91,7 @@ class PipelineController {
         def stoppingStatus = pipelineStatusRepository.findByTitle(PipelineStatuses.STOPPING)
         pipeline.status = stoppingStatus
         pipelineRepository.save(pipeline)
-        rabbitTemplate.convertAndSend(QueueConstants.PIPELINE_STOP, id)
+        rabbitTemplate.convertAndSend(topicExchangeName, QueueConstants.PIPELINE_STOP, id)
         return pipeline
     }
 

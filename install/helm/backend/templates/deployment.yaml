@@ -61,6 +61,8 @@ spec:
               value: {{ .Values.env.GOOGLE_SIGNIN_CALLBACK_URL }}
             - name: FACEBOOK_SIGNIN_CALLBACK_URL
               value: {{ .Values.env.FACEBOOK_SIGNIN_CALLBACK_URL }}
+            - name: SELENIUM_DEFAULT_ADDRESS
+              value: {{ .Values.env.SELENIUM_DEFAULT_ADDRESS }}
           livenessProbe:
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds:  {{ .Values.livenessProbe.periodSeconds }}

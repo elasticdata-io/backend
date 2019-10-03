@@ -44,7 +44,7 @@ class FinishPipelineTaskConsumer {
      * Listener for run pipelineTask.
      * @param pipelineTaskId Id of the finished task pipelineId.
      */
-    @RabbitListener(queues = QueueConstants.PIPELINE_TASK_FINISH, containerFactory="defaultContainerFactory")
+    @RabbitListener(queues = QueueConstants.PIPELINE_TASK_FINISH, containerFactory="defaultConnectionFactory")
     void worker(String pipelineTaskId) {
         PipelineTask pipelineTask = pipelineTaskService.findById(pipelineTaskId)
         Pipeline pipeline = pipelineTask.pipeline

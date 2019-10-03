@@ -1,5 +1,6 @@
 package scraper.service.config
 
+import org.springframework.amqp.core.AmqpTemplate
 import org.springframework.amqp.core.Binding
 import org.springframework.amqp.core.BindingBuilder
 import org.springframework.amqp.core.Exchange
@@ -9,6 +10,7 @@ import org.springframework.amqp.rabbit.config.RetryInterceptorBuilder
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory
 import org.springframework.amqp.rabbit.connection.ConnectionFactory
+import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -46,7 +48,7 @@ class RabbitConfiguration {
         return connectionFactory
     }
 
-    @Bean(name = "defaultContainerFactory")
+    @Bean(name = "defaultConnectionFactory")
     SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory) {
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory()
         factory.setConnectionFactory(connectionFactory)
@@ -55,10 +57,10 @@ class RabbitConfiguration {
         FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy()
         backOffPolicy.setBackOffPeriod(500)
         factory
-                .setAdviceChain(RetryInterceptorBuilder.stateless()
-                        .maxAttempts(1)
-                        .backOffPolicy(backOffPolicy)
-                        .build())
+            .setAdviceChain(RetryInterceptorBuilder.stateless()
+            .maxAttempts(1)
+            .backOffPolicy(backOffPolicy)
+            .build())
         return factory
     }
 
@@ -88,7 +90,8 @@ class RabbitConfiguration {
     @Bean
     Binding bindPipelineStop(final Queue pipelineStopQueue, final TopicExchange exchange) {
         return BindingBuilder
-                .bind(pipelineStopQueue).to(exchange)
+                .bind(pipelineStopQueue)
+                .to(exchange)
                 .with(QueueConstants.PIPELINE_STOP)
     }
 
@@ -100,7 +103,8 @@ class RabbitConfiguration {
     @Bean
     Binding bindPipelineTaskFinish(final Queue pipelineTaskFinishQueue, final TopicExchange exchange) {
         return BindingBuilder
-                .bind(pipelineTaskFinishQueue).to(exchange)
+                .bind(pipelineTaskFinishQueue)
+                .to(exchange)
                 .with(QueueConstants.PIPELINE_TASK_FINISH)
     }
 
@@ -112,7 +116,8 @@ class RabbitConfiguration {
     @Bean
     Binding bindPipelineRunHierarchy(final Queue pipelineRunHierarchyQueue, final TopicExchange exchange) {
         return BindingBuilder
-                .bind(pipelineRunHierarchyQueue).to(exchange)
+                .bind(pipelineRunHierarchyQueue)
+                .to(exchange)
                 .with(QueueConstants.PIPELINE_RUN_HIERARCHY)
     }
 

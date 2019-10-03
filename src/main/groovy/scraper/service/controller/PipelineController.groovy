@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.data.domain.PageRequest
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -102,8 +103,13 @@ class PipelineController {
      */
     @RequestMapping("/data/{pipelineId}")
     List<HashMap> getData(@PathVariable String pipelineId) {
-        PipelineTask pipelineTask = pipelineTaskRepository.findOneByPipelineAndErrorOrderByEndOnDesc(pipelineId, null)
-        return pipelineTask.data as List<HashMap>
+        PageRequest page = new PageRequest(0, 1)
+        List<PipelineTask> pipelineTasks = pipelineTaskRepository
+                .findOneByPipelineAndErrorOrderByStartOnDesc(pipelineId, null, page)
+        if (pipelineTasks.size() == 0) {
+            return
+        }
+        return pipelineTasks.first().data as List<HashMap>
     }
 
     /**
@@ -113,8 +119,13 @@ class PipelineController {
      */
     @RequestMapping("/data/csv/{pipelineId}")
     List<HashMap> getCsvData(@PathVariable String pipelineId, HttpServletResponse response) {
-        PipelineTask pipelineTask = pipelineTaskRepository.findOneByPipelineAndErrorOrderByEndOnDesc(pipelineId, null)
-        List<HashMap> list = pipelineTask.data as List<HashMap>
+        PageRequest page = new PageRequest(0, 1)
+        List<PipelineTask> pipelineTasks = pipelineTaskRepository
+                .findOneByPipelineAndErrorOrderByStartOnDesc(pipelineId, null, page)
+        if (pipelineTasks.size() == 0) {
+            return
+        }
+        List<HashMap> list = pipelineTasks.first().data as List<HashMap>
         String responseData = csvConverter.toCsv(list)
         response.setContentType("text/csv; charset=utf-8")
         response.setHeader("Content-disposition", "attachment;filename=${pipelineId}.csv")

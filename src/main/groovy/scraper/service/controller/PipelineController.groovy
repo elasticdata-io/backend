@@ -70,6 +70,7 @@ class PipelineController {
         Pipeline pipeline = pipelineService.findById(id)
         String statusTitle = pipeline.status?.title
         if (statusTitle == PipelineStatuses.PENDING || statusTitle == PipelineStatuses.RUNNING) {
+            logger.error("pipeline: ${pipeline.id} alredy ${statusTitle}")
 //            return
         }
         if (!pipeline) {

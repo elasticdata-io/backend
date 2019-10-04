@@ -81,5 +81,5 @@ elasticsearch.enabled: false
 elasticsearch.host: 37.57.124.190
 elasticsearch.port: 9300
 
-selenium.default.address: ${SELENIUM_DEFAULT_ADDRESS:http://selenoid.selenoid:4444/wd/hub}
+selenium.default.address: ${SELENIUM_DEFAULT_ADDRESS:http://k8s:32213/wd/hub}
 selenium.default.browser: ${SELENIUM_DEFAULT_BROWSER:chrome}

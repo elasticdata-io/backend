@@ -1,4 +1,4 @@
-package scraper.service.consumer
+package scraper.service.amqp
 
 class QueueConstants {
     public static final String PIPELINE_RUN = "PIPELINE_RUN"

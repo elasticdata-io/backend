@@ -1,11 +1,11 @@
-package scraper.service.consumer
+package scraper.service.amqp.consumer
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener
-import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Component
+import scraper.service.amqp.QueueConstants
+import scraper.service.amqp.producer.PipelineProducer
 import scraper.service.constants.PipelineStatuses
 import scraper.service.model.Pipeline
 import scraper.service.repository.PipelineStatusRepository
@@ -16,7 +16,7 @@ import scraper.service.util.PipelineStructureService
 class PipelineRunnerConsumer {
 
     @Autowired
-    RabbitTemplate rabbitTemplate
+    PipelineProducer pipelineProducer
 
     @Autowired
     SimpMessagingTemplate messagingTemplate
@@ -29,9 +29,6 @@ class PipelineRunnerConsumer {
 
     @Autowired
     PipelineStructureService pipelineStructureService
-
-    @Value('${spring.rabbitmq.topicExchangeName}')
-    String topicExchangeName
 
     /**
      * Listener for run pipeline.
@@ -67,7 +64,7 @@ class PipelineRunnerConsumer {
             return
         }
         if (hierarchy.size() > 0) {
-            rabbitTemplate.convertAndSend(topicExchangeName, QueueConstants.PIPELINE_RUN_HIERARCHY, hierarchy)
+            pipelineProducer.runHierarchy(hierarchy)
         }
     }
 
@@ -78,7 +75,7 @@ class PipelineRunnerConsumer {
     private void runPipelineFromQueue(String pipelineId) {
         List<String> hierarchy = pipelineStructureService.getPipelineHierarchy(pipelineId)
         if (hierarchy.size() > 1) {
-            rabbitTemplate.convertAndSend(topicExchangeName, QueueConstants.PIPELINE_RUN_HIERARCHY, hierarchy.reverse())
+            pipelineProducer.runHierarchy(hierarchy.reverse())
             return
         }
         pipelineService.run(pipelineId)

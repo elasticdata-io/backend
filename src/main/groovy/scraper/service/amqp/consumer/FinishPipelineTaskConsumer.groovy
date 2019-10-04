@@ -1,12 +1,10 @@
-package scraper.service.consumer
+package scraper.service.amqp.consumer
 
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
-import groovyx.net.http.HTTPBuilder
 import org.apache.http.HttpEntity
 import org.apache.http.NameValuePair
 import org.apache.http.client.entity.UrlEncodedFormEntity
-import org.apache.http.client.methods.CloseableHttpResponse
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClients
@@ -16,11 +14,11 @@ import org.apache.logging.log4j.Logger
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import scraper.service.amqp.QueueConstants
 import scraper.service.model.Pipeline
 import scraper.service.model.PipelineHook
 import scraper.service.model.PipelineTask
 import scraper.service.repository.PipelineHookRepository
-import scraper.service.repository.PipelineTaskRepository
 import scraper.service.service.PipelineTaskService
 
 @Component

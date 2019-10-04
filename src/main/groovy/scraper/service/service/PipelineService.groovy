@@ -2,7 +2,6 @@ package scraper.service.service
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.beans.factory.support.DefaultListableBeanFactory
@@ -18,10 +17,11 @@ import scraper.core.pipeline.Environment
 import scraper.core.pipeline.PipelineBuilder
 import scraper.core.pipeline.PipelineProcess
 import scraper.core.pipeline.data.AbstractStore
+import scraper.service.amqp.producer.PipelineTaskProducer
 import scraper.service.constants.PipelineStatuses
-import scraper.service.consumer.QueueConstants
 import scraper.service.controller.listener.PipelineBrowserProviderObserver
 import scraper.service.controller.listener.PipelineStoreObserver
+import scraper.service.dto.mapper.PipelineMapper
 import scraper.service.elastic.ElasticSearchService
 import scraper.service.model.Pipeline
 import scraper.service.model.PipelineTask
@@ -61,11 +61,8 @@ class PipelineService {
     @Autowired
     private ElasticSearchService elasticSearchService
 
-    @Value('${spring.rabbitmq.topicExchangeName}')
-    String topicExchangeName
-
     @Autowired
-    RabbitTemplate rabbitTemplate
+    PipelineTaskProducer pipelineTaskProducer
 
     @Autowired
     ProxyAssigner proxyAssigner
@@ -89,9 +86,9 @@ class PipelineService {
     }
 
     void notifyChangePipeline(Pipeline pipeline) {
-        // TODO send message only watched user
         String channel = '/pipeline/change/' + pipeline.user.id
-        messagingTemplate.convertAndSend(channel, pipeline)
+        def pipelineDto = PipelineMapper.toPipelineDto(pipeline)
+        messagingTemplate.convertAndSend(channel, pipelineDto)
     }
 
     void stop(String pipelineId) {
@@ -154,7 +151,7 @@ class PipelineService {
         pipelineRepository.save(pipeline)
         destroyPipelineProcess(pipeline)
         notifyChangePipeline(pipeline)
-        rabbitTemplate.convertAndSend(topicExchangeName, QueueConstants.PIPELINE_TASK_FINISH, pipelineTask.id)
+        pipelineTaskProducer.taskFinish(pipelineTask.id)
         if (dataList) {
             uploadDataToElastic(dataList as List<HashMap>, pipelineTask)
         }

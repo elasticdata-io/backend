@@ -13,8 +13,10 @@ class PipelineBrowserProviderObserver implements Observer {
     PipelineWebsockerProducer pipelineWebsockerProducer
     PipelineTask pipelineTask
 
-    PipelineBrowserProviderObserver(BrowserProvider browserProvider,
-                                    PipelineWebsockerProducer pipelineWebsockerProducer, PipelineTask pipelineTask) {
+    PipelineBrowserProviderObserver(
+            BrowserProvider browserProvider,
+            PipelineWebsockerProducer pipelineWebsockerProducer,
+            PipelineTask pipelineTask) {
         this.browserProvider = browserProvider
         this.pipelineWebsockerProducer = pipelineWebsockerProducer
         this.pipelineTask = pipelineTask

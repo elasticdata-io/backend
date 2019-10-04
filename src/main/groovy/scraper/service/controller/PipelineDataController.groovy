@@ -1,8 +1,9 @@
-package scraper.service.controller.data
+package scraper.service.controller
 
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.data.domain.PageRequest
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -11,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import scraper.service.data.converter.CsvDataConverter
 import scraper.service.dto.mapper.PipelineMapper
 import scraper.service.dto.model.user.PipelineDto
 import scraper.service.model.Pipeline
 import scraper.service.model.PipelineStatus
+import scraper.service.model.PipelineTask
 import scraper.service.model.User
 import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineStatusRepository
@@ -26,6 +29,7 @@ import scraper.service.service.PipelineService
 import scraper.service.service.UserService
 
 import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequestMapping("/pipeline")
@@ -57,6 +61,9 @@ class PipelineDataController {
 
     @Autowired
     TokenService tokenService
+
+    @Autowired
+    CsvDataConverter csvConverter
 
     @RequestMapping('/{id}')
     PipelineDto get(@PathVariable String id) {
@@ -139,6 +146,41 @@ class PipelineDataController {
         pipelineRepository.delete(pipeline.get())
     }
 
+    /**
+     * Gets last parsed data by pipeline pipelineId.
+     * @param pipelineId
+     * @return Last parsed data by pipeline pipelineId.
+     */
+    @RequestMapping("/data/{pipelineId}")
+    List<HashMap> getData(@PathVariable String pipelineId) {
+        PageRequest page = new PageRequest(0, 1)
+        List<PipelineTask> pipelineTasks = pipelineTaskRepository
+                .findOneByPipelineAndErrorOrderByStartOnDesc(pipelineId, null, page)
+        if (pipelineTasks.size() == 0) {
+            return
+        }
+        return pipelineTasks.first().data as List<HashMap>
+    }
+
+    /**
+     * Gets last parsed data by pipeline pipelineId.
+     * @param pipelineId
+     * @return Last parsed data by pipeline pipelineId.
+     */
+    @RequestMapping("/data/csv/{pipelineId}")
+    List<HashMap> getCsvData(@PathVariable String pipelineId, HttpServletResponse response) {
+        PageRequest page = new PageRequest(0, 1)
+        List<PipelineTask> pipelineTasks = pipelineTaskRepository
+                .findOneByPipelineAndErrorOrderByStartOnDesc(pipelineId, null, page)
+        if (pipelineTasks.size() == 0) {
+            return
+        }
+        List<HashMap> list = pipelineTasks.first().data as List<HashMap>
+        String responseData = csvConverter.toCsv(list)
+        response.setContentType("text/csv; charset=utf-8")
+        response.setHeader("Content-disposition", "attachment;filename=${pipelineId}.csv")
+        response.getWriter().print(responseData)
+    }
 
     @GetMapping("uuid")
     String uuid() {

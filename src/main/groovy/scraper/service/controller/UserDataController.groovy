@@ -1,4 +1,4 @@
-package scraper.service.controller.data
+package scraper.service.controller
 
 import io.jsonwebtoken.Claims
 import org.springframework.beans.factory.annotation.Autowired

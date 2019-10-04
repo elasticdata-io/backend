@@ -51,9 +51,6 @@ class PipelineController {
     PipelineStructureService pipelineStructure
 
     @Autowired
-    CsvDataConverter csvConverter
-
-    @Autowired
     PipelineService pipelineService
 
     @Autowired
@@ -93,50 +90,6 @@ class PipelineController {
         pipelineRepository.save(pipeline)
         pipelineProducer.stop(id)
         return pipeline
-    }
-
-    /**
-     * Gets last parsed data by pipeline pipelineId.
-     * @param pipelineId
-     * @return Last parsed data by pipeline pipelineId.
-     */
-    @RequestMapping("/data/{pipelineId}")
-    List<HashMap> getData(@PathVariable String pipelineId) {
-        PageRequest page = new PageRequest(0, 1)
-        List<PipelineTask> pipelineTasks = pipelineTaskRepository
-                .findOneByPipelineAndErrorOrderByStartOnDesc(pipelineId, null, page)
-        if (pipelineTasks.size() == 0) {
-            return
-        }
-        return pipelineTasks.first().data as List<HashMap>
-    }
-
-    /**
-     * Gets last parsed data by pipeline pipelineId.
-     * @param pipelineId
-     * @return Last parsed data by pipeline pipelineId.
-     */
-    @RequestMapping("/data/csv/{pipelineId}")
-    List<HashMap> getCsvData(@PathVariable String pipelineId, HttpServletResponse response) {
-        PageRequest page = new PageRequest(0, 1)
-        List<PipelineTask> pipelineTasks = pipelineTaskRepository
-                .findOneByPipelineAndErrorOrderByStartOnDesc(pipelineId, null, page)
-        if (pipelineTasks.size() == 0) {
-            return
-        }
-        List<HashMap> list = pipelineTasks.first().data as List<HashMap>
-        String responseData = csvConverter.toCsv(list)
-        response.setContentType("text/csv; charset=utf-8")
-        response.setHeader("Content-disposition", "attachment;filename=${pipelineId}.csv")
-        response.getWriter().print(responseData)
-    }
-
-    /**
-     * Kill all chromedriver instances
-     */
-    @RequestMapping("/kill-all-chrome-driver")
-    void killAllChromeDriver() {
-        Runtime.getRuntime().exec('killall chromedriver')
     }
 
     @RequestMapping("/user-input/list/{pipelineId}")

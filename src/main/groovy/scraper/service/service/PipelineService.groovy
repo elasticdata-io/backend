@@ -18,7 +18,7 @@ import scraper.core.pipeline.PipelineProcess
 import scraper.core.pipeline.data.ObservableStore
 import scraper.service.amqp.producer.PipelineTaskProducer
 import scraper.service.constants.PipelineStatuses
-import scraper.service.controller.listener.PipelineBrowserProviderObserver
+import scraper.service.controller.listener.PipelineStateCommandsObserver
 import scraper.service.controller.listener.PipelineStoreObserver
 import scraper.service.dto.mapper.PipelineMapper
 import scraper.service.elastic.ElasticSearchService
@@ -268,13 +268,13 @@ class PipelineService {
 
     private void bindStoreObserver(PipelineProcess pipelineProcess, PipelineTask pipelineTask) {
         ObservableStore store = pipelineProcess.getStore()
-        PipelineStoreObserver storeObserver = new PipelineStoreObserver(pipelineWebsockerProducer, pipelineTask)
-        store.subscribe(storeObserver)
+        def observer = new PipelineStoreObserver(pipelineWebsockerProducer, pipelineTask)
+        store.subscribe(observer)
     }
 
     private void bindCommandObserver(PipelineProcess pipelineProcess, PipelineTask pipelineTask) {
         BrowserProvider browserProvider = pipelineProcess.getBrowserProvider()
-        def observer = new PipelineBrowserProviderObserver(pipelineWebsockerProducer, pipelineTask)
+        def observer = new PipelineStateCommandsObserver(pipelineWebsockerProducer, pipelineTask)
         browserProvider.subscribe(observer)
     }
 

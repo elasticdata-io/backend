@@ -9,12 +9,12 @@ import scraper.service.model.User
 import scraper.service.ws.PipelineWebsockerProducer
 import io.reactivex.Observer
 
-class PipelineBrowserProviderObserver implements Observer {
+class PipelineStateCommandsObserver implements Observer {
 
     PipelineWebsockerProducer pipelineWebsockerProducer
     PipelineTask pipelineTask
 
-    PipelineBrowserProviderObserver(PipelineWebsockerProducer pipelineWebsockerProducer, PipelineTask pipelineTask) {
+    PipelineStateCommandsObserver(PipelineWebsockerProducer pipelineWebsockerProducer, PipelineTask pipelineTask) {
         this.pipelineWebsockerProducer = pipelineWebsockerProducer
         this.pipelineTask = pipelineTask
     }

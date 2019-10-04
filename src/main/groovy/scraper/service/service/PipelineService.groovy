@@ -39,8 +39,10 @@ class PipelineService {
 
     private DefaultListableBeanFactory beanFactory
 
-    private String RUN_DIRECTORY = '/tmp/scraper-service'
     private Class DEFAULT_BROWSER = Chrome.class
+
+    @Value('${static.runDirectory}')
+    private String RUN_DIRECTORY
 
     @Value('${selenium.default.address}')
     String SELENIUM_DEFAULT_ADDRESS

@@ -9,6 +9,7 @@ import org.springframework.amqp.rabbit.config.RetryInterceptorBuilder
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory
 import org.springframework.amqp.rabbit.connection.ConnectionFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -36,6 +37,9 @@ class RabbitConfiguration {
 
     @Value('${spring.rabbitmq.topicExchangeName}')
     String topicExchangeName
+
+    @Autowired
+    QueueConstants queueConstants
 
     @Bean
     ConnectionFactory connectionFactory() {
@@ -69,7 +73,7 @@ class RabbitConfiguration {
 
     @Bean
     Queue pipelineRunQueue() {
-        return new Queue(QueueConstants.PIPELINE_RUN)
+        return new Queue(queueConstants.PIPELINE_RUN)
     }
 
     @Bean
@@ -77,12 +81,12 @@ class RabbitConfiguration {
         return BindingBuilder
                 .bind(pipelineRunQueue)
                 .to(exchange)
-                .with(QueueConstants.PIPELINE_RUN)
+                .with(queueConstants.PIPELINE_RUN)
     }
 
     @Bean
     Queue pipelineStopQueue() {
-        return new Queue(QueueConstants.PIPELINE_STOP)
+        return new Queue(queueConstants.PIPELINE_STOP)
     }
 
     @Bean
@@ -90,12 +94,12 @@ class RabbitConfiguration {
         return BindingBuilder
                 .bind(pipelineStopQueue)
                 .to(exchange)
-                .with(QueueConstants.PIPELINE_STOP)
+                .with(queueConstants.PIPELINE_STOP)
     }
 
     @Bean
     Queue pipelineTaskFinishQueue() {
-        return new Queue(QueueConstants.PIPELINE_TASK_FINISH)
+        return new Queue(queueConstants.PIPELINE_TASK_FINISH)
     }
 
     @Bean
@@ -103,12 +107,12 @@ class RabbitConfiguration {
         return BindingBuilder
                 .bind(pipelineTaskFinishQueue)
                 .to(exchange)
-                .with(QueueConstants.PIPELINE_TASK_FINISH)
+                .with(queueConstants.PIPELINE_TASK_FINISH)
     }
 
     @Bean
     Queue pipelineRunHierarchyQueue() {
-        return new Queue(QueueConstants.PIPELINE_RUN_HIERARCHY)
+        return new Queue(queueConstants.PIPELINE_RUN_HIERARCHY)
     }
 
     @Bean
@@ -116,7 +120,7 @@ class RabbitConfiguration {
         return BindingBuilder
                 .bind(pipelineRunHierarchyQueue)
                 .to(exchange)
-                .with(QueueConstants.PIPELINE_RUN_HIERARCHY)
+                .with(queueConstants.PIPELINE_RUN_HIERARCHY)
     }
 
 }

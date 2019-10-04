@@ -30,16 +30,19 @@ class PipelineRunnerConsumer {
     @Autowired
     PipelineStructureService pipelineStructureService
 
+    @Autowired
+    QueueConstants queueConstants
+
     /**
      * Listener for run pipeline.
      * @param pipelineId Running pipeline pipelineId.
      */
-    @RabbitListener(queues = QueueConstants.PIPELINE_RUN, containerFactory="defaultConnectionFactory")
+    @RabbitListener(queues = '#{queueConstants.PIPELINE_RUN}', containerFactory="defaultConnectionFactory")
     void runPipelineFromQueueWorker(String pipelineId) {
         runPipelineFromQueue(pipelineId)
     }
 
-    @RabbitListener(queues = QueueConstants.PIPELINE_STOP, containerFactory="defaultConnectionFactory")
+    @RabbitListener(queues = '#{queueConstants.PIPELINE_STOP}', containerFactory="defaultConnectionFactory")
     void stopPipelineFromQueueWorker(String pipelineId) {
         pipelineService.stop(pipelineId)
     }
@@ -48,7 +51,7 @@ class PipelineRunnerConsumer {
      * Runs hierarchy dependents pipelines.
      * @param hierarchy
      */
-    @RabbitListener(queues = QueueConstants.PIPELINE_RUN_HIERARCHY, containerFactory="defaultConnectionFactory")
+    @RabbitListener(queues = '#{queueConstants.PIPELINE_RUN_HIERARCHY}', containerFactory="defaultConnectionFactory")
     void runDependentsHierarchyPipelines(List<String> hierarchy) {
         String pipelineId = hierarchy.remove(0)
         pipelineService.run(pipelineId)

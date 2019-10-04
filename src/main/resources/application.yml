@@ -52,6 +52,11 @@ spring:
     username: ${RABBITMQ_USER:user}
     password: ${RABBITMQ_PASSWORD:password}
     topicExchangeName: ${RABBITMQ_EXCHANGE_NAME:test-exchange}
+    queue:
+      pipelineRun: ${RABBITMQ_QUEUE_PIPELINE_RUN:PIPELINE_RUN}
+      pipelineRunHierarchy: ${RABBITMQ_QUEUE_PIPELINE_RUN_HIERARCHY:PIPELINE_RUN_HIERARCHY}
+      pipelineStop: ${RABBITMQ_QUEUE_PIPELINE_STOP:PIPELINE_STOP}
+      pipelineTaskFinish: ${RABBITMQ_QUEUE_PIPELINE_TASK_FINISH:PIPELINE_TASK_FINISH}
   resources:
     chain:
       strategy:

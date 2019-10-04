@@ -12,7 +12,7 @@ import scraper.core.command.input.UserInput
 import scraper.service.amqp.producer.PipelineProducer
 import scraper.service.constants.PipelineStatuses
 import scraper.service.dto.mapper.PipelineMapper
-import scraper.service.dto.model.user.PipelineDto
+import scraper.service.dto.model.pipeline.PipelineDto
 import scraper.service.model.Pipeline
 import scraper.service.service.PipelineInputService
 import scraper.service.service.PipelineService

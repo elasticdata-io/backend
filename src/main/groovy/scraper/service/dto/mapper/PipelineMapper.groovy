@@ -1,7 +1,7 @@
 package scraper.service.dto.mapper
 
 import org.springframework.stereotype.Component
-import scraper.service.dto.model.user.PipelineDto
+import scraper.service.dto.model.pipeline.PipelineDto
 import scraper.service.model.Pipeline
 
 @Component

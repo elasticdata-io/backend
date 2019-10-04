@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import scraper.service.dto.mapper.PipelineMapper
-import scraper.service.dto.model.user.PipelineDto
+import scraper.service.dto.model.pipeline.PipelineDto
 import scraper.service.model.Pipeline
 import scraper.service.model.PipelineStatus
 import scraper.service.model.PipelineTask

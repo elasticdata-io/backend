@@ -1,4 +1,4 @@
-package scraper.service.dto.model.user
+package scraper.service.dto.model.pipeline
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude

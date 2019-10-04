@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.beans.factory.support.DefaultListableBeanFactory
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ConfigurableApplicationContext
-import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
 import scraper.core.browser.Browser
 import scraper.core.browser.BrowserFactory
@@ -29,6 +28,7 @@ import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineStatusRepository
 import scraper.service.repository.PipelineTaskRepository
 import scraper.service.proxy.ProxyAssigner
+import scraper.service.ws.PipelineWebsockerProducer
 
 import javax.annotation.PostConstruct
 
@@ -76,8 +76,7 @@ class PipelineService {
     private PipelineStructureService pipelineStructure
 
     @Autowired
-    private SimpMessagingTemplate messagingTemplate
-
+    private PipelineWebsockerProducer pipelineWebsockerProducer
 
     void run(String pipelineId) {
         Pipeline pipeline = findById(pipelineId)
@@ -85,9 +84,8 @@ class PipelineService {
     }
 
     void notifyChangePipeline(Pipeline pipeline) {
-        String channel = '/pipeline/change/' + pipeline.user.id
         def pipelineDto = PipelineMapper.toPipelineDto(pipeline)
-        messagingTemplate.convertAndSend(channel, pipelineDto)
+        pipelineWebsockerProducer.change(pipelineDto)
     }
 
     void stop(String pipelineId) {
@@ -267,13 +265,13 @@ class PipelineService {
 
     private void bindStoreObserver(PipelineProcess pipelineProcess, PipelineTask pipelineTask) {
         AbstractStore store = pipelineProcess.getStore()
-        PipelineStoreObserver storeObserver = new PipelineStoreObserver(store, messagingTemplate, pipelineTask)
+        PipelineStoreObserver storeObserver = new PipelineStoreObserver(store, pipelineWebsockerProducer, pipelineTask)
         store.addObserver(storeObserver)
     }
 
     private void bindCommandObserver(PipelineProcess pipelineProcess, PipelineTask pipelineTask) {
         BrowserProvider browserProvider = pipelineProcess.getBrowserProvider()
-        def observer = new PipelineBrowserProviderObserver(browserProvider, messagingTemplate, pipelineTask)
+        def observer = new PipelineBrowserProviderObserver(browserProvider, pipelineWebsockerProducer, pipelineTask)
         browserProvider.addObserver(observer)
     }
 

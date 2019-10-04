@@ -13,18 +13,21 @@ class PipelineProducer {
     private String topicExchangeName
 
     @Autowired
+    QueueConstants queueConstants
+
+    @Autowired
     private RabbitTemplate rabbitTemplate
 
     void run(String pipelineId) {
-        rabbitTemplate.convertAndSend(topicExchangeName, QueueConstants.PIPELINE_RUN, pipelineId)
+        rabbitTemplate.convertAndSend(topicExchangeName, queueConstants.PIPELINE_RUN, pipelineId)
     }
 
     void runHierarchy(List<String> pipelineIdList) {
-        rabbitTemplate.convertAndSend(topicExchangeName, QueueConstants.PIPELINE_RUN_HIERARCHY, pipelineIdList)
+        rabbitTemplate.convertAndSend(topicExchangeName, queueConstants.PIPELINE_RUN_HIERARCHY, pipelineIdList)
     }
 
     void stop(String pipelineId) {
-        rabbitTemplate.convertAndSend(topicExchangeName, QueueConstants.PIPELINE_STOP, pipelineId)
+        rabbitTemplate.convertAndSend(topicExchangeName, queueConstants.PIPELINE_STOP, pipelineId)
     }
 
 }

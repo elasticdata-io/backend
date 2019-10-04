@@ -1,8 +1,20 @@
 package scraper.service.amqp
 
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
+
+@Component
 class QueueConstants {
-    public static final String PIPELINE_RUN = "PIPELINE_RUN"
-    public static final String PIPELINE_RUN_HIERARCHY = "PIPELINE_RUN_HIERARCHY"
-    public static final String PIPELINE_STOP = "PIPELINE_STOP"
-    public static final String PIPELINE_TASK_FINISH = "PIPELINE_TASK_FINISH"
+
+    @Value('${spring.rabbitmq.queue.pipelineRun}')
+    String PIPELINE_RUN
+
+    @Value('${spring.rabbitmq.queue.pipelineRunHierarchy}')
+    String PIPELINE_RUN_HIERARCHY
+
+    @Value('${spring.rabbitmq.queue.pipelineStop}')
+    String PIPELINE_STOP
+
+    @Value('${spring.rabbitmq.queue.pipelineTaskFinish}')
+    String PIPELINE_TASK_FINISH
 }

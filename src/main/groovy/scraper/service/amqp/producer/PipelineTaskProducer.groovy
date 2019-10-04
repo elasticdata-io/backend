@@ -13,9 +13,12 @@ class PipelineTaskProducer {
     private String topicExchangeName
 
     @Autowired
+    QueueConstants queueConstants
+
+    @Autowired
     private RabbitTemplate rabbitTemplate
 
     void taskFinish(String pipelineTaskId) {
-        rabbitTemplate.convertAndSend(topicExchangeName, QueueConstants.PIPELINE_TASK_FINISH, pipelineTaskId)
+        rabbitTemplate.convertAndSend(topicExchangeName, queueConstants.PIPELINE_TASK_FINISH, pipelineTaskId)
     }
 }

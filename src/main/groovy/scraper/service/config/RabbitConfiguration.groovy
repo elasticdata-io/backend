@@ -18,7 +18,7 @@ import scraper.service.amqp.QueueConstants
 @Configuration
 class RabbitConfiguration {
 
-    final int CONCURRENT_CONSUMERS = 1
+    final int CONCURRENT_CONSUMERS = 3
 
     final int MAX_CONCURRENT_CONSUMERS = 5
 

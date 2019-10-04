@@ -10,7 +10,7 @@ import scraper.service.constants.PipelineStatuses
 import scraper.service.model.Pipeline
 import scraper.service.repository.PipelineStatusRepository
 import scraper.service.service.PipelineService
-import scraper.service.util.PipelineStructureService
+import scraper.service.service.PipelineStructureService
 
 @Component
 class PipelineRunnerConsumer {

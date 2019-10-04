@@ -2,10 +2,7 @@ package scraper.service.controller
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.data.domain.PageRequest
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -14,20 +11,15 @@ import org.springframework.web.bind.annotation.RestController
 import scraper.core.command.input.UserInput
 import scraper.service.amqp.producer.PipelineProducer
 import scraper.service.constants.PipelineStatuses
-import scraper.service.amqp.QueueConstants
-import scraper.service.data.converter.CsvDataConverter
 import scraper.service.dto.mapper.PipelineMapper
 import scraper.service.dto.model.user.PipelineDto
 import scraper.service.model.Pipeline
-import scraper.service.model.PipelineTask
 import scraper.service.service.PipelineInputService
 import scraper.service.service.PipelineService
 import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineStatusRepository
 import scraper.service.repository.PipelineTaskRepository
-import scraper.service.util.PipelineStructureService
-
-import javax.servlet.http.HttpServletResponse
+import scraper.service.service.PipelineStructureService
 
 @RestController
 @RequestMapping("/pipeline")

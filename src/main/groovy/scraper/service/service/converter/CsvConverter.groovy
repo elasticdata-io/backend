@@ -1,4 +1,4 @@
-package scraper.service.data.converter
+package scraper.service.service.converter
 
 import org.springframework.stereotype.Service
 

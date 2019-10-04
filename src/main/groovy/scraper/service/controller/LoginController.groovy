@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.view.RedirectView
-import scraper.service.controller.response.SimpleResponse
+import scraper.service.dto.SimpleResponse
 import scraper.service.model.User
 import scraper.service.repository.UserRepository
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder

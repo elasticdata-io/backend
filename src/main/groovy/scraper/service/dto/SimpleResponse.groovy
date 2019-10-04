@@ -1,4 +1,4 @@
-package scraper.service.controller.response
+package scraper.service.dto
 
 class SimpleResponse {
 

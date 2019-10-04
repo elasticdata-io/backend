@@ -28,8 +28,7 @@ import scraper.service.model.PipelineTask
 import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineStatusRepository
 import scraper.service.repository.PipelineTaskRepository
-import scraper.service.util.PipelineStructureService
-import scraper.service.util.ProxyAssigner
+import scraper.service.proxy.ProxyAssigner
 
 import javax.annotation.PostConstruct
 

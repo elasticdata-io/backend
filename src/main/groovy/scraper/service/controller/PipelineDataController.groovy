@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import scraper.service.data.converter.CsvDataConverter
 import scraper.service.dto.mapper.PipelineMapper
 import scraper.service.dto.model.user.PipelineDto
 import scraper.service.model.Pipeline
@@ -27,6 +26,7 @@ import scraper.service.repository.UserTokenRepository
 import scraper.service.auth.TokenService
 import scraper.service.service.PipelineService
 import scraper.service.service.UserService
+import scraper.service.service.converter.CsvDataConverter
 
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse

@@ -15,7 +15,7 @@ import scraper.core.browser.provider.Chrome
 import scraper.core.pipeline.Environment
 import scraper.core.pipeline.PipelineBuilder
 import scraper.core.pipeline.PipelineProcess
-import scraper.core.pipeline.data.AbstractStore
+import scraper.core.pipeline.data.ObservableStore
 import scraper.service.amqp.producer.PipelineTaskProducer
 import scraper.service.constants.PipelineStatuses
 import scraper.service.controller.listener.PipelineBrowserProviderObserver
@@ -126,8 +126,11 @@ class PipelineService {
     }
 
     private void afterRun(PipelineTask pipelineTask, PipelineProcess pipelineProcess) {
-        AbstractStore store = pipelineProcess ? pipelineProcess.getStore() : null
-        def dataList = store ? store.getData() : null
+        ObservableStore store = pipelineProcess ? pipelineProcess.getStore() : null
+        def dataList = store ? store.getData() : []
+        if (store) {
+            store.onComplete()
+        }
         pipelineTask.data = dataList
         pipelineTask.endOn = new Date()
 
@@ -264,15 +267,15 @@ class PipelineService {
     }
 
     private void bindStoreObserver(PipelineProcess pipelineProcess, PipelineTask pipelineTask) {
-        AbstractStore store = pipelineProcess.getStore()
-        PipelineStoreObserver storeObserver = new PipelineStoreObserver(store, pipelineWebsockerProducer, pipelineTask)
-        store.addObserver(storeObserver)
+        ObservableStore store = pipelineProcess.getStore()
+        PipelineStoreObserver storeObserver = new PipelineStoreObserver(pipelineWebsockerProducer, pipelineTask)
+        store.subscribe(storeObserver)
     }
 
     private void bindCommandObserver(PipelineProcess pipelineProcess, PipelineTask pipelineTask) {
         BrowserProvider browserProvider = pipelineProcess.getBrowserProvider()
-        def observer = new PipelineBrowserProviderObserver(browserProvider, pipelineWebsockerProducer, pipelineTask)
-        browserProvider.addObserver(observer)
+        def observer = new PipelineBrowserProviderObserver(pipelineWebsockerProducer, pipelineTask)
+        browserProvider.subscribe(observer)
     }
 
     Pipeline findById(String id) {

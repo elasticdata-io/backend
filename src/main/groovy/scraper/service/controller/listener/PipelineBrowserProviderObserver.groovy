@@ -1,30 +1,32 @@
 package scraper.service.controller.listener
 
-import scraper.core.browser.BrowserProvider
+import io.reactivex.annotations.NonNull
+import io.reactivex.disposables.Disposable
 import scraper.core.command.AbstractCommand
 import scraper.service.dto.model.pipeline.PipelineCommandExecuteDto
 import scraper.service.model.PipelineTask
 import scraper.service.model.User
 import scraper.service.ws.PipelineWebsockerProducer
+import io.reactivex.Observer
 
 class PipelineBrowserProviderObserver implements Observer {
 
-    BrowserProvider browserProvider
     PipelineWebsockerProducer pipelineWebsockerProducer
     PipelineTask pipelineTask
 
-    PipelineBrowserProviderObserver(
-            BrowserProvider browserProvider,
-            PipelineWebsockerProducer pipelineWebsockerProducer,
-            PipelineTask pipelineTask) {
-        this.browserProvider = browserProvider
+    PipelineBrowserProviderObserver(PipelineWebsockerProducer pipelineWebsockerProducer, PipelineTask pipelineTask) {
         this.pipelineWebsockerProducer = pipelineWebsockerProducer
         this.pipelineTask = pipelineTask
     }
 
     @Override
-    void update(Observable o, Object arg) {
-        List<AbstractCommand> commands = browserProvider.states
+    void onSubscribe(@NonNull Disposable d) {
+
+    }
+
+    @Override
+    void onNext(@NonNull Object o) {
+        List<AbstractCommand> commands = (List<AbstractCommand>) o
         AbstractCommand command = commands.last()
         User user = pipelineTask.pipeline.user
         def data = new PipelineCommandExecuteDto(
@@ -33,5 +35,15 @@ class PipelineBrowserProviderObserver implements Observer {
                 userId: user.id
         )
         pipelineWebsockerProducer.commandExecute(data)
+    }
+
+    @Override
+    void onError(@NonNull Throwable e) {
+
+    }
+
+    @Override
+    void onComplete() {
+
     }
 }

@@ -33,8 +33,12 @@ class LogsController {
         if (pipelineTask.present) {
             def task = pipelineTask.get()
             String tmpFolder = "${RUN_DIRECTORY}/${task.id}"
-            return new File("${tmpFolder}/pipeline-${task.id}.log").text
+            def file = new File("${tmpFolder}/pipeline-${task.id}.log")
+            if (file.exists()) {
+                return file.text
+            }
         }
+        return 'Logs not founds...'
     }
 
     @RequestMapping('/screenshots/{pipelineTaskId}')

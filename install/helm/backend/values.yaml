@@ -57,6 +57,8 @@ readinessProbe:
   periodSeconds: 15
 
 env:
+  STATIC_RUN_DIRECTORY: /tmp/scraper-service
+
   GOOGLE_SIGNIN_CALLBACK_URL: http://app.elasticdata.io/#/enter/
   FACEBOOK_SIGNIN_CALLBACK_URL: http://app.elasticdata.io/#/enter/
   SELENIUM_DEFAULT_ADDRESS: http://selenoid.selenoid:4444/wd/hub

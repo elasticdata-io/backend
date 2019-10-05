@@ -33,7 +33,7 @@ spec:
               protocol: TCP
           volumeMounts:
             - name: logs-storage
-              mountPath: /tmp/scraper-service
+              mountPath: {{ .Values.env.STATIC_RUN_DIRECTORY }}
           env:
             - name: MONGODB_HOST
               value: mongodb.mongodb
@@ -72,6 +72,8 @@ spec:
               value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_STOP }}
             - name: RABBITMQ_QUEUE_PIPELINE_TASK_FINISH
               value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_TASK_FINISH }}
+            - name: STATIC_RUN_DIRECTORY
+              value: {{ .Values.env.STATIC_RUN_DIRECTORY }}
           livenessProbe:
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds:  {{ .Values.livenessProbe.periodSeconds }}

@@ -31,7 +31,7 @@ class PipelineStateCommandsObserver implements Observer {
         User user = pipelineTask.pipeline.user
         def data = new PipelineCommandExecuteDto(
                 pipelineId: pipelineTask.pipeline.id,
-                commandExecutingName: "${command.getClass().getSimpleName()}_${commands.size()}",
+                commandExecutingName: "${command.getClass().getSimpleName().toLowerCase()}",
                 userId: user.id
         )
         pipelineWebsockerProducer.commandExecute(data)

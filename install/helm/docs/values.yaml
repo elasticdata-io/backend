@@ -20,6 +20,7 @@ ingress:
   enabled: true
   annotations: {}
   host: docs.elasticdata.io
+  secretName: docs-tls-secret
 
   tls: []
   #  - secretName: chart-example-tls

@@ -88,7 +88,7 @@ class LoginController {
 
     @GetMapping("/oauth2/code/facebook")
     RedirectView facebookLogIn(OAuth2AuthenticationToken authentication, HttpServletRequest request) {
-        User user = userService.createOrUpdateFromGoogle(authentication.getPrincipal())
+        User user = userService.createOrUpdateFromFacebook(authentication.getPrincipal())
         RedirectView redirectView = new RedirectView()
         String token = tokenService.makeToken(user.login)
         tokenService.saveUserToken(token, request)

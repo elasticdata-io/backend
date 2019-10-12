@@ -68,6 +68,9 @@ class PipelineDataController {
     @RequestMapping('/{id}')
     PipelineDto get(@PathVariable String id) {
         Pipeline pipeline = pipelineService.findById(id)
+        if (!pipeline) {
+            return
+        }
         pipeline.status = pipeline.status ?: new PipelineStatus()
         return PipelineMapper.toPipelineDto(pipeline)
     }
@@ -132,7 +135,7 @@ class PipelineDataController {
             return PipelineMapper.toPipelineDto(pipeline)
         }
         PipelineStatus status = pipelineStatusRepository.findByTitle('not running')
-        pipeline = new Pipeline(key: key, browser: SELENIUM_DEFAULT_BROWSER, jsonCommands: jsonCommands,
+        pipeline = new Pipeline(id: id, key: key, browser: SELENIUM_DEFAULT_BROWSER, jsonCommands: jsonCommands,
                 user: user, description: description, dependOn: dependOnPipeline, createdOn: new Date(),
                 modifiedOn: new Date(), status: status, runIntervalMin: runIntervalMin,
                 isTakeScreenshot: isTakeScreenshot, isDebugMode: isDebugMode, needProxy: needProxy)

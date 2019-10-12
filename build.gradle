@@ -100,7 +100,7 @@ asciidoctor {
 
     sourceDir = file('docs')
     sources {
-        include '*.adoc', '*.md'
+        include 'index.adoc'
     }
     outputDir = file('build/docs')
     resources {

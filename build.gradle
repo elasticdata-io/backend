@@ -93,11 +93,6 @@ test {
 }
 
 asciidoctor {
-    attributes 'source-highlighter': 'coderay',
-            toc                 : 'left',
-            idprefix            : '',
-            idseparator         : '-'
-
     sourceDir = file('docs')
     sources {
         include 'index.adoc'
@@ -112,7 +107,10 @@ asciidoctor {
     backends = ["html5"]
     options doctype: 'book', eruby: 'erubis'
     attributes  'docinfo': 'shared',
-            // use provided stylesheet
+            'source-highlighter': "coderay",
+            toc: "left",
+            idprefix: "",
+            idseparator: "",
             stylesdir: "css/",
             stylesheet: 'spring.css',
             'linkcss': true,

@@ -99,7 +99,6 @@ spec:
                                     install/helm/backend-logs"
                             }
                             stage('helm upgrade docs') {
-                                sh 'helm rm docs'
                                 sh "helm upgrade --install docs \
                                     -f install/helm/docs/values.yaml \
                                     -f install/helm/docs/${VALUES_FILE} \

@@ -104,6 +104,7 @@ spec:
                                     -f install/helm/docs/values.yaml \
                                     -f install/helm/docs/${VALUES_FILE} \
                                     --version 1.0.${BUILD_NUMBER}\
+                                    --set image.tag=${DOCKER_TAG} \
                                     --namespace scraper \
                                     install/helm/docs"
                             }

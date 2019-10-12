@@ -61,6 +61,13 @@ spec:
                             stage('rm application') {
 
                             }
+
+                            stage('build docs') {
+                                sh 'docker build -f install/Docs.Dockerfile -t localhost:32000/docs:${DOCKER_TAG} .'
+                            }
+                            stage('publish application') {
+                                sh 'docker push localhost:32000/docs:${DOCKER_TAG}'
+                            }
                         }
                         container('k8s-helm') {
                             stage('SET ENV') {
@@ -90,6 +97,14 @@ spec:
                                     --version 1.0.${BUILD_NUMBER}\
                                     --namespace scraper \
                                     install/helm/backend-logs"
+                            }
+                            stage('helm upgrade docs') {
+                                sh "helm upgrade --install docs \
+                                    -f install/helm/docs/values.yaml \
+                                    -f install/helm/docs/${VALUES_FILE} \
+                                    --version 1.0.${BUILD_NUMBER}\
+                                    --namespace scraper \
+                                    install/helm/docs"
                             }
                         }
                     }

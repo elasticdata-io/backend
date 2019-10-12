@@ -92,8 +92,6 @@ test {
     }
 }
 
-
-
 asciidoctor {
     attributes 'source-highlighter': 'coderay',
             toc                 : 'left',

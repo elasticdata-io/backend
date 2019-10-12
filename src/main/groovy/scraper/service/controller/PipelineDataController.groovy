@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import scraper.service.constants.PipelineStatuses
 import scraper.service.dto.mapper.PipelineMapper
 import scraper.service.dto.model.pipeline.PipelineDto
 import scraper.service.model.Pipeline
@@ -147,6 +148,27 @@ class PipelineDataController {
     void delete(@PathVariable String id) {
         def pipeline = pipelineRepository.findById(id)
         pipelineRepository.delete(pipeline.get())
+    }
+
+    @PostMapping("/clone/{id}")
+    PipelineDto clone(@PathVariable String id) {
+        Optional<Pipeline> pipelineOptional = pipelineRepository.findById(id)
+        if (!pipelineOptional.present) {
+            return
+        }
+        Pipeline clonePipeline = pipelineOptional.get()
+        clonePipeline.id = null
+        clonePipeline.key = "${clonePipeline.key} (копія)"
+        clonePipeline.tasksTotal = 0
+        clonePipeline.parseRowsCount = 0
+        clonePipeline.runIntervalMin = 0
+        clonePipeline.createdOn = new Date()
+        clonePipeline.modifiedOn = new Date()
+        clonePipeline.lastStartedOn = null
+        clonePipeline.lastCompletedOn = null
+        clonePipeline.status = pipelineStatusRepository.findByTitle(PipelineStatuses.NOT_RUNNING)
+        pipelineService.save(clonePipeline)
+        return PipelineMapper.toPipelineDto(clonePipeline)
     }
 
     /**

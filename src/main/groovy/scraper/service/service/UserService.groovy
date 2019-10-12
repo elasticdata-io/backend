@@ -49,4 +49,28 @@ class UserService {
         }
         return user
     }
+
+    User createOrUpdateFromFacebook(OAuth2User principal) {
+        def attributes = principal.attributes
+        def email = attributes.email as String
+        def firstName = attributes['given_name'] as String
+        def lastName = attributes['last_name'] as String
+        def facebookUserId = attributes['id'] as String
+        //def picture = attributes['picture'] as String
+
+        def user = userRepository.findByEmail(email)
+        if (!user) {
+            user = new User(
+                    email: email,
+                    firstName: firstName,
+                    lastName: lastName,
+                    facebookUserId: facebookUserId,
+                    //picture: picture,
+                    login: email,
+                    isActive: true,
+            )
+            userRepository.save(user)
+        }
+        return user
+    }
 }

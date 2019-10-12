@@ -87,18 +87,13 @@ class LoginController {
     }
 
     @GetMapping("/oauth2/code/facebook")
-    RedirectView facebookLogIn(OAuth2AuthenticationToken authentication) {
-        OAuth2User principal = authentication.getPrincipal()
-        //User user = userService.upsertUserFromFacebookSignIn(principal)
-        //UserProfile defaultUserProfile = userProfileService.createDefaultUserProfile(user)
-        Map<String, String> userProfilePayload = new HashMap<>()
-        //userProfilePayload.put("initialUserProfileId", defaultUserProfile.id.toString())
-        //userProfilePayload.put("currentUserProfileId", defaultUserProfile.id.toString())
-        //userProfilePayload.put("userId", user.id.toString())
-        //String token = tokenService.generateToken(defaultUserProfile, userProfilePayload)
+    RedirectView facebookLogIn(OAuth2AuthenticationToken authentication, HttpServletRequest request) {
+        User user = userService.createOrUpdateFromGoogle(authentication.getPrincipal())
         RedirectView redirectView = new RedirectView()
-        //redirectView.setUrl(facebookSignInCallbackUrl + user.id + "?token=" + token)
-        redirectView.setUrl(facebookSignInCallbackUrl)
+        String token = tokenService.makeToken(user.login)
+        tokenService.saveUserToken(token, request)
+        def redirectUrl = facebookSignInCallbackUrl + "${user.id}?token=${token}"
+        redirectView.setUrl(redirectUrl)
         return redirectView
     }
 

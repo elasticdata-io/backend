@@ -31,6 +31,20 @@ WARNING: Цей розділ на модерації
 
 == Перелік інструкцій (команд) для збору данних
 
+* link:++#url++[Url]
+* link:++#gettext++[GetText]
+* link:++#gethtml++[GetHtml]
+* link:++#geturl++[GetUrl]
+* link:++#puttext++[PutText]
+* link:++#click++[Click]
+* link:++#nativeclick++[NativeClick]
+* link:++#hover++[Hover]
+* link:++#js++[Js]
+* link:++#loop++[Loop]
+* link:++#condition++[Condition]
+* link:++#waitelement++[WaitElement]
+* link:++#wait++[Wait]
+
 [#url]
 === 1. Url - завантажити сторінку за url адресою
 

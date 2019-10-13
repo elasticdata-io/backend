@@ -26,12 +26,12 @@ class PipelineStateCommandsObserver implements Observer {
 
     @Override
     void onNext(@NonNull Object o) {
-        List<AbstractCommand> commands = (List<AbstractCommand>) o
-        AbstractCommand command = commands.last()
+        AbstractCommand command = (AbstractCommand) o
         User user = pipelineTask.pipeline.user
         def data = new PipelineCommandExecuteDto(
                 pipelineId: pipelineTask.pipeline.id,
                 commandExecutingName: "${command.getClass().getSimpleName().toLowerCase()}",
+                commandExecuting: "${command.toString()}",
                 userId: user.id
         )
         pipelineWebsockerProducer.commandExecute(data)

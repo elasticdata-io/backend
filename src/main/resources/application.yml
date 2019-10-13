@@ -7,10 +7,10 @@ server:
 security:
   facebookSignInCallbackUrl: ${FACEBOOK_SIGNIN_CALLBACK_URL:http://localhost:8080/#/enter/}
   googleSignInCallbackUrl: ${GOOGLE_SIGNIN_CALLBACK_URL:http://localhost:8080/#/enter/}
-#elasticsearch:
-#  host: ${ES_HOST_NAME:localhost}
-#  httpPort: ${ES_HTTP_PORT:9200}
-#  tcpPort: ${ES_TCP_PORT:9300}
+elasticsearch:
+  host: ${ES_HOST_NAME:k8s}
+  httpPort: ${ES_HTTP_PORT:32714}
+  enabled: ${ES_ENABLED:true}
 spring:
   security:
     oauth2:
@@ -81,10 +81,6 @@ management:
 
 proxy.tor: ${PROXY_TOR:rotating-proxy:5566}
 proxy.service.url: ${PROXY_SERVICE_URL:http://localhost:8081/proxy/fast}
-
-elasticsearch.enabled: false
-elasticsearch.host: 37.57.124.190
-elasticsearch.port: 9300
 
 selenium.default.address: ${SELENIUM_DEFAULT_ADDRESS:http://k8s:32213/wd/hub}
 selenium.default.browser: ${SELENIUM_DEFAULT_BROWSER:chrome}

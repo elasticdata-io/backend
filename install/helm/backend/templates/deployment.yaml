@@ -74,6 +74,13 @@ spec:
               value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_TASK_FINISH }}
             - name: STATIC_RUN_DIRECTORY
               value: {{ .Values.env.STATIC_RUN_DIRECTORY }}
+
+            - name: ES_HOST_NAME
+              value: {{ .Values.env.ES_HOST_NAME }}
+            - name: ES_HTTP_PORT
+              value: {{ .Values.env.ES_HTTP_PORT }}
+            - name: ES_ENABLED
+              value: {{ .Values.env.ES_ENABLED }}
           livenessProbe:
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds:  {{ .Values.livenessProbe.periodSeconds }}

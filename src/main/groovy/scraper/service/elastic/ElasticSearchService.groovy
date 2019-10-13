@@ -1,13 +1,18 @@
 package scraper.service.elastic
 
+import groovy.json.JsonBuilder
+import org.apache.http.HttpHost
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.elasticsearch.action.bulk.BulkRequestBuilder
+import org.elasticsearch.action.bulk.BulkRequest
 import org.elasticsearch.action.bulk.BulkResponse
-import org.elasticsearch.client.transport.TransportClient
-import org.elasticsearch.common.settings.Settings
-//import org.elasticsearch.common.transport.InetSocketTransportAddress
-import org.elasticsearch.transport.client.PreBuiltTransportClient
+import org.elasticsearch.action.index.IndexRequest
+import org.elasticsearch.client.RequestOptions
+import org.elasticsearch.client.RestClient
+import org.elasticsearch.client.RestClientBuilder
+import org.elasticsearch.client.RestHighLevelClient
+import org.elasticsearch.client.indices.CreateIndexRequest
+import org.elasticsearch.common.xcontent.XContentType
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
@@ -21,42 +26,40 @@ class ElasticSearchService {
     @Value('${elasticsearch.host}')
     String host
 
-    @Value('${elasticsearch.port}')
+    @Value('${elasticsearch.httpPort}')
     Integer port
 
     @Value('${elasticsearch.enabled}')
     Boolean enabled
 
-    TransportClient client
+    RestHighLevelClient client
 
     @PostConstruct
     void init () {
         if (!enabled) {
             return
         }
-        try {
-            Settings settings = Settings.builder()
-                    .put("client.transport.ping_timeout", "150s")
-                    .put("client.transport.ignore_cluster_name", true)
-                    .put("client.transport.sniff", false)
-                    .build()
-            def address = InetAddress.getByName(host)
-           // client = new PreBuiltTransportClient(settings)
-            //        .addTransportAddress(new InetSocketTransportAddress(address, port))
-        } catch (all) {
-            logger.error(all)
-        }
+        RestClientBuilder restClientBuilder = RestClient.builder(new HttpHost(host, port))
+        client = new RestHighLevelClient(restClientBuilder)
     }
 
     void bulk(List<HashMap<String, String>> list, String index, String type) {
         if (!client) {
             return
         }
-        BulkRequestBuilder bulkRequest = client.prepareBulk()
+        CreateIndexRequest createIndexRequest = new CreateIndexRequest(index)
+        client
+                .indices()
+                .create(createIndexRequest, RequestOptions.DEFAULT)
+
+        BulkRequest bulkRequest = new BulkRequest()
         list.each { data ->
-            bulkRequest.add(client.prepareIndex(index, type).setSource(data))
+            IndexRequest request = new IndexRequest(index)
+            String json = new JsonBuilder(data).toString()
+            request.source(json, XContentType.JSON)
+            bulkRequest.add(request)
         }
-        BulkResponse bulkResponse = bulkRequest.get()
+        BulkResponse bulkResponse = client.bulk(bulkRequest, RequestOptions.DEFAULT)
         if (bulkResponse.hasFailures()) {
             logger.error(bulkResponse.buildFailureMessage())
         }

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 class PipelineCommandExecuteDto {
-    String commandExecuting
+    String commandExecutingProperties
     String commandExecutingName
     String pipelineId
     String userId

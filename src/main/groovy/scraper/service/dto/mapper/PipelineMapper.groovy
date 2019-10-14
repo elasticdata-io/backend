@@ -27,6 +27,7 @@ class PipelineMapper {
                 dependOn: toPipelineDto(pipeline.dependOn),
                 userId: pipeline.user.id,
                 jsonCommands: pipeline.jsonCommands,
+                lastParseRowsCount: pipeline.parseRowsCount,
         )
     }
 

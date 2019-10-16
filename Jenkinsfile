@@ -16,7 +16,7 @@ spec:
       path: /var/run/docker.sock
   - name: kubeconfig
     hostPath:
-      path: /opt/kubernetes/storage/.kube
+      path: /home/s/.kube
   containers:
   - name: k8s-helm
     image: lachlanevenson/k8s-helm:v2.12.3
@@ -25,7 +25,7 @@ spec:
     tty: true
     volumeMounts:
       - name: kubeconfig
-        mountPath: "/opt/.kube"
+        mountPath: "/home/s/.kube"
   - name: docker
     image: docker
     volumeMounts:
@@ -82,6 +82,13 @@ spec:
                                 }
                             }
                             stage('helm upgrade backend') {
+                                sh "helm temlate \
+                                    -f install/helm/backend/values.yaml \
+                                    -f install/helm/backend/${VALUES_FILE} \
+                                    --version 1.0.${BUILD_NUMBER}\
+                                    --namespace scraper \
+                                    --set image.tag=${DOCKER_TAG} \
+                                    install/helm/backend"
                                 sh "helm upgrade --install backend \
                                     -f install/helm/backend/values.yaml \
                                     -f install/helm/backend/${VALUES_FILE} \
@@ -99,6 +106,7 @@ spec:
                                     install/helm/backend-logs"
                             }
                             stage('helm upgrade docs') {
+
                                 sh "helm upgrade --install docs \
                                     -f install/helm/docs/values.yaml \
                                     -f install/helm/docs/${VALUES_FILE} \

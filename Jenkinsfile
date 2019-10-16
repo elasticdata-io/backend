@@ -82,13 +82,6 @@ spec:
                                 }
                             }
                             stage('helm upgrade backend') {
-                                sh "helm templates \
-                                    -f install/helm/backend/values.yaml \
-                                    -f install/helm/backend/${VALUES_FILE} \
-                                    --version 1.0.${BUILD_NUMBER}\
-                                    --namespace scraper \
-                                    --set image.tag=${DOCKER_TAG} \
-                                    install/helm/backend"
                                 sh 'helm delete --purge backend'
                                 sh "helm upgrade --install backend \
                                     -f install/helm/backend/values.yaml \

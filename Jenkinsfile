@@ -19,7 +19,7 @@ spec:
       path: /home/s/.kube
   containers:
   - name: k8s-helm
-    image: lachlanevenson/k8s-helm:v2.12.3
+    image: lachlanevenson/k8s-helm:v3.0.0-beta.3
     command:
     - cat
     tty: true
@@ -82,7 +82,6 @@ spec:
                                 }
                             }
                             stage('helm upgrade backend') {
-                                sh 'helm delete --purge backend'
                                 sh "helm upgrade --install backend \
                                     -f install/helm/backend/values.yaml \
                                     -f install/helm/backend/${VALUES_FILE} \

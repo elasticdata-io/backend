@@ -18,15 +18,15 @@ class ProxyService {
     int READ_TIMEOUT = 3 * 1000
 
     ProxyModel getFastProxy() {
-        return new ProxyModel(host: 'rotating-proxy', port: 5566)
-//        def data = new URL(proxyServiceUrl).getText(connectTimeout: CONNECT_TIMEOUT, readTimeout: READ_TIMEOUT)
-//        if (!data) {
-//            logger.error("proxy not found, proxyServiceUrl: ${proxyServiceUrl}")
-//            return null
-//        }
-//        def jsonSlurper = new JsonSlurper()
-//        def object = jsonSlurper.parseText(data)
-//        logger.info("proxy found, data: ${data}")
-//        return object as ProxyModel
+        def data = new URL(proxyServiceUrl + "/proxy/fast")
+                .getText(connectTimeout: CONNECT_TIMEOUT, readTimeout: READ_TIMEOUT)
+        if (!data) {
+            logger.error("proxy not found, proxyServiceUrl: ${proxyServiceUrl}")
+            return null
+        }
+        def jsonSlurper = new JsonSlurper()
+        def object = jsonSlurper.parseText(data)
+        logger.info("proxy found, data: ${data}")
+        return object as ProxyModel
     }
 }

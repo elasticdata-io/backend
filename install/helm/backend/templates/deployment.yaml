@@ -81,6 +81,9 @@ spec:
               value: {{ .Values.env.ES_HTTP_PORT | quote }}
             - name: ES_ENABLED
               value: {{ .Values.env.ES_ENABLED | quote }}
+
+            - name: PROXY_SERVICE_URL
+              value: {{ .Values.env.PROXY_SERVICE_URL }}
           livenessProbe:
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds:  {{ .Values.livenessProbe.periodSeconds }}

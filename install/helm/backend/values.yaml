@@ -71,3 +71,5 @@ env:
   ES_HOST_NAME: elasticsearch-master.elasticsearch
   ES_HTTP_PORT: 9200
   ES_ENABLED: true
+
+  PROXY_SERVICE_URL: "http://proxy"

@@ -172,10 +172,10 @@ class PipelineService {
         if (!list) {
             return
         }
-        uploadToElastic(list as List<HashMap<String, String>>, pipelineTask.pipeline.id, pipelineTask.id)
+        uploadToElastic(list as List<HashMap<String, Object>>, pipelineTask.pipeline.id, pipelineTask.id)
     }
 
-    private void uploadToElastic(List<HashMap<String, String>> list, String index, String type) {
+    private void uploadToElastic(List<HashMap<String, Object>> list, String index, String type) {
         elasticSearchService.bulk(list, index, type)
     }
 

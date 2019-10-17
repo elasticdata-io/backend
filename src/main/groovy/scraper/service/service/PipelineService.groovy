@@ -140,7 +140,9 @@ class PipelineService {
         if (pipelineProcess?.hasBeenStopped) {
             status = PipelineStatuses.STOPPED
         }
-        if (!pipelineProcess || pipelineProcess?.hasErrors) {
+        if (!pipelineProcess
+                || pipelineProcess?.hasErrors
+                || pipelineTask.pipeline.status.title == PipelineStatuses.ERROR) {
             status = PipelineStatuses.ERROR
         }
         Pipeline pipeline = findById(pipelineTask.pipeline.id)
@@ -249,6 +251,12 @@ class PipelineService {
             bindCommandObserver(pipelineProcess, pipelineTask)
 
             pipelineProcess.run()
+        } catch (Error error) {
+            logger.error(error)
+            pipelineTask.error = "${error.getClass()}"
+            def errorStatus = pipelineStatusRepository.findByTitle(PipelineStatuses.ERROR)
+            pipelineTask.pipeline.status = errorStatus
+            pipelineTaskRepository.save(pipelineTask)
         } catch (all) {
             logger.error(all)
             pipelineTask.error = "${all.getMessage()}. ${all.printStackTrace()}"

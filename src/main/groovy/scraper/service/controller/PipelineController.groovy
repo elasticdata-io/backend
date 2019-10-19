@@ -15,6 +15,7 @@ import scraper.service.dto.mapper.PipelineMapper
 import scraper.service.dto.model.pipeline.PipelineDto
 import scraper.service.model.Pipeline
 import scraper.service.service.PipelineInputService
+import scraper.service.service.PipelineRunnerService
 import scraper.service.service.PipelineService
 import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineStatusRepository
@@ -48,29 +49,16 @@ class PipelineController {
     @Autowired
     PipelineInputService pipelineInputService
 
+    @Autowired
+    PipelineRunnerService pipelineRunnerService
+
     /**
      * Runs pipeline process by pipeline pipelineId.
      * @param id
      */
     @RequestMapping("/run/{id}")
     PipelineDto addToRunQueue(@PathVariable String id) {
-        Pipeline pipeline = pipelineService.findById(id)
-        String statusTitle = pipeline.status?.title
-        if (!pipeline) {
-            return
-        }
-        if (statusTitle == PipelineStatuses.PENDING
-                || statusTitle == PipelineStatuses.RUNNING
-                || statusTitle == PipelineStatuses.STOPPING
-                || statusTitle == PipelineStatuses.WAIT_OTHER_PIPELINE) {
-            logger.error("pipeline: ${pipeline.id} alredy ${statusTitle}")
-            return
-        }
-        def pendingStatus = pipelineStatusRepository.findByTitle(PipelineStatuses.PENDING)
-        pipeline.status = pendingStatus
-        pipelineRepository.save(pipeline)
-        pipelineProducer.run(id)
-        return PipelineMapper.toPipelineDto(pipeline)
+        return pipelineRunnerService.needRunFromClient(id)
     }
 
     /**

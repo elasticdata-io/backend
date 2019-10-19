@@ -11,12 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import scraper.service.constants.PipelineStatuses
 import scraper.service.dto.mapper.PipelineDependencyMapper
 import scraper.service.dto.mapper.PipelineMapper
-import scraper.service.dto.model.pipeline.PipelineDependencyDto
 import scraper.service.dto.model.pipeline.PipelineDto
 import scraper.service.model.Pipeline
 import scraper.service.model.PipelineStatus
@@ -32,7 +30,6 @@ import scraper.service.service.PipelineService
 import scraper.service.service.UserService
 import scraper.service.service.converter.CsvDataConverter
 
-import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @RestController
@@ -173,7 +170,7 @@ class PipelineDataController {
     List<HashMap> getData(@PathVariable String pipelineId) {
         PageRequest page = new PageRequest(0, 1)
         List<PipelineTask> pipelineTasks = pipelineTaskRepository
-                .findOneByPipelineAndErrorOrderByStartOnDesc(pipelineId, null, page)
+                .findByPipelineAndErrorOrderByStartOnDesc(pipelineId, null, page)
         if (pipelineTasks.size() == 0) {
             return
         }
@@ -189,7 +186,7 @@ class PipelineDataController {
     List<HashMap> getCsvData(@PathVariable String pipelineId, HttpServletResponse response) {
         PageRequest page = new PageRequest(0, 1)
         List<PipelineTask> pipelineTasks = pipelineTaskRepository
-                .findOneByPipelineAndErrorOrderByStartOnDesc(pipelineId, null, page)
+                .findByPipelineAndErrorOrderByStartOnDesc(pipelineId, null, page)
         if (pipelineTasks.size() == 0) {
             return
         }

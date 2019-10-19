@@ -9,4 +9,5 @@ class PipelineStatuses {
     public static ERROR = 'error'
     public static STOPPING = 'stopping'
     public static STOPPED = 'stopped'
+    public static WAIT_OTHER_PIPELINE = 'wait_other_pipeline'
 }

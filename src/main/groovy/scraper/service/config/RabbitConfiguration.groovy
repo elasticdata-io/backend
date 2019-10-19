@@ -124,7 +124,7 @@ class RabbitConfiguration {
         return BindingBuilder
                 .bind(pipelineFinishedQueue)
                 .to(exchange)
-                .with(routingConstants.PIPELINE_TASK_FINISH)
+                .with(routingConstants.PIPELINE_FINISH)
     }
 
     @Bean

@@ -16,6 +16,7 @@ import scraper.core.pipeline.Environment
 import scraper.core.pipeline.PipelineBuilder
 import scraper.core.pipeline.PipelineProcess
 import scraper.core.pipeline.data.ObservableStore
+import scraper.service.amqp.producer.PipelineProducer
 import scraper.service.amqp.producer.PipelineTaskProducer
 import scraper.service.constants.PipelineStatuses
 import scraper.service.controller.listener.PipelineStateCommandsObserver
@@ -64,6 +65,9 @@ class PipelineService {
 
     @Autowired
     PipelineTaskProducer pipelineTaskProducer
+
+    @Autowired
+    PipelineProducer pipelineProducer
 
     @Autowired
     ProxyAssigner proxyAssigner
@@ -155,7 +159,10 @@ class PipelineService {
         pipelineRepository.save(pipeline)
         destroyPipelineProcess(pipeline)
         notifyChangePipeline(pipeline)
+
         pipelineTaskProducer.taskFinish(pipelineTask.id)
+        pipelineProducer.finish(pipeline.id)
+
         if (dataList) {
             uploadDataToElastic(dataList as List<HashMap>, pipelineTask)
         }
@@ -297,4 +304,8 @@ class PipelineService {
         pipelineRepository.save(pipeline)
     }
 
+    Pipeline findByDependenciesAndStatusWaiting(String dependencyPipelineId) {
+        def waitingStatus = pipelineStatusRepository.findByTitle(PipelineStatuses.WAIT_OTHER_PIPELINE)
+        return pipelineRepository.findByDependenciesAndStatus(dependencyPipelineId, waitingStatus.id)
+    }
 }

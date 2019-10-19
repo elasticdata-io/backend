@@ -59,7 +59,8 @@ spring:
       pipelineRunHooks: ${RABBITMQ_QUEUE_PIPELINE_RUN_HOOKS:PIPELINE_RUN_HOOKS}
       pipelineFinished: ${RABBITMQ_QUEUE_PIPELINE_FINISHED:PIPELINE_FINISHED}
     routing:
-      pipelineTaskFinish: PIPELINE_TASK_FINISH.*
+      pipelineTaskFinish: ${RABBITMQ_ROUTING_PIPELINE_TASK_FINISHED:PIPELINE_TASK_FINISH.*}
+      pipelineFinish: ${RABBITMQ_ROUTING_PIPELINE_FINISHED:PIPELINE_FINISH.*}
   resources:
     chain:
       strategy:
@@ -72,6 +73,10 @@ logging:
       springframework:
         security:
           oauth2: DEBUG
+        data:
+          mongodb:
+            core:
+              MongoTemplate: ERROR
 jwt.secret: secret-key-jwt-123
 management:
   health:

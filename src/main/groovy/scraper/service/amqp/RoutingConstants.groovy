@@ -8,4 +8,7 @@ class RoutingConstants {
 
     @Value('${spring.rabbitmq.routing.pipelineTaskFinish}')
     String PIPELINE_TASK_FINISH
+
+    @Value('${spring.rabbitmq.routing.pipelineFinish}')
+    String PIPELINE_FINISH
 }

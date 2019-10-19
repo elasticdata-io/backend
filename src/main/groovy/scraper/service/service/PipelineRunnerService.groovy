@@ -40,6 +40,29 @@ class PipelineRunnerService {
      * @param pipelineId
      * @return
      */
+    PipelineDto needRunFromFinishedDependencies(String pipelineId) {
+        Pipeline pipeline = pipelineService.findById(pipelineId)
+        String statusTitle = pipeline.status?.title
+        if (!pipeline) {
+            return
+        }
+        if (statusTitle == PipelineStatuses.PENDING
+                || statusTitle == PipelineStatuses.RUNNING
+                || statusTitle == PipelineStatuses.STOPPING) {
+            logger.error("pipeline: ${pipeline.id} alredy ${statusTitle}")
+            return
+        }
+        def pendingStatus = pipelineStatusRepository.findByTitle(PipelineStatuses.PENDING)
+        pipeline.status = pendingStatus
+        pipelineRepository.save(pipeline)
+        pipelineProducer.run(pipelineId)
+        return PipelineMapper.toPipelineDto(pipeline)
+    }
+
+    /**
+     * @param pipelineId
+     * @return
+     */
     PipelineDto needRunFromClient(String pipelineId) {
         Pipeline pipeline = pipelineService.findById(pipelineId)
         String statusTitle = pipeline.status?.title

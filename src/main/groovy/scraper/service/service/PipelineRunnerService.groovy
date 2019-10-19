@@ -56,6 +56,7 @@ class PipelineRunnerService {
         pipeline.status = pendingStatus
         pipelineRepository.save(pipeline)
         pipelineProducer.run(pipelineId)
+        pipelineService.notifyChangePipeline(pipeline)
         return PipelineMapper.toPipelineDto(pipeline)
     }
 
@@ -85,12 +86,14 @@ class PipelineRunnerService {
             def waitingStatus = pipelineStatusRepository.findByTitle(PipelineStatuses.WAIT_OTHER_PIPELINE)
             pipeline.status = waitingStatus
             pipelineRepository.save(pipeline)
+            pipelineService.notifyChangePipeline(pipeline)
             return PipelineMapper.toPipelineDto(pipeline)
         }
         def pendingStatus = pipelineStatusRepository.findByTitle(PipelineStatuses.PENDING)
         pipeline.status = pendingStatus
         pipelineRepository.save(pipeline)
         pipelineProducer.run(pipelineId)
+        pipelineService.notifyChangePipeline(pipeline)
         return PipelineMapper.toPipelineDto(pipeline)
     }
 

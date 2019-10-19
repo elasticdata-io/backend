@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import scraper.service.amqp.QueueConstants
+import scraper.service.amqp.RoutingConstants
 
 @Service
 class PipelineTaskProducer {
@@ -13,12 +14,12 @@ class PipelineTaskProducer {
     private String topicExchangeName
 
     @Autowired
-    QueueConstants queueConstants
+    RoutingConstants routingConstants
 
     @Autowired
     private RabbitTemplate rabbitTemplate
 
     void taskFinish(String pipelineTaskId) {
-        rabbitTemplate.convertAndSend(topicExchangeName, queueConstants.PIPELINE_TASK_FINISH, pipelineTaskId)
+        rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.PIPELINE_TASK_FINISH, pipelineTaskId)
     }
 }

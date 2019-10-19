@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.retry.backoff.FixedBackOffPolicy
 import scraper.service.amqp.QueueConstants
+import scraper.service.amqp.RoutingConstants
 
 @Configuration
 class RabbitConfiguration {
@@ -40,6 +41,9 @@ class RabbitConfiguration {
 
     @Autowired
     QueueConstants queueConstants
+
+    @Autowired
+    RoutingConstants routingConstants
 
     @Bean
     ConnectionFactory connectionFactory() {
@@ -98,16 +102,29 @@ class RabbitConfiguration {
     }
 
     @Bean
-    Queue pipelineTaskFinishQueue() {
-        return new Queue(queueConstants.PIPELINE_TASK_FINISH)
+    Queue pipelineRunHooksQueue() {
+        return new Queue(queueConstants.PIPELINE_RUN_HOOKS)
     }
 
     @Bean
-    Binding bindPipelineTaskFinish(final Queue pipelineTaskFinishQueue, final TopicExchange exchange) {
+    Binding bindPipelineRunHooks(final Queue pipelineRunHooksQueue, final TopicExchange exchange) {
         return BindingBuilder
-                .bind(pipelineTaskFinishQueue)
+                .bind(pipelineRunHooksQueue)
                 .to(exchange)
-                .with(queueConstants.PIPELINE_TASK_FINISH)
+                .with(routingConstants.PIPELINE_TASK_FINISH)
+    }
+
+    @Bean
+    Queue pipelineFinishedQueue() {
+        return new Queue(queueConstants.PIPELINE_FINISHED)
+    }
+
+    @Bean
+    Binding bindPipelineFinished(final Queue pipelineFinishedQueue, final TopicExchange exchange) {
+        return BindingBuilder
+                .bind(pipelineFinishedQueue)
+                .to(exchange)
+                .with(routingConstants.PIPELINE_TASK_FINISH)
     }
 
     @Bean

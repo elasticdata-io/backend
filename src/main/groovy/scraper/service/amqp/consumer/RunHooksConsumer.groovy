@@ -22,7 +22,7 @@ import scraper.service.repository.PipelineHookRepository
 import scraper.service.service.PipelineTaskService
 
 @Component
-class FinishPipelineTaskConsumer {
+class RunHooksConsumer {
 
     final String DATA_MARKER = '#DATA#'
     final String PIPELINE_KEY = '#PIPELINE_KEY#'
@@ -45,7 +45,7 @@ class FinishPipelineTaskConsumer {
      * Listener for run pipelineTask.
      * @param pipelineTaskId Id of the finished task pipelineId.
      */
-    @RabbitListener(queues = '#{queueConstants.PIPELINE_TASK_FINISH}', containerFactory="defaultConnectionFactory")
+    @RabbitListener(queues = '#{queueConstants.PIPELINE_RUN_HOOKS}', containerFactory="defaultConnectionFactory")
     void worker(String pipelineTaskId) {
         PipelineTask pipelineTask = pipelineTaskService.findById(pipelineTaskId)
         Pipeline pipeline = pipelineTask.pipeline

@@ -56,7 +56,10 @@ spring:
       pipelineRun: ${RABBITMQ_QUEUE_PIPELINE_RUN:PIPELINE_RUN}
       pipelineRunHierarchy: ${RABBITMQ_QUEUE_PIPELINE_RUN_HIERARCHY:PIPELINE_RUN_HIERARCHY}
       pipelineStop: ${RABBITMQ_QUEUE_PIPELINE_STOP:PIPELINE_STOP}
-      pipelineTaskFinish: ${RABBITMQ_QUEUE_PIPELINE_TASK_FINISH:PIPELINE_TASK_FINISH}
+      pipelineRunHooks: ${RABBITMQ_QUEUE_PIPELINE_RUN_HOOKS:PIPELINE_RUN_HOOKS}
+      pipelineFinished: ${RABBITMQ_QUEUE_PIPELINE_FINISHED:PIPELINE_FINISHED}
+    routing:
+      pipelineTaskFinish: PIPELINE_TASK_FINISH.*
   resources:
     chain:
       strategy:

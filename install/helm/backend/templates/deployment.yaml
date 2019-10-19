@@ -71,9 +71,9 @@ spec:
             - name: RABBITMQ_QUEUE_PIPELINE_STOP
               value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_STOP }}
             - name: RABBITMQ_QUEUE_PIPELINE_RUN_HOOKS
-              value: {{ .Values.env.PIPELINE_RUN_HOOKS }}
+              value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_RUN_HOOKS }}
             - name: RABBITMQ_QUEUE_PIPELINE_FINISHED
-              value: {{ .Values.env.PIPELINE_FINISHED }}
+              value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_FINISHED }}
             - name: STATIC_RUN_DIRECTORY
               value: {{ .Values.env.STATIC_RUN_DIRECTORY }}
 

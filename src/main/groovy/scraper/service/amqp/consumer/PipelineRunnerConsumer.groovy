@@ -48,39 +48,10 @@ class PipelineRunnerConsumer {
     }
 
     /**
-     * Runs hierarchy dependents pipelines.
-     * @param hierarchy
-     */
-    @RabbitListener(queues = '#{queueConstants.PIPELINE_RUN_HIERARCHY}', containerFactory="defaultConnectionFactory")
-    void runDependentsHierarchyPipelines(List<String> hierarchy) {
-        String pipelineId = hierarchy.remove(0)
-        pipelineService.run(pipelineId)
-        Pipeline pipeline = pipelineService.findById(pipelineId)
-        if (pipeline.status.title == PipelineStatuses.ERROR) {
-            // notify pipeline not running because dependents pipeline has error
-            String firstPipelineId = hierarchy.last()
-            Pipeline firstPipeline = pipelineService.findById(firstPipelineId)
-            firstPipeline.status = pipelineStatusRepository.findByTitle(PipelineStatuses.ERROR)
-            pipelineService.save(firstPipeline)
-            String channel = '/pipeline/change/' + pipeline.user.id
-            messagingTemplate.convertAndSend(channel, firstPipeline)
-            return
-        }
-        if (hierarchy.size() > 0) {
-            pipelineProducer.runHierarchy(hierarchy)
-        }
-    }
-
-    /**
      * Build, created instance and runs pipeline by database pipelineId.
      * @param pipelineId Running pipeline pipelineId.
      */
     private void runPipelineFromQueue(String pipelineId) {
-        List<String> hierarchy = pipelineStructureService.getPipelineHierarchy(pipelineId)
-        if (hierarchy.size() > 1) {
-            pipelineProducer.runHierarchy(hierarchy.reverse())
-            return
-        }
         pipelineService.run(pipelineId)
     }
 }

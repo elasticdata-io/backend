@@ -26,10 +26,6 @@ class PipelineProducer {
         rabbitTemplate.convertAndSend(topicExchangeName, queueConstants.PIPELINE_RUN, pipelineId)
     }
 
-    void runHierarchy(List<String> pipelineIdList) {
-        rabbitTemplate.convertAndSend(topicExchangeName, queueConstants.PIPELINE_RUN_HIERARCHY, pipelineIdList)
-    }
-
     void stop(String pipelineId) {
         rabbitTemplate.convertAndSend(topicExchangeName, queueConstants.PIPELINE_STOP, pipelineId)
     }

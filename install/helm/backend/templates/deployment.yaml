@@ -66,8 +66,6 @@ spec:
 
             - name: RABBITMQ_QUEUE_PIPELINE_RUN
               value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_RUN }}
-            - name: RABBITMQ_QUEUE_PIPELINE_RUN_HIERARCHY
-              value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_RUN_HIERARCHY }}
             - name: RABBITMQ_QUEUE_PIPELINE_STOP
               value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_STOP }}
             - name: RABBITMQ_QUEUE_PIPELINE_RUN_HOOKS

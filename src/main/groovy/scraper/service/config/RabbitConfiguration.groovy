@@ -127,17 +127,4 @@ class RabbitConfiguration {
                 .with(routingConstants.PIPELINE_FINISH)
     }
 
-    @Bean
-    Queue pipelineRunHierarchyQueue() {
-        return new Queue(queueConstants.PIPELINE_RUN_HIERARCHY)
-    }
-
-    @Bean
-    Binding bindPipelineRunHierarchy(final Queue pipelineRunHierarchyQueue, final TopicExchange exchange) {
-        return BindingBuilder
-                .bind(pipelineRunHierarchyQueue)
-                .to(exchange)
-                .with(queueConstants.PIPELINE_RUN_HIERARCHY)
-    }
-
 }

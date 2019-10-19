@@ -393,7 +393,7 @@ TIP: Команда *js* дозволяє виконати будь-який jav
     "cmd": "js",
     "params": {
         "script": "return Array.from(document.querySelectorAll('a')).map(x => x.getAttribute('href')).join(',')", <1>
-        "key": "links" <2>
+        "key": "links", <2>
         "timeout": 3 <3>
     }
 }

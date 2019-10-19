@@ -7,6 +7,28 @@ import scraper.service.model.Pipeline
 @Component
 class PipelineMapper {
 
+    static Pipeline toPipeline(PipelineDto pipelineDto) {
+        if (!pipelineDto) {
+            return null
+        }
+        return new Pipeline(
+            id: pipelineDto.id,
+            key: pipelineDto.key,
+            description: pipelineDto.description,
+            isTakeScreenshot: pipelineDto.isTakeScreenshot,
+            isDebugMode: pipelineDto.isDebugMode,
+            needProxy: pipelineDto.needProxy,
+            tasksTotal: pipelineDto.tasksTotal,
+            createdOn: pipelineDto.createdOn,
+            modifiedOn: pipelineDto.modifiedOn,
+            lastStartedOn: pipelineDto.lastStartedOn,
+            lastCompletedOn: pipelineDto.lastCompletedOn,
+            status: PipelineStatusMapper.toPipelineStatus(pipelineDto.status),
+            dependencies: PipelineDependencyMapper.toPipelineDependencies(pipelineDto.dependencies),
+            jsonCommands: pipelineDto.jsonCommands,
+        )
+    }
+
     static PipelineDto toPipelineDto(Pipeline pipeline) {
         if (!pipeline) {
             return null
@@ -24,7 +46,7 @@ class PipelineMapper {
                 lastStartedOn: pipeline.lastStartedOn,
                 lastCompletedOn: pipeline.lastCompletedOn,
                 status: PipelineStatusMapper.toPipelineStatusDto(pipeline.status),
-                dependOn: toPipelineDto(pipeline.dependOn),
+                dependencies: PipelineDependencyMapper.toPipelineDependenciesDto(pipeline.dependencies),
                 userId: pipeline.user.id,
                 jsonCommands: pipeline.jsonCommands,
                 lastParseRowsCount: pipeline.parseRowsCount,

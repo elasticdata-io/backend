@@ -8,10 +8,22 @@ import scraper.service.model.PipelineStatus
 class PipelineStatusMapper {
 
     static PipelineStatusDto toPipelineStatusDto(PipelineStatus pipelineStatus) {
+        if (!pipelineStatus) {
+            return null
+        }
         return new PipelineStatusDto(
-                id: pipelineStatus.id,
-                title: pipelineStatus.title,
+            id: pipelineStatus.id,
+            title: pipelineStatus.title,
         )
     }
 
+    static PipelineStatus toPipelineStatus(PipelineStatusDto pipelineStatusDto) {
+        if (!pipelineStatusDto) {
+            return null
+        }
+        return new PipelineStatus(
+            id: pipelineStatusDto.id,
+            title: pipelineStatusDto.title,
+        )
+    }
 }

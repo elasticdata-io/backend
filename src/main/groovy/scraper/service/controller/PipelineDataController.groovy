@@ -8,12 +8,15 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import scraper.service.constants.PipelineStatuses
+import scraper.service.dto.mapper.PipelineDependencyMapper
 import scraper.service.dto.mapper.PipelineMapper
+import scraper.service.dto.model.pipeline.PipelineDependencyDto
 import scraper.service.dto.model.pipeline.PipelineDto
 import scraper.service.model.Pipeline
 import scraper.service.model.PipelineStatus
@@ -104,42 +107,32 @@ class PipelineDataController {
     }
 
     @PostMapping('/save')
-    PipelineDto add(HttpServletRequest request, @RequestHeader String token, @RequestParam String id) {
+    PipelineDto add(@RequestHeader String token,
+                    @RequestBody PipelineDto pipelineDto) {
         String userId = tokenService.getUserId(token)
         User user = userService.findById(userId)
         if (!user) {
             throw new Exception('user not found by passed token')
         }
-        Pipeline pipeline = pipelineService.findById(id)
-        String key = request.getParameter('key')
-        String description = request.getParameter('description')
-        String dependOn = request.getParameter('dependOn')
-        Pipeline dependOnPipeline = dependOn ? pipelineService.findById(dependOn) : null
-        String jsonCommands = request.getParameter('jsonCommands')
-        boolean isTakeScreenshot = request.getParameter('isTakeScreenshot') == "true" ?: false
-        boolean isDebugMode = request.getParameter('isDebugMode') == "true" ?: false
-        boolean needProxy = request.getParameter('needProxy') == "true" ?: false
-        String browser = request.getParameter('browser') ?: SELENIUM_DEFAULT_BROWSER
-        Integer runIntervalMin = (request.getParameter('runIntervalMin') ?: null) as Integer
-        if (pipeline) {
-            pipeline.browser = browser
-            pipeline.isTakeScreenshot = isTakeScreenshot
-            pipeline.isDebugMode = isDebugMode
-            pipeline.key = key
-            pipeline.description = description
-            pipeline.dependOn = dependOnPipeline
-            pipeline.jsonCommands = jsonCommands
-            pipeline.modifiedOn = new Date()
-            pipeline.runIntervalMin = runIntervalMin
-            pipeline.needProxy = needProxy
-            pipelineRepository.save(pipeline)
-            return PipelineMapper.toPipelineDto(pipeline)
+        def pipelineInDb = pipelineService.findById(pipelineDto.id)
+        Pipeline pipeline = pipelineInDb ?: PipelineMapper.toPipeline(pipelineDto)
+        pipeline.isTakeScreenshot = pipelineDto.isTakeScreenshot
+        pipeline.isDebugMode = pipelineDto.isDebugMode
+        pipeline.key = pipelineDto.key
+        pipeline.description = pipelineDto.description
+        pipeline.jsonCommands = pipelineDto.jsonCommands
+        pipeline.modifiedOn = new Date()
+        pipeline.needProxy = pipelineDto.needProxy
+        pipeline.dependencies = PipelineDependencyMapper.toPipelineDependencies(pipelineDto.dependencies)
+        pipeline.modifiedOn = new Date()
+        if (!pipelineInDb) {
+            PipelineStatus status = pipelineStatusRepository.findByTitle('not running')
+            pipeline.status = status
+            pipeline.createdOn = new Date()
+            pipeline.user = user
+            pipeline.browser = SELENIUM_DEFAULT_BROWSER
+            pipeline.isDebugMode = true
         }
-        PipelineStatus status = pipelineStatusRepository.findByTitle('not running')
-        pipeline = new Pipeline(id: id, key: key, browser: SELENIUM_DEFAULT_BROWSER, jsonCommands: jsonCommands,
-                user: user, description: description, dependOn: dependOnPipeline, createdOn: new Date(),
-                modifiedOn: new Date(), status: status, runIntervalMin: runIntervalMin,
-                isTakeScreenshot: isTakeScreenshot, isDebugMode: isDebugMode, needProxy: needProxy)
         pipelineRepository.save(pipeline)
         return PipelineMapper.toPipelineDto(pipeline)
     }

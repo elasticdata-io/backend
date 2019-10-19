@@ -105,9 +105,15 @@ class Pipeline {
 
     /**
      * Depend on the pipeline.
+     * @deprecated
      */
     @DBRef
     public Pipeline dependOn
+
+    /**
+     * Depend on the pipelines.
+     */
+    public List<PipelineDependency> dependencies
 
     @DBRef
     @JsonIgnore

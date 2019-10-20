@@ -22,5 +22,5 @@ public interface PipelineRepository extends MongoRepository<Pipeline, String> {
 	List<Pipeline> findByStatusNot(PipelineStatus status);
 
 	@Query("{ 'dependencies' : {$elemMatch: {'pipelineId': ?0}}, 'status.id': ?1 }")
-	Pipeline findByDependenciesAndStatus(String dependencyPipelineId, String statusId);
+	List<Pipeline> findByDependenciesAndStatus(String dependencyPipelineId, String statusId);
 }

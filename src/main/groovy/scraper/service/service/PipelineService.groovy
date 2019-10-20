@@ -304,7 +304,7 @@ class PipelineService {
         pipelineRepository.save(pipeline)
     }
 
-    Pipeline findByDependenciesAndStatusWaiting(String dependencyPipelineId) {
+    List<Pipeline> findByDependenciesAndStatusWaiting(String dependencyPipelineId) {
         def waitingStatus = pipelineStatusRepository.findByTitle(PipelineStatuses.WAIT_OTHER_PIPELINE)
         return pipelineRepository.findByDependenciesAndStatus(dependencyPipelineId, waitingStatus.id)
     }

@@ -30,9 +30,8 @@ class PipelineFinishedConsumer {
     @RabbitListener(queues = '#{queueConstants.PIPELINE_FINISHED}', containerFactory="defaultConnectionFactory")
     void worker(String pipelineId) {
         logger.info("finished pipeline: ${pipelineId}")
-        def pipelines = pipelineService.findByDependenciesAndStatusWaiting(pipelineId)
-        if (pipelines.size() == 1) {
-            def pipeline = pipelines.first()
+        def pipeline = pipelineService.findByDependenciesAndStatusWaiting(pipelineId)
+        if (pipeline) {
             logger.info("run deps pipeline: ${pipeline.id}")
             pipelineRunnerService.needRunFromFinishedDependencies(pipeline.id)
         }

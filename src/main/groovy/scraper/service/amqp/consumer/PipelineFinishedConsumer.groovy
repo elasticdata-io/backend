@@ -31,6 +31,7 @@ class PipelineFinishedConsumer {
     void worker(String pipelineId) {
         logger.info("finished pipeline: ${pipelineId}")
         def pipeline = pipelineService.findByDependenciesAndStatusWaiting(pipelineId)
+        // todo: check all dependencies tasks is finished
         if (pipeline) {
             logger.info("run deps pipeline: ${pipeline.id}")
             pipelineRunnerService.needRunFromFinishedDependencies(pipeline.id)

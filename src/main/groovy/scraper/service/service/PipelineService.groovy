@@ -134,9 +134,6 @@ class PipelineService {
     private void afterRun(PipelineTask pipelineTask, PipelineProcess pipelineProcess) {
         ObservableStore store = pipelineProcess ? pipelineProcess.getStore() : null
         def dataList = store ? store.getData() : []
-        if (store) {
-            store.onComplete()
-        }
         pipelineTask.data = dataList
         pipelineTask.endOn = new Date()
 

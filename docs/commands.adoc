@@ -678,7 +678,18 @@ WARNING: Цей розділ на модерації
 
 === 18. Зробити скрішот екрану
 
-WARNING: Цей розділ на модерації
+.Приклак команди getScreenshot
+====
+[source,json]
+----
+{
+    "cmd": "getScreenshot",
+    "params": {
+        "key": "image1"
+    }
+}
+----
+====
 
 
 

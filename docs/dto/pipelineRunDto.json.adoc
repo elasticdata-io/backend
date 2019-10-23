@@ -1,0 +1,14 @@
+[source,json]
+----
+{
+    "jsonCommandsPatch": [
+        {
+            "op": "replace", <1>
+            "path": "/commands/0/params/urls", <2>
+            "value": ["https://www.olx.ua/obyavlenie/tachka-320-kg-IDyE46u.html"]
+        }
+    ]
+}
+----
+<1> Специфікація json patch, детальніше - http://jsonpatch.com/
+<2> Тиким чином відбудется підміна значення urls для першої команди у списку

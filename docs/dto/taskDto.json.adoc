@@ -1,0 +1,13 @@
+[source,json]
+----
+{
+    "taskId": "5da77e12b396a00001950d8b", <1>
+    "status": "pending", <3>
+    "runSuccess": true, <4>
+    "error": "" <5>
+}
+----
+<1> id конкретного запуску
+<2> Поточний статус запуску павука (*pending*, *wait_other_pipeline*, *running*, *completed*, *error*, *stopping*, *stopped*)
+<3> True якщо вийшло запустити павука
+<4> Детальна помилка, якщо не вийшло запустити павука

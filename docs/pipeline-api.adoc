@@ -1,0 +1,29 @@
+[#api]
+== Перелік доступних API викликів
+
+* link:++#run-pipeline++[Запуск павука]
+* link:++#pipeline-data++[Отримання данних]
+
+[#run-pipeline]
+=== 1. Запуск павука
+
+==== Run. Параметри запуску павука
+
+[cols="h,5a"]
+|===
+| URL
+| /api/pipeline/run/*[pipelineId]* +
+де *[pipelineId]* - id павука, який необхідно запустити
+
+| Method
+| POST
+
+| Request Body
+| include::dto/pipelineRunDto.json.adoc[]
+
+| Response Body
+| include::dto/taskDto.json.adoc[]
+|===
+
+WARNING: Павук буде запущений лише тільки якщо поточний статус павука *completed*, *stopped*, або *error*. +
+В усіх інших випадках у response body повернется *taskId* із попереднього запуску і *runSuccess*: false

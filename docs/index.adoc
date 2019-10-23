@@ -1,1 +1,2 @@
 include::commands.adoc[]
+include::pipeline-api.adoc[]

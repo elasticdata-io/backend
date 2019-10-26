@@ -75,6 +75,15 @@ spec:
             - name: STATIC_RUN_DIRECTORY
               value: {{ .Values.env.STATIC_RUN_DIRECTORY }}
 
+            - name: RABBITMQ_ROUTING_PIPELINE_TASK_FINISHED
+              value: {{ .Values.env.RABBITMQ_ROUTING_PIPELINE_TASK_FINISHED }}
+            - name: RABBITMQ_ROUTING_PIPELINE_TASK_RUN
+              value: {{ .Values.env.RABBITMQ_ROUTING_PIPELINE_TASK_RUN }}
+            - name: RABBITMQ_ROUTING_PIPELINE_TASK_STOP
+              value: {{ .Values.env.RABBITMQ_ROUTING_PIPELINE_TASK_STOP }}
+            - name: RABBITMQ_ROUTING_PIPELINE_FINISHED
+              value: {{ .Values.env.RABBITMQ_ROUTING_PIPELINE_FINISHED }}
+
             - name: ES_HOST_NAME
               value: {{ .Values.env.ES_HOST_NAME }}
             - name: ES_HTTP_PORT

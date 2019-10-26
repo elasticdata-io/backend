@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface TaskRepository extends MongoRepository<Task, String> {
 	Optional<Task> findById(String id);
-	List<Task> findByPipelineIdOrderByStartOnUtcDesc(String pipelineId, Pageable top);
+	List<Task> findByPipelineIdAndUserIdOrderByStartOnUtcDesc(String pipelineId, String userId, Pageable top);
 	Task findFirstByPipelineIdAndFailureReasonOrderByEndOnUtcDesc(String pipelineId, String failureReason);
 	List<Task> findByPipelineIdAndFailureReasonOrderByStartOnUtcDesc(String pipelineId, String failureReason, Pageable pageable);
 }

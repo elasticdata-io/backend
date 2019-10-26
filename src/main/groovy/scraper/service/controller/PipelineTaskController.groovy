@@ -40,12 +40,8 @@ class PipelineTaskController {
     List<TaskDto> list(@PathVariable String pipelineId, @PathVariable Number offset, @PathVariable Number count,
                        @RequestHeader("token") String token) {
         String userId = tokenService.getUserId(token)
-        Pipeline pipeline = pipelineRepository.findByIdAndUser(pipelineId, userId)
-        if (!pipeline) {
-            return null
-        }
         Pageable top = new PageRequest(offset as int, count as int)
-        List<Task> tasks = taskService.findByPipelineOrderByStartOnDesc(pipelineId, top)
+        List<Task> tasks = taskService.findByPipelineAndUserOrderByStartOnDesc(pipelineId, userId, top)
         ArrayList<TaskDto> dtoList = new ArrayList<>()
         tasks.each {task->
             String error = task.failureReason

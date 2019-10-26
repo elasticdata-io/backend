@@ -30,8 +30,8 @@ class TaskService {
         return task.present ? task.get() : null
     }
 
-    List<Task> findByPipelineOrderByStartOnDesc(String pipelineId, Pageable top) {
-        return taskRepository.findByPipelineIdOrderByStartOnUtcDesc(pipelineId, top)
+    List<Task> findByPipelineAndUserOrderByStartOnDesc(String pipelineId, String userId, Pageable top) {
+        return taskRepository.findByPipelineIdAndUserIdOrderByStartOnUtcDesc(pipelineId, userId, top)
     }
 
     List<Task> findByPipelineAndErrorOrderByStartOnDesc(String pipelineId, String error, Pageable top) {

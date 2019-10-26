@@ -5,10 +5,10 @@ import com.fasterxml.jackson.annotation.JsonInclude
 
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-class PipelineParsedLinesDto {
-    Number newParseRowsCount
-    String pipelineTaskId
+class TaskCommandExecuteDto {
+    String commandExecutingProperties
+    String commandExecutingName
     String pipelineId
+    String pipelineTaskId
     String userId
-    Map<String, String> line
 }

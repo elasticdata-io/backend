@@ -14,6 +14,7 @@ class TaskMapper {
         return new PendingTaskDto(
                 id: task.id,
                 pipelineId: task.pipelineId,
+                userId: task.userId,
                 startOnUtc: task.startOnUtc,
                 endOnUtc: task.endOnUtc,
                 commands: task.commands,
@@ -28,6 +29,7 @@ class TaskMapper {
         return new TaskDto(
                 id: task.id,
                 pipelineId: task.pipelineId,
+                userId: task.userId,
                 startOnUtc: task.startOnUtc,
                 endOnUtc: task.endOnUtc,
                 status: task.status,

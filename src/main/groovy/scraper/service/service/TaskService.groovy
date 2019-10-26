@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import scraper.service.constants.PipelineStatuses
+import scraper.service.dto.mapper.TaskMapper
 import scraper.service.model.Pipeline
 import scraper.service.model.Task
 import scraper.service.repository.TaskRepository
+import scraper.service.ws.TaskWebsocketProducer
 
 @Service
 class TaskService {
@@ -19,6 +21,9 @@ class TaskService {
 
     @Autowired
     TaskExecutorService taskExecutorService
+
+    @Autowired
+    private TaskWebsocketProducer taskWebsocketProducer
 
     Task findById(String id) {
         Optional<Task> task = taskRepository.findById(id)
@@ -69,6 +74,12 @@ class TaskService {
 
     void update(Task task) {
         taskRepository.save(task)
-        // todo: notify
+        notifyChangeTask(task)
     }
+
+    private void notifyChangeTask(Task task) {
+        def taskDto = TaskMapper.toTaskDto(task)
+        taskWebsocketProducer.change(taskDto)
+    }
+
 }

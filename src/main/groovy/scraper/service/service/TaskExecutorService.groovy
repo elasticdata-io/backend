@@ -10,6 +10,7 @@ import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.stereotype.Service
 import scraper.core.browser.Browser
 import scraper.core.browser.BrowserFactory
+import scraper.core.browser.BrowserProvider
 import scraper.core.browser.provider.Chrome
 import scraper.core.pipeline.Environment
 import scraper.core.pipeline.PipelineBuilder
@@ -17,10 +18,13 @@ import scraper.core.pipeline.PipelineProcess
 import scraper.core.pipeline.data.ObservableStore
 import scraper.service.amqp.producer.TaskProducer
 import scraper.service.constants.PipelineStatuses
+import scraper.service.controller.listener.PipelineStateCommandsObserver
+import scraper.service.controller.listener.PipelineStoreObserver
 import scraper.service.elastic.ElasticSearchService
 import scraper.service.model.Pipeline
 import scraper.service.model.Task
 import scraper.service.proxy.ProxyAssigner
+import scraper.service.ws.TaskWebsocketProducer
 
 import javax.annotation.PostConstruct
 
@@ -57,6 +61,9 @@ class TaskExecutorService {
 
     @Autowired
     TaskProducer taskProducer
+
+    @Autowired
+    TaskWebsocketProducer taskWebsocketProducer
 
     @Autowired
     private ElasticSearchService elasticSearchService
@@ -109,10 +116,8 @@ class TaskExecutorService {
             pipelineProcess = createPipelineProcess(pipeline, null, task)
             beanFactory.registerSingleton(task.id, pipelineProcess)
             afterRegisterPipelineProcessBean(task)
-
-            // bindStoreObserver(pipelineProcess, task)
-            // bindCommandObserver(pipelineProcess, task)
-
+            bindStoreObserver(pipelineProcess, task)
+            bindCommandObserver(pipelineProcess, task)
             pipelineProcess.run()
         } catch (Error error) {
             logger.error(error)
@@ -133,7 +138,6 @@ class TaskExecutorService {
             task.status = PipelineStatuses.ERROR
             taskService.update(task)
         }
-
         return task
     }
 
@@ -216,11 +220,7 @@ class TaskExecutorService {
         task.status = status
         taskService.update(task)
         destroyPipelineProcess(task)
-        //notifyChangePipeline(pipeline)
-
         taskProducer.taskFinish(task.id)
-        // pipelineProducer.finish(pipeline.id)
-
         if (docs) {
             uploadDataToElastic(docs as List<HashMap>, task)
         }
@@ -241,6 +241,18 @@ class TaskExecutorService {
 
     private void uploadToElastic(List<HashMap<String, Object>> list, String index, String type) {
         elasticSearchService.bulk(list, index, type)
+    }
+
+    private void bindStoreObserver(PipelineProcess pipelineProcess, Task task) {
+        ObservableStore store = pipelineProcess.getStore()
+        def observer = new PipelineStoreObserver(taskWebsocketProducer, task)
+        store.subscribe(observer)
+    }
+
+    private void bindCommandObserver(PipelineProcess pipelineProcess, Task task) {
+        BrowserProvider browserProvider = pipelineProcess.getBrowserProvider()
+        def observer = new PipelineStateCommandsObserver(taskWebsocketProducer, task)
+        browserProvider.subscribe(observer)
     }
 
 }

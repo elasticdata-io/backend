@@ -3,18 +3,18 @@ package scraper.service.controller.listener
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import scraper.core.command.AbstractCommand
-import scraper.service.dto.model.pipeline.PipelineCommandExecuteDto
+import scraper.service.dto.model.pipeline.TaskCommandExecuteDto
 import scraper.service.model.Task
-import scraper.service.ws.PipelineWebsockerProducer
 import io.reactivex.Observer
+import scraper.service.ws.TaskWebsocketProducer
 
 class PipelineStateCommandsObserver implements Observer {
 
-    PipelineWebsockerProducer pipelineWebsockerProducer
+    TaskWebsocketProducer taskWebsocketProducer
     Task task
 
-    PipelineStateCommandsObserver(PipelineWebsockerProducer pipelineWebsockerProducer, Task task) {
-        this.pipelineWebsockerProducer = pipelineWebsockerProducer
+    PipelineStateCommandsObserver(TaskWebsocketProducer taskWebsocketProducer, Task task) {
+        this.taskWebsocketProducer = taskWebsocketProducer
         this.task = task
     }
 
@@ -26,13 +26,14 @@ class PipelineStateCommandsObserver implements Observer {
     @Override
     void onNext(@NonNull Object o) {
         AbstractCommand command = (AbstractCommand) o
-        def data = new PipelineCommandExecuteDto(
+        def data = new TaskCommandExecuteDto(
                 pipelineId: task.pipelineId,
+                pipelineTaskId: task.id,
                 commandExecutingName: "${command.getClass().getSimpleName().toLowerCase()}",
                 commandExecutingProperties: "${command.getHumanProperties()}",
                 userId: task.userId
         )
-        pipelineWebsockerProducer.commandExecute(data)
+        taskWebsocketProducer.commandExecute(data)
     }
 
     @Override

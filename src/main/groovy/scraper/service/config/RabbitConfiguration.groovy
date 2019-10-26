@@ -20,7 +20,7 @@ import scraper.service.amqp.RoutingConstants
 @Configuration
 class RabbitConfiguration {
 
-    final int CONCURRENT_CONSUMERS = 3
+    final int CONCURRENT_CONSUMERS = 4
 
     final int MAX_CONCURRENT_CONSUMERS = 5
 

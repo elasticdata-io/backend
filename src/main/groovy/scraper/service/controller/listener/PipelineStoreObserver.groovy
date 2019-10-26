@@ -3,19 +3,18 @@ package scraper.service.controller.listener
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import scraper.service.dto.model.pipeline.PipelineParsedLinesDto
-import scraper.service.model.PipelineTask
-import scraper.service.model.User
+import scraper.service.model.Task
 import scraper.service.ws.PipelineWebsockerProducer
 import io.reactivex.Observer
 
 class PipelineStoreObserver implements Observer {
 
     PipelineWebsockerProducer pipelineWebsockerProducer
-    PipelineTask pipelineTask
+    Task task
 
-    PipelineStoreObserver (PipelineWebsockerProducer pipelineWebsockerProducer, PipelineTask pipelineTask) {
+    PipelineStoreObserver (PipelineWebsockerProducer pipelineWebsockerProducer, Task task) {
         this.pipelineWebsockerProducer = pipelineWebsockerProducer
-        this.pipelineTask = pipelineTask
+        this.task = task
     }
 
     @Override
@@ -26,13 +25,12 @@ class PipelineStoreObserver implements Observer {
     @Override
     void onNext(@NonNull Object o) {
         def lines = (List<HashMap<String, String>>) o
-        User user = pipelineTask.pipeline.user
         def data = new PipelineParsedLinesDto(
                 newParseRowsCount: lines.size(),
-                pipelineTaskId: pipelineTask.id,
-                pipelineId: pipelineTask.pipeline.id,
+                pipelineTaskId: task.id,
+                pipelineId: task.pipelineId,
                 line: lines.last(),
-                userId: user.id
+                userId: task.userId
         )
         pipelineWebsockerProducer.parsedLines(data)
     }

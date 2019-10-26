@@ -5,8 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.*
 import scraper.service.auth.TokenService
-import scraper.service.model.PipelineTask
+import scraper.service.model.Task
 import scraper.service.repository.*
+import scraper.service.service.TaskService
 
 @RestController
 @RequestMapping("/pipeline/log")
@@ -16,7 +17,7 @@ class LogsController {
     PipelineRepository pipelineRepository
 
     @Autowired
-    PipelineTaskRepository pipelineTaskRepository
+    TaskService taskService
 
     @Autowired
     PipelineStatusRepository pipelineStatusRepository
@@ -29,9 +30,8 @@ class LogsController {
 
     @RequestMapping('/{pipelineTaskId}')
     String logs(@PathVariable String pipelineTaskId) {
-        Optional<PipelineTask> pipelineTask = pipelineTaskRepository.findById(pipelineTaskId)
-        if (pipelineTask.present) {
-            def task = pipelineTask.get()
+        Task task = taskService.findById(pipelineTaskId)
+        if (task) {
             String tmpFolder = "${RUN_DIRECTORY}/${task.id}"
             def file = new File("${tmpFolder}/pipeline-${task.id}.log")
             if (file.exists()) {
@@ -43,10 +43,9 @@ class LogsController {
 
     @RequestMapping('/screenshots/{pipelineTaskId}')
     String[] screenshots(@PathVariable String pipelineTaskId) {
-        Optional<PipelineTask> pipelineTask = pipelineTaskRepository.findById(pipelineTaskId)
+        Task task = taskService.findById(pipelineTaskId)
         def list = []
-        if (pipelineTask.present) {
-            def task = pipelineTask.get()
+        if (task) {
             String tmpFolder = "${RUN_DIRECTORY}/${task.id}"
             def dir = new File("${tmpFolder}/screenshots")
             if (dir.exists()) {

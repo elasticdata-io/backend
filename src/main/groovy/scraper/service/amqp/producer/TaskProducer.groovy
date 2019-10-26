@@ -8,13 +8,10 @@ import scraper.service.amqp.QueueConstants
 import scraper.service.amqp.RoutingConstants
 
 @Service
-class PipelineProducer {
+class TaskProducer {
 
     @Value('${spring.rabbitmq.topicExchangeName}')
     private String topicExchangeName
-
-    @Autowired
-    QueueConstants queueConstants
 
     @Autowired
     RoutingConstants routingConstants
@@ -22,15 +19,24 @@ class PipelineProducer {
     @Autowired
     private RabbitTemplate rabbitTemplate
 
-    void run(String pipelineId) {
-        rabbitTemplate.convertAndSend(topicExchangeName, queueConstants.PIPELINE_RUN, pipelineId)
+    /**
+     * @param taskId
+     */
+    void taskRun(String taskId) {
+        rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.PIPELINE_TASK_RUN, taskId)
     }
 
-    void stop(String pipelineId) {
-        rabbitTemplate.convertAndSend(topicExchangeName, queueConstants.PIPELINE_STOP, pipelineId)
+    /**
+     * @param taskId
+     */
+    void taskStop(String taskId) {
+        rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.PIPELINE_TASK_STOP, taskId)
     }
 
-    void finish(String pipelineId) {
-        rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.PIPELINE_FINISH, pipelineId)
+    /**
+     * @param taskId
+     */
+    void taskFinish(String taskId) {
+        rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.PIPELINE_TASK_FINISH, taskId)
     }
 }

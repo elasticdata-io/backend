@@ -76,29 +76,29 @@ class RabbitConfiguration {
     }
 
     @Bean
-    Queue pipelineRunQueue() {
-        return new Queue(queueConstants.PIPELINE_RUN)
+    Queue pipelineTaskRunQueue() {
+        return new Queue(queueConstants.PIPELINE_TASK_RUN)
     }
 
     @Bean
-    Binding bindPipelineRun(final Queue pipelineRunQueue, final TopicExchange exchange) {
+    Binding bindPipelineTaskRun(final Queue pipelineTaskRunQueue, final TopicExchange exchange) {
         return BindingBuilder
-                .bind(pipelineRunQueue)
+                .bind(pipelineTaskRunQueue)
                 .to(exchange)
-                .with(queueConstants.PIPELINE_RUN)
+                .with(routingConstants.PIPELINE_TASK_RUN)
     }
 
     @Bean
-    Queue pipelineStopQueue() {
-        return new Queue(queueConstants.PIPELINE_STOP)
+    Queue pipelineTaskStopQueue() {
+        return new Queue(queueConstants.PIPELINE_TASK_STOP)
     }
 
     @Bean
-    Binding bindPipelineStop(final Queue pipelineStopQueue, final TopicExchange exchange) {
+    Binding bindPipelineTaskStop(final Queue pipelineTaskStopQueue, final TopicExchange exchange) {
         return BindingBuilder
-                .bind(pipelineStopQueue)
+                .bind(pipelineTaskStopQueue)
                 .to(exchange)
-                .with(queueConstants.PIPELINE_STOP)
+                .with(routingConstants.PIPELINE_TASK_STOP)
     }
 
     @Bean

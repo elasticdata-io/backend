@@ -18,15 +18,15 @@ import scraper.service.dto.mapper.PipelineMapper
 import scraper.service.dto.model.pipeline.PipelineDto
 import scraper.service.model.Pipeline
 import scraper.service.model.PipelineStatus
-import scraper.service.model.PipelineTask
+import scraper.service.model.Task
 import scraper.service.model.User
 import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineStatusRepository
-import scraper.service.repository.PipelineTaskRepository
 import scraper.service.repository.UserRepository
 import scraper.service.repository.UserTokenRepository
 import scraper.service.auth.TokenService
 import scraper.service.service.PipelineService
+import scraper.service.service.TaskService
 import scraper.service.service.UserService
 import scraper.service.service.converter.CsvDataConverter
 
@@ -52,7 +52,7 @@ class PipelineDataController {
     PipelineService pipelineService
 
     @Autowired
-    PipelineTaskRepository pipelineTaskRepository
+    TaskService taskService
 
     @Autowired
     PipelineStatusRepository pipelineStatusRepository
@@ -169,12 +169,12 @@ class PipelineDataController {
     @RequestMapping("/data/{pipelineId}")
     List<HashMap> getData(@PathVariable String pipelineId) {
         PageRequest page = new PageRequest(0, 1)
-        List<PipelineTask> pipelineTasks = pipelineTaskRepository
+        List<Task> tasks = taskService
                 .findByPipelineAndErrorOrderByStartOnDesc(pipelineId, null, page)
-        if (pipelineTasks.size() == 0) {
+        if (tasks.size() == 0) {
             return
         }
-        return pipelineTasks.first().data as List<HashMap>
+        return tasks.first().docs as List<HashMap>
     }
 
     /**
@@ -185,12 +185,12 @@ class PipelineDataController {
     @RequestMapping("/data/csv/{pipelineId}")
     List<HashMap> getCsvData(@PathVariable String pipelineId, HttpServletResponse response) {
         PageRequest page = new PageRequest(0, 1)
-        List<PipelineTask> pipelineTasks = pipelineTaskRepository
+        List<Task> tasks = taskService
                 .findByPipelineAndErrorOrderByStartOnDesc(pipelineId, null, page)
-        if (pipelineTasks.size() == 0) {
+        if (tasks.size() == 0) {
             return
         }
-        List<HashMap> list = pipelineTasks.first().data as List<HashMap>
+        List<HashMap> list = tasks.first().docs as List<HashMap>
         String responseData = csvConverter.toCsv(list)
         response.setContentType("text/csv; charset=utf-8")
         response.setHeader("Content-disposition", "attachment;filename=${pipelineId}.csv")

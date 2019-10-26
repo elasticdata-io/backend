@@ -9,12 +9,13 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import scraper.service.dto.mapper.TaskMapper
+import scraper.service.dto.model.task.TaskDto
 import scraper.service.model.Pipeline
-import scraper.service.model.PipelineTask
+import scraper.service.model.Task
 import scraper.service.repository.PipelineRepository
-import scraper.service.repository.PipelineTaskRepository
 import scraper.service.auth.TokenService
-import scraper.service.service.PipelineTaskService
+import scraper.service.service.TaskService
 
 @RestController
 @RequestMapping("/pipeline-task")
@@ -24,10 +25,7 @@ class PipelineTaskController {
     PipelineRepository pipelineRepository
 
     @Autowired
-    PipelineTaskService pipelineTaskService
-
-    @Autowired
-    PipelineTaskRepository pipelineTaskRepository
+    TaskService taskService
 
     @Autowired
     TokenService tokenService
@@ -39,38 +37,40 @@ class PipelineTaskController {
     private SimpMessagingTemplate messagingTemplate
 
     @RequestMapping("/list/{pipelineId}")
-    List<PipelineTask> list(@PathVariable String pipelineId, @RequestHeader("token") String token) {
+    List<TaskDto> list(@PathVariable String pipelineId, @RequestHeader("token") String token) {
         String userId = tokenService.getUserId(token)
         Pipeline pipeline = pipelineRepository.findByIdAndUser(pipelineId, userId)
         if (!pipeline) {
             return null
         }
         Pageable top = new PageRequest(0, 10)
-        List<PipelineTask> tasks = pipelineTaskRepository.findByPipelineOrderByStartOnDesc(pipelineId, top)
+        List<Task> tasks = taskService.findByPipelineOrderByStartOnDesc(pipelineId, top)
+        ArrayList<TaskDto> dtoList = new ArrayList<>()
         tasks.each {task->
-            String error = task.error
-            task.error = error?.take(1000)
+            String error = task.failureReason
+            task.failureReason = error?.take(1000)
+            dtoList.add(TaskMapper.toTaskDto(task))
         }
-        return tasks
+        return dtoList
     }
 
     @RequestMapping("/delete/{id}")
     void delete(@PathVariable String id, @RequestHeader("token") String token) {
         if (checkPermission(id, token)) {
-            pipelineTaskRepository.delete(id)
+            taskService.deleteById(id)
         }
     }
 
     @RequestMapping("/data/{id}")
     List<HashMap> getData(@PathVariable String id) {
-        PipelineTask pipelineTask = pipelineTaskService.findById(id)
-        return pipelineTask.data
+        Task task = taskService.findById(id)
+        return task.docs as List<HashMap>
     }
 
     private boolean checkPermission(String taskId, String token) {
-        PipelineTask task = pipelineTaskService.findById(taskId)
+        Task task = taskService.findById(taskId)
         String userId = tokenService.getUserId(token)
-        Pipeline pipeline = pipelineRepository.findByIdAndUser(task.pipeline.id, userId)
+        Pipeline pipeline = pipelineRepository.findByIdAndUser(task.pipelineId, userId)
         return pipeline != null
     }
 }

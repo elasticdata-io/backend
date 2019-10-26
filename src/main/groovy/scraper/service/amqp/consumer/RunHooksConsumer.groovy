@@ -17,9 +17,10 @@ import org.springframework.stereotype.Component
 import scraper.service.amqp.QueueConstants
 import scraper.service.model.Pipeline
 import scraper.service.model.PipelineHook
-import scraper.service.model.PipelineTask
+import scraper.service.model.Task
 import scraper.service.repository.PipelineHookRepository
-import scraper.service.service.PipelineTaskService
+import scraper.service.service.PipelineService
+import scraper.service.service.TaskService
 
 @Component
 class RunHooksConsumer {
@@ -36,32 +37,31 @@ class RunHooksConsumer {
     QueueConstants queueConstants
 
     @Autowired
-    PipelineTaskService pipelineTaskService
+    TaskService taskService
+
+    @Autowired
+    PipelineService pipelineService
 
     @Autowired
     PipelineHookRepository pipelineHookRepository
 
-    /**
-     * Listener for run pipelineTask.
-     * @param pipelineTaskId Id of the finished task pipelineId.
-     */
     @RabbitListener(queues = '#{queueConstants.PIPELINE_RUN_HOOKS}', containerFactory="defaultConnectionFactory")
     void worker(String pipelineTaskId) {
-        PipelineTask pipelineTask = pipelineTaskService.findById(pipelineTaskId)
-        Pipeline pipeline = pipelineTask.pipeline
+        Task task = taskService.findById(pipelineTaskId)
+        Pipeline pipeline = pipelineService.findById(task.pipelineId)
         // todo: web hooks possible not one!
         PipelineHook pipelineHook = pipelineHookRepository.findOneByPipeline(pipeline)
         if (!pipelineHook) {
-            logger.info("HOOKS not fond. pipeline: ${pipeline.id}")
+            logger.info("HOOKS not fond. task.id: ${task.id}")
             return
         }
         String url = pipelineHook.hookUrl
-        List list = pipelineTask.data as ArrayList
-        String json = new JsonBuilder(pipelineTask.data).toPrettyString()
+        List list = task.docs as ArrayList
+        String json = new JsonBuilder(task.docs).toPrettyString()
         String data = pipelineHook.jsonConfig.replaceAll(DATA_MARKER, json)
         data = data.replaceAll(PIPELINE_KEY, pipeline.key)
-        data = data.replaceAll(PIPELINE_TASK_ID, pipelineTask.id)
-        data = data.replaceAll(DOWNLOAD_LINK, "/api/pipeline-task/data/${pipelineTask.id}")
+        data = data.replaceAll(PIPELINE_TASK_ID, task.id)
+        data = data.replaceAll(DOWNLOAD_LINK, "/api/pipeline-task/data/${task.id}")
         data = data.replaceAll(TOTAL_RECORDS, list.size() as String)
         def jsonSlurper = new JsonSlurper()
         def dataList = jsonSlurper.parseText(data)

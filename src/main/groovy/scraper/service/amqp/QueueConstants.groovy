@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component
 @Component
 class QueueConstants {
 
-    @Value('${spring.rabbitmq.queue.pipelineRun}')
-    String PIPELINE_RUN
+    @Value('${spring.rabbitmq.queue.pipelineTaskRun}')
+    String PIPELINE_TASK_RUN
 
-    @Value('${spring.rabbitmq.queue.pipelineStop}')
-    String PIPELINE_STOP
+    @Value('${spring.rabbitmq.queue.pipelineTaskStop}')
+    String PIPELINE_TASK_STOP
 
     @Value('${spring.rabbitmq.queue.pipelineRunHooks}')
     String PIPELINE_RUN_HOOKS

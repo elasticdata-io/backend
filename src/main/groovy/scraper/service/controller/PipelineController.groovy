@@ -10,17 +10,12 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import scraper.core.command.input.UserInput
-import scraper.service.amqp.producer.PipelineProducer
-import scraper.service.constants.PipelineStatuses
-import scraper.service.dto.mapper.PipelineMapper
-import scraper.service.dto.model.pipeline.PipelineDto
-import scraper.service.model.Pipeline
+import scraper.service.dto.model.task.PendingTaskDto
 import scraper.service.service.PipelineInputService
 import scraper.service.service.PipelineRunnerService
 import scraper.service.service.PipelineService
 import scraper.service.repository.PipelineRepository
 import scraper.service.repository.PipelineStatusRepository
-import scraper.service.repository.PipelineTaskRepository
 import scraper.service.service.PipelineStructureService
 
 @RestController
@@ -30,13 +25,7 @@ class PipelineController {
     private Logger logger = LogManager.getRootLogger()
 
     @Autowired
-    PipelineProducer pipelineProducer
-
-    @Autowired
     PipelineRepository pipelineRepository
-
-    @Autowired
-    PipelineTaskRepository pipelineTaskRepository
 
     @Autowired
     PipelineStatusRepository pipelineStatusRepository
@@ -58,22 +47,18 @@ class PipelineController {
      * @param id
      */
     @PostMapping("/run/{id}")
-    PipelineDto addToRunQueue(@PathVariable String id) {
-        return pipelineRunnerService.needRunFromClient(id)
+    PendingTaskDto addToRunQueue(@PathVariable String id) {
+        return pipelineRunnerService.pendingFromClient(id)
     }
 
     /**
-     * Stop pipeline process by pipeline pipelineId.
+     * Stop task by id.
      * @param id
      */
     @PostMapping("/stop/{id}")
-    Pipeline stopPipeline(@PathVariable String id) {
-        Pipeline pipeline = pipelineService.findById(id)
-        def stoppingStatus = pipelineStatusRepository.findByTitle(PipelineStatuses.STOPPING)
-        pipeline.status = stoppingStatus
-        pipelineRepository.save(pipeline)
-        pipelineProducer.stop(id)
-        return pipeline
+    PendingTaskDto stopPipeline(@PathVariable String id) {
+        // todo: процес должен быть остановлен именно на той ноде где запущен воркер
+        return pipelineRunnerService.stoppingFromClient(id)
     }
 
     @RequestMapping("/user-input/list/{pipelineId}")

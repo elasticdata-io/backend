@@ -84,6 +84,7 @@ class TaskExecutorService {
         if (!pipeline) {
             throw new Exception("pipeline with id ${task.pipelineId} not found")
         }
+        logger.info("run task ${task.id}")
         runPipeline(task, pipeline)
     }
 
@@ -108,6 +109,7 @@ class TaskExecutorService {
     private Task runPipeline(Task task, Pipeline pipeline) {
         PipelineProcess runningPipelineProcess = getPipelineProcessBean(task)
         if (runningPipelineProcess) {
+            logger.info("runningPipelineProcess has been started for task ${task.id}")
             return task
         }
         beforeRun(task)
@@ -138,6 +140,7 @@ class TaskExecutorService {
             task.status = PipelineStatuses.ERROR
             taskService.update(task)
         }
+        logger.info("finished task ${task.id}")
         return task
     }
 

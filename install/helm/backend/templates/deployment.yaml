@@ -64,10 +64,10 @@ spec:
             - name: SELENIUM_DEFAULT_ADDRESS
               value: {{ .Values.env.SELENIUM_DEFAULT_ADDRESS }}
 
-            - name: RABBITMQ_QUEUE_PIPELINE_RUN
-              value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_RUN }}
-            - name: RABBITMQ_QUEUE_PIPELINE_STOP
-              value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_STOP }}
+            - name: RABBITMQ_QUEUE_PIPELINE_TASK_RUN
+              value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_TASK_RUN }}
+            - name: RABBITMQ_QUEUE_PIPELINE_TASK_STOP
+              value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_TASK_STOP }}
             - name: RABBITMQ_QUEUE_PIPELINE_RUN_HOOKS
               value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_RUN_HOOKS }}
             - name: RABBITMQ_QUEUE_PIPELINE_FINISHED

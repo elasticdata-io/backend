@@ -160,12 +160,7 @@ class TaskExecutorService {
                 isDebug: pipeline.isDebugMode
         )
         Browser browser = getPipelineBrowser(pipeline, environment)
-        if (pipeline.jsonCommandsPath) {
-            pipelineBuilder.setPipelineJsonFilePath(pipeline.jsonCommandsPath)
-        }
-        if (pipeline.jsonCommands) {
-            pipelineBuilder.setPipelineJson(pipeline.jsonCommands)
-        }
+        pipelineBuilder.setPipelineJson(task.commands)
         if (runtimeData) {
             pipelineBuilder.setRuntimePushedData(runtimeData)
         }

@@ -102,6 +102,8 @@ class Pipeline {
      */
     public String status
 
+    public String hookUrl
+
     /**
      * Depend on the pipeline.
      * @deprecated

@@ -1,10 +1,14 @@
 package scraper.service.controller
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.fge.jsonpatch.JsonPatch
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 import scraper.core.command.input.UserInput
 import scraper.service.dto.model.task.PendingApiTaskDto
 import scraper.service.dto.model.task.PendingTaskDto
+import scraper.service.dto.model.task.PipelineRunDto
 import scraper.service.service.PipelineInputService
 import scraper.service.service.PipelineRunnerService
 import scraper.service.service.PipelineService
@@ -44,8 +49,8 @@ class PipelineController {
      * @param id
      */
     @PostMapping("/run/{id}")
-    PendingApiTaskDto runFromApi(@PathVariable String id) {
-        return pipelineRunnerService.pendingFromApi(id)
+    PendingApiTaskDto runFromApi(@PathVariable String id, @RequestBody(required=false) PipelineRunDto dto) {
+        return pipelineRunnerService.pendingFromApi(id, dto)
     }
 
     /**

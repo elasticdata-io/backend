@@ -1,5 +1,8 @@
 package scraper.service.service
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.fge.jsonpatch.JsonPatch
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,6 +11,7 @@ import scraper.service.constants.PipelineStatuses
 import scraper.service.dto.mapper.TaskMapper
 import scraper.service.dto.model.task.PendingApiTaskDto
 import scraper.service.dto.model.task.PendingTaskDto
+import scraper.service.dto.model.task.PipelineRunDto
 import scraper.service.model.Pipeline
 import scraper.service.model.Task
 
@@ -25,11 +29,21 @@ class PipelineRunnerService {
     @Autowired
     TaskService taskService
 
-    PendingApiTaskDto pendingFromApi(String pipelineId) {
+    PendingApiTaskDto pendingFromApi(String pipelineId, PipelineRunDto dto) {
         logger.info("pendingFromApi: ${pipelineId}")
         Pipeline pipeline = pipelineService.findById(pipelineId)
         if (!pipeline) {
             throw new Exception("pipeline with id: ${pipelineId} not found")
+        }
+        if (dto && dto.jsonCommandsPatch) {
+            ObjectMapper mapper = new ObjectMapper()
+            JsonNode origin = mapper.readTree(pipeline.jsonCommands)
+            final JsonPatch patch = new JsonPatch(dto.jsonCommandsPatch)
+            JsonNode originPatched = patch.apply(origin)
+            pipeline.jsonCommands = originPatched.toString()
+        }
+        if (dto && dto.hookUrl) {
+            pipeline.hookUrl = dto.hookUrl
         }
         Task task = taskService.createFromPipeline(pipeline)
         def pendingApiTaskDto = TaskMapper.toPendingApiTaskDto(task)

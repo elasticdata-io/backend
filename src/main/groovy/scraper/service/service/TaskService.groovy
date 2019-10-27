@@ -47,6 +47,7 @@ class TaskService {
                 pipelineId: pipeline.id,
                 startOnUtc: new Date(),
                 userId: pipeline.user.id,
+                hookUrl: pipeline.hookUrl,
                 commands: pipeline.jsonCommands,
                 status: PipelineStatuses.PENDING
         )

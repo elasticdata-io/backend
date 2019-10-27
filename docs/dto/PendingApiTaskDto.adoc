@@ -1,0 +1,19 @@
+[source,json]
+----
+{
+    "id": "5db600756e87cc606d8838f6", <1>
+    "pipelineId": "5db5991a6e87cc39468a695c",
+    "userId": "591b716f6e87cc0789badadb",
+    "startOnUtc": "2019-10-27T20:39:17.152+0000",
+    "endOnUtc": null,
+    "status": "pending", <2>
+    "failureReason": <3>,
+    "commands": "...", <4>
+    "docs": null,
+    "hookUrl": "https://my-simplesite.com/callback"
+}
+----
+<1> id конкретного запуску
+<2> Поточний статус запуску павука (*pending*, *wait_other_pipeline*, *running*, *completed*, *error*, *stopping*, *stopped*)
+<3> Детальна помилка, якщо не вийшло запустити павука
+<4> json команд конкретного запуску

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import scraper.core.command.input.UserInput
+import scraper.service.dto.model.task.PendingApiTaskDto
 import scraper.service.dto.model.task.PendingTaskDto
 import scraper.service.service.PipelineInputService
 import scraper.service.service.PipelineRunnerService
@@ -42,8 +43,17 @@ class PipelineController {
      * Runs pipeline process by pipeline pipelineId.
      * @param id
      */
+    @PostMapping("/run/{id}")
+    PendingApiTaskDto runFromApi(@PathVariable String id) {
+        return pipelineRunnerService.pendingFromApi(id)
+    }
+
+    /**
+     * Runs pipeline process by pipeline pipelineId.
+     * @param id
+     */
     @PostMapping("/run-from-client/{id}")
-    PendingTaskDto runFromClientQueue(@PathVariable String id) {
+    PendingTaskDto runFromClient(@PathVariable String id) {
         return pipelineRunnerService.pendingFromClient(id)
     }
 

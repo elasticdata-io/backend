@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import scraper.service.constants.PipelineStatuses
 import scraper.service.dto.mapper.TaskMapper
+import scraper.service.dto.model.task.PendingApiTaskDto
 import scraper.service.dto.model.task.PendingTaskDto
 import scraper.service.model.Pipeline
 import scraper.service.model.Task
@@ -23,6 +24,18 @@ class PipelineRunnerService {
 
     @Autowired
     TaskService taskService
+
+    PendingApiTaskDto pendingFromApi(String pipelineId) {
+        logger.info("pendingFromApi: ${pipelineId}")
+        Pipeline pipeline = pipelineService.findById(pipelineId)
+        if (!pipeline) {
+            throw new Exception("pipeline with id: ${pipelineId} not found")
+        }
+        Task task = taskService.createFromPipeline(pipeline)
+        def pendingApiTaskDto = TaskMapper.toPendingApiTaskDto(task)
+        taskQueueService.toRunTaskQueue(pendingApiTaskDto)
+        return pendingApiTaskDto
+    }
 
     PendingTaskDto pendingFromClient(String pipelineId) {
         logger.info("pendingFromClient: ${pipelineId}")

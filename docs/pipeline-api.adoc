@@ -23,5 +23,5 @@ path - `/api/pipeline/run/*[pipelineId]*` +
 | include::dto/PipelineRunDto.adoc[]
 
 | Response Body
-| include::dto/RunTaskDto.adoc[]
+| include::dto/PendingApiTaskDto.adoc[]
 |===

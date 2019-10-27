@@ -26,6 +26,8 @@ path - `/api/pipeline/run/*[pipelineId]*` +
 | include::dto/PendingApiTaskDto.adoc[]
 |===
 
+IMPORTANT: на hookUrl адресу буде відправлено весь документ зі спарсеними данними.
+З http заголовков `Content-Type: application/json`
 
 [#pipeline-data]
 === 2. Отримання данних

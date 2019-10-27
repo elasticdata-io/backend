@@ -19,11 +19,8 @@
 | POST
 
 | Request Body
-| include::dto/pipelineRunDto.json.adoc[]
+| include::dto/PipelineRunDto.adoc[]
 
 | Response Body
-| include::dto/taskDto.json.adoc[]
+| include::dto/RunTaskDto.adoc[]
 |===
-
-WARNING: Павук буде запущений лише тільки якщо поточний статус павука *completed*, *stopped*, або *error*. +
-В усіх інших випадках у response body повернется *taskId* із попереднього запуску і *runSuccess*: false

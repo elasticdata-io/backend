@@ -26,10 +26,13 @@ path - `/api/pipeline/run/*[pipelineId]*` +
 
 | Response Body
 | include::dto/PendingApiTaskDto.adoc[]
+
+| Response Headers
+| `Content-Type: application/json`
 |===
 
-IMPORTANT: Після завершення роботи задачі, на hookUrl адресу буде відправлено весь документ зі спарсеними данними.
-З http заголовков `Content-Type: application/json`
+IMPORTANT: Після завершення роботи задачі, на hookUrl адресу буде
+відправлено весь документ зі спарсеними данними.
 
 [#task-check]
 === 2. Перевірка статусу задачі

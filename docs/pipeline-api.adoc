@@ -12,7 +12,8 @@
 [cols="h,5a"]
 |===
 | URL
-| /api/pipeline/run/*[pipelineId]* +
+| domain - `https://app.elasticdata.io` +
+path - `/api/pipeline/run/*[pipelineId]*` +
 де *[pipelineId]* - id павука, який необхідно запустити
 
 | Method

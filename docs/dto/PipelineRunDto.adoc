@@ -1,14 +1,16 @@
 [source,json]
 ----
 {
+    "hookUrl": "https://my-simplesite.com/callback", <1>
     "jsonCommandsPatch": [
         {
-            "op": "replace", <1>
-            "path": "/commands/0/params/urls", <2>
+            "op": "replace", <2>
+            "path": "/commands/0/params/urls", <3>
             "value": ["https://www.olx.ua/obyavlenie/tachka-320-kg-IDyE46u.html"]
         }
     ]
 }
 ----
-<1> Специфікація json patch, детальніше - http://jsonpatch.com/
-<2> Тиким чином відбудется підміна значення urls для першої команди у списку
+<1> Адреса за якою будуть відправлені данні з парсеру (методом POST)
+<2> Специфікація json patch, детальніше - http://jsonpatch.com/
+<3> Тиким чином відбудется підміна значення urls для першої команди у списку

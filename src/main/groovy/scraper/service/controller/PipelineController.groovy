@@ -42,8 +42,8 @@ class PipelineController {
      * Runs pipeline process by pipeline pipelineId.
      * @param id
      */
-    @PostMapping("/run/{id}")
-    PendingTaskDto addToRunQueue(@PathVariable String id) {
+    @PostMapping("/run-from-client/{id}")
+    PendingTaskDto runFromClientQueue(@PathVariable String id) {
         return pipelineRunnerService.pendingFromClient(id)
     }
 

@@ -20,9 +20,6 @@ class LogsController {
     TaskService taskService
 
     @Autowired
-    PipelineStatusRepository pipelineStatusRepository
-
-    @Autowired
     TokenService tokenService
 
     @Value('${static.runDirectory}')

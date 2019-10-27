@@ -17,11 +17,9 @@ import scraper.service.dto.mapper.PipelineDependencyMapper
 import scraper.service.dto.mapper.PipelineMapper
 import scraper.service.dto.model.pipeline.PipelineDto
 import scraper.service.model.Pipeline
-import scraper.service.model.PipelineStatus
 import scraper.service.model.Task
 import scraper.service.model.User
 import scraper.service.repository.PipelineRepository
-import scraper.service.repository.PipelineStatusRepository
 import scraper.service.repository.UserRepository
 import scraper.service.repository.UserTokenRepository
 import scraper.service.auth.TokenService
@@ -55,9 +53,6 @@ class PipelineDataController {
     TaskService taskService
 
     @Autowired
-    PipelineStatusRepository pipelineStatusRepository
-
-    @Autowired
     UserService userService
 
     @Autowired
@@ -72,7 +67,6 @@ class PipelineDataController {
         if (!pipeline) {
             return
         }
-        pipeline.status = pipeline.status ?: new PipelineStatus()
         return PipelineMapper.toPipelineDto(pipeline)
     }
 
@@ -86,9 +80,6 @@ class PipelineDataController {
     List<PipelineDto> list(@RequestHeader("token") String token) {
         String userId = tokenService.getUserId(token)
         List<Pipeline> pipelines = pipelineRepository.findByUserOrderByCreatedOnDesc(userId)
-        pipelines.forEach({ pipeline ->
-            pipeline.status = pipeline.status ?: new PipelineStatus()
-        })
         return pipelines.collect {pipeline ->
             return PipelineMapper.toPipelineDto(pipeline)
         }
@@ -123,8 +114,7 @@ class PipelineDataController {
         pipeline.dependencies = PipelineDependencyMapper.toPipelineDependencies(pipelineDto.dependencies)
         pipeline.modifiedOn = new Date()
         if (!pipelineInDb) {
-            PipelineStatus status = pipelineStatusRepository.findByTitle('not running')
-            pipeline.status = status
+            pipeline.status = PipelineStatuses.NOT_RUNNING
             pipeline.createdOn = new Date()
             pipeline.user = user
             pipeline.browser = SELENIUM_DEFAULT_BROWSER

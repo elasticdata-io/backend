@@ -3,7 +3,6 @@ package scraper.service.repository;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import scraper.service.model.Pipeline;
-import scraper.service.model.PipelineStatus;
 import scraper.service.model.User;
 
 import java.util.List;
@@ -18,9 +17,9 @@ public interface PipelineRepository extends MongoRepository<Pipeline, String> {
 	List<Pipeline> findByUserAndIdNotIn(String userId, List<String> dependsOn);
 	List<Pipeline> findByUserAndIdNotIn(User user, List<String> dependsOn);
 	List<Pipeline> findByDependOn(String dependOn);
-	List<Pipeline> findByStatus(PipelineStatus status);
-	List<Pipeline> findByStatusNot(PipelineStatus status);
+	List<Pipeline> findByStatus(String status);
+	List<Pipeline> findByStatusNot(String status);
 
-	@Query("{ 'dependencies' : {$elemMatch: {'pipelineId': ?0}}, 'status.id': ?1 }")
-	Pipeline findByDependenciesAndStatus(String dependencyPipelineId, String statusId);
+	@Query("{ 'dependencies' : {$elemMatch: {'pipelineId': ?0}}, 'status': ?1 }")
+	Pipeline findByDependenciesAndStatus(String dependencyPipelineId, String status);
 }

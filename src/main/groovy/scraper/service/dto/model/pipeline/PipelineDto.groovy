@@ -18,7 +18,7 @@ class PipelineDto {
     Date modifiedOn
     Date lastStartedOn
     Date lastCompletedOn
-    PipelineStatusDto status
+    String status
     List<PipelineDependencyDto> dependencies
     String userId
     String jsonCommands

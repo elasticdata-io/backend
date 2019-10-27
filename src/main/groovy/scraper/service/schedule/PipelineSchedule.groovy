@@ -7,12 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import scraper.service.constants.PipelineStatuses
 import scraper.service.model.Pipeline
-import scraper.service.model.PipelineStatus
 import scraper.service.repository.PipelineRepository
 import groovy.time.TimeCategory
-import scraper.service.repository.PipelineStatusRepository
-
-import javax.annotation.PostConstruct
 
 @Component
 class PipelineSchedule {
@@ -25,19 +21,9 @@ class PipelineSchedule {
     @Autowired
     PipelineRepository pipelineRepository
 
-    @Autowired
-    PipelineStatusRepository pipelineStatusRepository
-
-    private PipelineStatus runningStatus
-
-    @PostConstruct
-    void init() {
-        runningStatus = pipelineStatusRepository.findByTitle(PipelineStatuses.RUNNING)
-    }
-
 //    @Scheduled(cron='0 * * * * *')
     void checkRunPipeline() {
-        List<Pipeline> pipelines = pipelineRepository.findByStatusNot(runningStatus)
+        List<Pipeline> pipelines = pipelineRepository.findByStatusNot(PipelineStatuses.RUNNING)
         pipelines.each { pipeline ->
             if (!pipeline.runIntervalMin) {
                 return

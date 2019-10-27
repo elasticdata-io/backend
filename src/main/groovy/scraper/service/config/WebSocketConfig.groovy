@@ -13,7 +13,7 @@ class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker('/task')
+        config.enableSimpleBroker('/task', '/pipeline')
     }
 
     @Override

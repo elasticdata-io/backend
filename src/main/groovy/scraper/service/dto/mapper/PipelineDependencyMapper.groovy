@@ -2,9 +2,7 @@ package scraper.service.dto.mapper
 
 import org.springframework.stereotype.Component
 import scraper.service.dto.model.pipeline.PipelineDependencyDto
-import scraper.service.dto.model.pipeline.PipelineStatusDto
 import scraper.service.model.PipelineDependency
-import scraper.service.model.PipelineStatus
 
 @Component
 class PipelineDependencyMapper {

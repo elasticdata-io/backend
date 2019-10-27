@@ -23,7 +23,7 @@ class PipelineMapper {
             modifiedOn: pipelineDto.modifiedOn,
             lastStartedOn: pipelineDto.lastStartedOn,
             lastCompletedOn: pipelineDto.lastCompletedOn,
-            status: PipelineStatusMapper.toPipelineStatus(pipelineDto.status),
+            status: pipelineDto.status,
             dependencies: PipelineDependencyMapper.toPipelineDependencies(pipelineDto.dependencies),
             jsonCommands: pipelineDto.jsonCommands,
         )
@@ -45,7 +45,7 @@ class PipelineMapper {
                 modifiedOn: pipeline.modifiedOn,
                 lastStartedOn: pipeline.lastStartedOn,
                 lastCompletedOn: pipeline.lastCompletedOn,
-                status: PipelineStatusMapper.toPipelineStatusDto(pipeline.status),
+                status: pipeline.status,
                 dependencies: PipelineDependencyMapper.toPipelineDependenciesDto(pipeline.dependencies),
                 userId: pipeline.user.id,
                 jsonCommands: pipeline.jsonCommands,

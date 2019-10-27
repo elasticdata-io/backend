@@ -100,8 +100,7 @@ class Pipeline {
     /**
      * Status of the pipeline (stop|run|etc).
      */
-    @DBRef
-    public PipelineStatus status
+    public String status
 
     /**
      * Depend on the pipeline.

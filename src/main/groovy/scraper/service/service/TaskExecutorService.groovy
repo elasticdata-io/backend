@@ -20,6 +20,7 @@ import scraper.service.amqp.producer.TaskProducer
 import scraper.service.constants.PipelineStatuses
 import scraper.service.controller.listener.PipelineStateCommandsObserver
 import scraper.service.controller.listener.PipelineStoreObserver
+import scraper.service.dto.mapper.TaskMapper
 import scraper.service.elastic.ElasticSearchService
 import scraper.service.model.Pipeline
 import scraper.service.model.Task
@@ -227,6 +228,7 @@ class TaskExecutorService {
         if (docs) {
             uploadDataToElastic(docs as List<HashMap>, task)
         }
+        pipelineService.updateFromTask(TaskMapper.toPendingTaskDto(task))
     }
     private destroyPipelineProcess(Task task) {
         PipelineProcess pipelineProcessed = beanFactory.getSingleton(task.id) as PipelineProcess

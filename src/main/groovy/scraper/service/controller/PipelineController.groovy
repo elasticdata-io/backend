@@ -15,7 +15,6 @@ import scraper.service.service.PipelineInputService
 import scraper.service.service.PipelineRunnerService
 import scraper.service.service.PipelineService
 import scraper.service.repository.PipelineRepository
-import scraper.service.repository.PipelineStatusRepository
 import scraper.service.service.PipelineStructureService
 
 @RestController
@@ -26,9 +25,6 @@ class PipelineController {
 
     @Autowired
     PipelineRepository pipelineRepository
-
-    @Autowired
-    PipelineStatusRepository pipelineStatusRepository
 
     @Autowired
     PipelineStructureService pipelineStructure

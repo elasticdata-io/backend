@@ -25,3 +25,24 @@ path - `/api/pipeline/run/*[pipelineId]*` +
 | Response Body
 | include::dto/PendingApiTaskDto.adoc[]
 |===
+
+
+[#pipeline-data]
+=== 2. Отримання данних
+
+==== Get data. Параметри отримання спарсених данних
+
+[cols="h,5a"]
+|===
+| URL
+| domain - `https://app.elasticdata.io` +
+path - `/api/pipeline-task/data/*[taskId]*` +
+де *[taskId]* - 'id' задачі яке повернулося в Response Body із попереднього пункту `1. Запуск павука`
+
+| Method
+| GET
+
+| Response Body
+| parsed JSON document
+|===
+

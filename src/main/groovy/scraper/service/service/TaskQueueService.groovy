@@ -24,7 +24,7 @@ class TaskQueueService {
      * @param taskId
      * @return
      */
-    private triggerRunAfterTask(String taskId) {
+    private triggerRunAfterTaskFinished(String taskId) {
         def finishedTaskQueue = taskQueueRepository.findOneByTaskId(taskId)
         if (!finishedTaskQueue) {
             return
@@ -34,16 +34,10 @@ class TaskQueueService {
             return
         }
         def taskQueue = tasks.first()
-        taskQueue.status = TaskQueueStatuses.RUNNING
-        update(taskQueue)
-        taskProducer.taskRun(taskQueue.taskId)
+        run(taskQueue)
     }
 
-    /**
-     * @param taskId
-     * @return
-     */
-    private triggerRun(TaskQueue taskQueue) {
+    private run(TaskQueue taskQueue) {
         List<TaskQueue> runningTasks = findRunnningTasksByUser(taskQueue.userId)
         if (runningTasks.size() >= userService.maxAvailableWorkers) {
             return
@@ -62,7 +56,7 @@ class TaskQueueService {
                 status: TaskQueueStatuses.ADDED
         )
         update(taskQueue)
-        triggerRun(taskQueue)
+        run(taskQueue)
     }
 
     void toStopTaskQueue(String taskId) {
@@ -72,7 +66,7 @@ class TaskQueueService {
 
     void toFinishedTaskQueue(String taskId) {
         remove(taskId)
-        triggerRunAfterTask(taskId)
+        triggerRunAfterTaskFinished(taskId)
     }
 
     private void remove(String taskId) {

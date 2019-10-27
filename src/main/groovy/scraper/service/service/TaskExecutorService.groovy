@@ -78,9 +78,6 @@ class TaskExecutorService {
         if (!task?.pipelineId) {
             throw new Exception("pipelineId not found")
         }
-        if (task.status != PipelineStatuses.PENDING) {
-            throw new Exception("this task run not possible, currect status ${task.status}")
-        }
         Pipeline pipeline = pipelineService.findById(task.pipelineId)
         if (!pipeline) {
             throw new Exception("pipeline with id ${task.pipelineId} not found")

@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import scraper.service.amqp.producer.TaskProducer
 import scraper.service.constants.PipelineStatuses
 import scraper.service.dto.mapper.TaskMapper
 import scraper.service.dto.model.task.PendingTaskDto
@@ -17,10 +16,10 @@ class PipelineRunnerService {
     private Logger logger = LogManager.getRootLogger()
 
     @Autowired
-    TaskProducer taskProducer
+    PipelineService pipelineService
 
     @Autowired
-    PipelineService pipelineService
+    TaskQueueService taskQueueService
 
     @Autowired
     TaskService taskService
@@ -32,8 +31,9 @@ class PipelineRunnerService {
             throw new Exception("pipeline with id: ${pipelineId} not found")
         }
         Task task = taskService.createFromPipeline(pipeline)
-        taskProducer.taskRun(task.id)
-        return TaskMapper.toPendingTaskDto(task)
+        def pendingTaskDto = TaskMapper.toPendingTaskDto(task)
+        taskQueueService.toRunTaskQueue(pendingTaskDto)
+        return pendingTaskDto
     }
 
     PendingTaskDto stoppingFromClient(String taskId) {
@@ -44,7 +44,7 @@ class PipelineRunnerService {
         }
         task.status = PipelineStatuses.STOPPING
         taskService.update(task)
-        taskProducer.taskStop(task.id)
+        taskQueueService.toStopTaskQueue(taskId)
         return TaskMapper.toPendingTaskDto(task)
     }
 }

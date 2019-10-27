@@ -73,4 +73,9 @@ class UserService {
         }
         return user
     }
+
+    Number getMaxAvailableWorkers() {
+        // todo : get from database
+        return 2
+    }
 }

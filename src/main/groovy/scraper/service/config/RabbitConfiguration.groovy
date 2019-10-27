@@ -102,6 +102,19 @@ class RabbitConfiguration {
     }
 
     @Bean
+    Queue pipelineTaskFinishedQueue() {
+        return new Queue(queueConstants.PIPELINE_TASK_FINISHED)
+    }
+
+    @Bean
+    Binding bindPipelineTaskFinished(final Queue pipelineTaskFinishedQueue, final TopicExchange exchange) {
+        return BindingBuilder
+                .bind(pipelineTaskFinishedQueue)
+                .to(exchange)
+                .with(routingConstants.PIPELINE_TASK_FINISH)
+    }
+
+    @Bean
     Queue pipelineRunHooksQueue() {
         return new Queue(queueConstants.PIPELINE_RUN_HOOKS)
     }

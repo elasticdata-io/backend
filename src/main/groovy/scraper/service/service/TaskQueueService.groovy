@@ -38,7 +38,7 @@ class TaskQueueService {
     }
 
     private run(TaskQueue taskQueue) {
-        List<TaskQueue> runningTasks = findRunnningTasksByUser(taskQueue.userId)
+        List<TaskQueue> runningTasks = findRunningTasksByUser(taskQueue.userId)
         if (runningTasks.size() >= userService.maxAvailableWorkers) {
             return
         }
@@ -86,7 +86,7 @@ class TaskQueueService {
         return taskQueueRepository.findByStatusAndUserIdOrderByCreatedOnUtc(TaskQueueStatuses.ADDED, userId)
     }
 
-    private List<TaskQueue> findRunnningTasksByUser(String userId) {
+    private List<TaskQueue> findRunningTasksByUser(String userId) {
         return taskQueueRepository.findByStatusAndUserIdOrderByCreatedOnUtc(TaskQueueStatuses.RUNNING, userId)
     }
 }

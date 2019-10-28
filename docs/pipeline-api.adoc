@@ -64,4 +64,18 @@ path - `/api/pipeline-task/data/*[taskId]*` +
 [#task-stop]
 === 4. Зупинка запущеної задачі
 
-WARNING: Цей розідл на модерації
+[cols="h,5a"]
+|===
+| URL
+| domain - `https://app.elasticdata.io` +
+path - `/api/pipeline/stop/*[taskId]*` +
+де *[taskId]* - `id` задачі яке повернулося в Response Body із попереднього пункту *1. Запуск павука*
+
+| Method
+| POST
+
+| Response Body
+| include::dto/StoppingApiTaskDto.adoc[]
+|===
+
+

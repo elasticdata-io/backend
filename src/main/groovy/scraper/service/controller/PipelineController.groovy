@@ -64,12 +64,12 @@ class PipelineController {
 
     /**
      * Stop task by id.
-     * @param id
+     * @param taskId
      */
-    @PostMapping("/stop/{id}")
-    PendingTaskDto stopPipeline(@PathVariable String id) {
+    @PostMapping("/stop/{taskId}")
+    PendingTaskDto stopPipeline(@PathVariable String taskId) {
         // todo: процес должен быть остановлен именно на той ноде где запущен воркер
-        return pipelineRunnerService.stoppingFromClient(id)
+        return pipelineRunnerService.stoppingFromClient(taskId)
     }
 
     @RequestMapping("/user-input/list/{pipelineId}")

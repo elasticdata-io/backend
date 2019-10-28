@@ -1,0 +1,11 @@
+[source,json]
+----
+{
+    "id": "5db600756e87cc606d8838f6",
+    "pipelineId": "5db5991a6e87cc39468a695c",
+    "startOnUtc": "2019-10-27T20:39:17.152+0000",
+    "endOnUtc": null,
+    "status": "stopping" <1>
+}
+----
+<1> Поточний статус запуску павука (*pending*, *wait_other_pipeline*, *running*, *completed*, *error*, *stopping*, *stopped*)

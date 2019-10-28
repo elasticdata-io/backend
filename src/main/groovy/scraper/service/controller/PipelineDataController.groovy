@@ -146,7 +146,7 @@ class PipelineDataController {
         clonePipeline.modifiedOn = new Date()
         clonePipeline.lastStartedOn = null
         clonePipeline.lastCompletedOn = null
-        clonePipeline.status = pipelineStatusRepository.findByTitle(PipelineStatuses.NOT_RUNNING)
+        clonePipeline.status = PipelineStatuses.NOT_RUNNING
         pipelineService.save(clonePipeline)
         return PipelineMapper.toPipelineDto(clonePipeline)
     }

@@ -13,7 +13,7 @@
     "hookUrl": "https://my-simplesite.com/callback"
 }
 ----
-<1> id конкретного запуску
+<1> id конкретного запуску (`taskId`)
 <2> Поточний статус запуску павука (*pending*, *wait_other_pipeline*, *running*, *completed*, *error*, *stopping*, *stopped*)
 <3> Детальна помилка, якщо не вийшло запустити павука
 <4> json-string команд конкретного запуску після виконання json patch операції

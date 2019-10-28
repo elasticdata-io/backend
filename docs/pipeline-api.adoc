@@ -28,6 +28,9 @@ path - `/api/pipeline/run/*[pipelineId]*` +
 | include::dto/PendingApiTaskDto.adoc[]
 |===
 
+.Приклад запиту к программі "postman"
+image::images/run-pipeline.png[]
+
 IMPORTANT: Після завершення роботи задачі, на hookUrl адресу буде відправлено весь документ зі спарсеними данними.
 З http заголовком `Content-Type: application/json`
 
@@ -41,7 +44,7 @@ WARNING: Цей розідл на модерації
 
 Окрім hooks механізму з використанням параметру `hookUrl`, існує додаткова можливість отримати данні напряму через API.
 
-==== Get data. Параметри отримання спарсених данних
+==== Get data. Отримання спарсених данних
 
 [cols="h,5a"]
 |===

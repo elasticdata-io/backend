@@ -66,7 +66,7 @@ class PipelineController {
     /**
      * Stop task by id.
      * @param taskId
-     * @deprecated
+     * @deprecated @deprecated see TaskController->stop
      */
     @PostMapping("/stop/{taskId}")
     PendingTaskDto stopPipeline(@PathVariable String taskId) {

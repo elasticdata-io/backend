@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import scraper.service.dto.model.task.PendingTaskDto
 import scraper.service.dto.model.task.TaskDto
+import scraper.service.model.Task
 import scraper.service.service.*
 
 @RestController
@@ -25,7 +26,7 @@ class TaskController {
      * @param taskId
      */
     @PostMapping("/stop/{taskId}")
-    PendingTaskDto stopPipeline(@PathVariable String taskId) {
+    PendingTaskDto stop(@PathVariable String taskId) {
         logger.info("request stop task ${taskId}")
         // todo: процес должен быть остановлен именно на той ноде где запущен воркер
         return pipelineRunnerService.stoppingFromClient(taskId)
@@ -40,4 +41,15 @@ class TaskController {
         logger.info("request status task ${taskId}")
         return taskService.getTask(taskId)
     }
+
+    /**
+     * @param taskId
+     * @return
+     */
+    @RequestMapping("/data/{taskId}")
+    List<HashMap> getData(@PathVariable String taskId) {
+        Task task = taskService.findById(taskId)
+        return task.docs as List<HashMap>
+    }
+
 }

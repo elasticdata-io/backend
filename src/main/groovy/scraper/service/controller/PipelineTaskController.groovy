@@ -58,6 +58,11 @@ class PipelineTaskController {
         }
     }
 
+    /**
+     * @deprecated see TaskController->getData
+     * @param id
+     * @return
+     */
     @RequestMapping("/data/{id}")
     List<HashMap> getData(@PathVariable String id) {
         Task task = taskService.findById(id)

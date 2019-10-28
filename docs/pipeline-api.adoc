@@ -65,7 +65,7 @@ path - `/api/task/status/*[taskId]*` +
 |===
 | URL
 | domain - `https://app.elasticdata.io` +
-path - `/api/pipeline-task/data/*[taskId]*` +
+path - `/api/task/data/*[taskId]*` +
 де *[taskId]* - `id` задачі яке повернулося в Response Body із попереднього пункту *1. Запуск павука*
 
 | Method

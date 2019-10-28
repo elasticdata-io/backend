@@ -50,6 +50,7 @@ class PipelineController {
      */
     @PostMapping("/run/{id}")
     PendingApiTaskDto runFromApi(@PathVariable String id, @RequestBody(required=false) PipelineRunDto dto) {
+        logger.info("request run task ${id}")
         return pipelineRunnerService.pendingFromApi(id, dto)
     }
 
@@ -65,6 +66,7 @@ class PipelineController {
     /**
      * Stop task by id.
      * @param taskId
+     * @deprecated
      */
     @PostMapping("/stop/{taskId}")
     PendingTaskDto stopPipeline(@PathVariable String taskId) {

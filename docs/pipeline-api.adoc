@@ -37,7 +37,22 @@ IMPORTANT: Після завершення роботи задачі, на hookU
 [#task-check]
 === 2. Перевірка статусу задачі
 
-WARNING: Цей розідл на модерації
+==== Check task status
+
+[cols="h,5a"]
+|===
+| URL
+| domain - `https://app.elasticdata.io` +
+path - `/api/task/status/*[taskId]*` +
+де *[taskId]* - `id` задачі яке повернулося в Response Body із попереднього пункту *1. Запуск павука*
+
+| Method
+| GET
+
+| Response Body
+| include::dto/TaskDto.adoc[]
+|===
+
 
 [#pipeline-data]
 === 3. Отримання данних
@@ -70,7 +85,7 @@ path - `/api/pipeline-task/data/*[taskId]*` +
 |===
 | URL
 | domain - `https://app.elasticdata.io` +
-path - `/api/pipeline/stop/*[taskId]*` +
+path - `/api/task/stop/*[taskId]*` +
 де *[taskId]* - `id` задачі яке повернулося в Response Body із попереднього пункту *1. Запуск павука*
 
 | Method

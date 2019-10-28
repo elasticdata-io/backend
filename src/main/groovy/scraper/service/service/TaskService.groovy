@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import scraper.service.constants.PipelineStatuses
 import scraper.service.dto.mapper.TaskMapper
+import scraper.service.dto.model.task.TaskDto
 import scraper.service.model.Pipeline
 import scraper.service.model.Task
 import scraper.service.repository.TaskRepository
@@ -24,6 +25,11 @@ class TaskService {
 
     @Autowired
     private TaskWebsocketProducer taskWebsocketProducer
+
+    TaskDto getTask(String id) {
+        def task = findById(id)
+        return TaskMapper.toTaskDto(task)
+    }
 
     Task findById(String id) {
         Optional<Task> task = taskRepository.findById(id)

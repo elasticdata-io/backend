@@ -95,4 +95,4 @@ path - `/api/task/stop/*[taskId]*` +
 | include::dto/StoppingApiTaskDto.adoc[]
 |===
 
-
+IMPORTANT: Після повного зупинення задачі спрацює hook мехінізм.

@@ -64,6 +64,8 @@ path - `/api/pipeline-task/data/*[taskId]*` +
 [#task-stop]
 === 4. Зупинка запущеної задачі
 
+==== Stop running task
+
 [cols="h,5a"]
 |===
 | URL

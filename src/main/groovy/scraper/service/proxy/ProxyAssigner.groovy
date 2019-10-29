@@ -16,7 +16,12 @@ class ProxyAssigner {
 
     String getProxy() {
         ProxyModel proxy = proxyService.getFastProxy()
-        String url = "${proxy.host}:${proxy.port}"
+        String url
+        if (proxy.type == 'socks5') {
+            url = "socks5://${proxy.host}:${proxy.port}"
+        } else {
+            url = "${proxy.host}:${proxy.port}"
+        }
         logger.info("proxy url: ${url}")
         return url
     }

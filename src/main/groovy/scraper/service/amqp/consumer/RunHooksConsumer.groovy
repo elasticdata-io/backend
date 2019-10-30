@@ -42,6 +42,10 @@ class RunHooksConsumer {
         Task task = taskService.findById(taskId)
         Pipeline pipeline = pipelineService.findById(task.pipelineId)
         String url = task.hookUrl
+        if (!url) {
+            logger.info("hook url not found, pipeline: ${pipeline.id}")
+            return
+        }
         //List list = task.docs as ArrayList
         //String json = new JsonBuilder(task.docs).toPrettyString()
         //String data = pipelineHook.jsonConfig.replaceAll(DATA_MARKER, json)

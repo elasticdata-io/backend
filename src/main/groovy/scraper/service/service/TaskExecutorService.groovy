@@ -233,7 +233,8 @@ class TaskExecutorService {
         if (!list) {
             return
         }
-        uploadToElastic(list as List<HashMap<String, Object>>, task.pipelineId, task.id)
+        def docs = list as List<HashMap<String, Object>>;
+        uploadToElastic(docs, task.pipelineId, task.id)
     }
 
     private void uploadToElastic(List<HashMap<String, Object>> list, String index, String type) {

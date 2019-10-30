@@ -118,7 +118,7 @@ class PipelineDataController {
             pipeline.createdOn = new Date()
             pipeline.user = user
             pipeline.browser = SELENIUM_DEFAULT_BROWSER
-            pipeline.isDebugMode = true
+            pipeline.isDebugMode = false
         }
         pipelineRepository.save(pipeline)
         return PipelineMapper.toPipelineDto(pipeline)

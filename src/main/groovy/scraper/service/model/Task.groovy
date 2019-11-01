@@ -23,7 +23,4 @@ class Task {
     public String status
     public String failureReason
     public String hookUrl
-
-    @JsonIgnore
-    public List<Object> docs
 }

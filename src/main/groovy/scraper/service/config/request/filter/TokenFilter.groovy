@@ -24,6 +24,7 @@ class TokenFilter extends GenericFilterBean {
             LOGIN_URI,
             '/api/pipeline/data',
             '/api/pipeline-task/data',
+            '/api/task',
             '/api/pipeline/run',
             '/api/actuator/health',
             '/api/liveness',

@@ -1,5 +1,6 @@
 package scraper.service.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,6 +9,7 @@ import scraper.service.dto.model.task.PendingTaskDto
 import scraper.service.dto.model.task.TaskDto
 import scraper.service.model.Task
 import scraper.service.service.*
+import scraper.service.store.FileDataRepository
 
 @RestController
 @RequestMapping("/task")
@@ -17,6 +19,9 @@ class TaskController {
 
     @Autowired
     PipelineRunnerService pipelineRunnerService
+
+    @Autowired
+    FileDataRepository fileDataRepository
 
     @Autowired
     TaskService taskService
@@ -49,7 +54,7 @@ class TaskController {
     @RequestMapping("/data/{taskId}")
     List<HashMap> getData(@PathVariable String taskId) {
         Task task = taskService.findById(taskId)
-        return task.docs as List<HashMap>
+        return fileDataRepository.getDataFileToList(task)
     }
 
 }

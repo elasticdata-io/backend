@@ -16,6 +16,7 @@ import scraper.service.model.Pipeline
 import scraper.service.model.Task
 import scraper.service.service.PipelineService
 import scraper.service.service.TaskService
+import scraper.service.store.FileDataRepository
 
 @Component
 class RunHooksConsumer {
@@ -36,6 +37,9 @@ class RunHooksConsumer {
 
     @Autowired
     PipelineService pipelineService
+
+    @Autowired
+    FileDataRepository fileDataRepository
 
     @RabbitListener(queues = '#{queueConstants.PIPELINE_RUN_HOOKS}', containerFactory="defaultConnectionFactory")
     void worker(String taskId) {
@@ -58,8 +62,9 @@ class RunHooksConsumer {
         logger.info("start hooks ${url}, pipeline: ${pipeline.id}")
         CloseableHttpClient httpClient = HttpClients.createDefault()
         try {
+            String json = fileDataRepository.getDataFileToString(task)
             StringEntity requestEntity = new StringEntity(
-                    new JsonBuilder(task.docs).toPrettyString(),
+                    json,
                     ContentType.APPLICATION_JSON
             )
             HttpPost postMethod = new HttpPost(url)

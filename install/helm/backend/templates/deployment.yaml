@@ -95,6 +95,14 @@ spec:
 
             - name: PROXY_SERVICE_URL
               value: {{ .Values.env.PROXY_SERVICE_URL }}
+
+            - name: MINIO_URL
+              value: {{ .Values.env.MINIO_URL }}
+            - name: MINIO_ACCESS_KEY
+              value: {{ .Values.env.MINIO_ACCESS_KEY }}
+            - name: MINIO_SECRET_KEY
+              value: {{ .Values.env.MINIO_SECRET_KEY }}
+
           livenessProbe:
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds:  {{ .Values.livenessProbe.periodSeconds }}

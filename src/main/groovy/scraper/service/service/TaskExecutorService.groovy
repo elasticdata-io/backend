@@ -15,6 +15,7 @@ import scraper.core.browser.provider.Chrome
 import scraper.core.pipeline.Environment
 import scraper.core.pipeline.PipelineBuilder
 import scraper.core.pipeline.PipelineProcess
+import scraper.core.pipeline.data.FileStoreProvider
 import scraper.core.pipeline.data.ObservableStore
 import scraper.service.amqp.producer.TaskProducer
 import scraper.service.constants.PipelineStatuses
@@ -25,6 +26,7 @@ import scraper.service.elastic.ElasticSearchService
 import scraper.service.model.Pipeline
 import scraper.service.model.Task
 import scraper.service.proxy.ProxyAssigner
+import scraper.service.store.TaskBucketObject
 import scraper.service.ws.TaskWebsocketProducer
 
 import javax.annotation.PostConstruct
@@ -68,6 +70,9 @@ class TaskExecutorService {
 
     @Autowired
     private ElasticSearchService elasticSearchService
+
+    @Autowired
+    private FileStoreProvider fileStoreProvider
 
     /**
      *
@@ -149,6 +154,38 @@ class TaskExecutorService {
     private Task beforeRun(Task task) {
         return task
     }
+    private void afterRun(Task task, PipelineProcess pipelineProcess) {
+        ObservableStore store = pipelineProcess ? pipelineProcess.getStore() : null
+        def docs = store ? store.getData() : []
+        // task.docs = docs
+        task.endOnUtc = new Date()
+
+        saveDocs(store.jsonData, task)
+
+        String status = PipelineStatuses.COMPLETED
+        if (pipelineProcess?.hasBeenStopped) {
+            status = PipelineStatuses.STOPPED
+        }
+        if (!pipelineProcess
+                || pipelineProcess?.hasErrors
+                || task.status == PipelineStatuses.ERROR) {
+            status = PipelineStatuses.ERROR
+        }
+        task.status = status
+        taskService.update(task)
+        destroyPipelineProcess(task)
+        taskProducer.taskFinish(task.id)
+        if (docs) {
+            uploadDataToElastic(docs as List<HashMap>, task)
+        }
+        pipelineService.updateFromTask(TaskMapper.toPendingTaskDto(task))
+    }
+
+    void saveDocs(String jsonData, Task task) {
+        def config = TaskBucketObject.fromTask(task)
+        fileStoreProvider.createIfNotExistsBucket(config.bucketName)
+        fileStoreProvider.putObject(config.bucketName, config.objectName, jsonData)
+    }
 
     private PipelineProcess createPipelineProcess(Pipeline pipeline, List runtimeData, Task task) {
         PipelineBuilder pipelineBuilder = new PipelineBuilder()
@@ -157,7 +194,8 @@ class TaskExecutorService {
                 runningTmpDir: tmpFolder,
                 isTakeScreenshot: pipeline.isTakeScreenshot,
                 pipelineId: task.id,
-                isDebug: pipeline.isDebugMode
+                isDebug: pipeline.isDebugMode,
+                userId: pipeline.user.id,
         )
         Browser browser = getPipelineBrowser(pipeline, environment)
         pipelineBuilder.setPipelineJson(task.commands)
@@ -198,30 +236,7 @@ class TaskExecutorService {
         task.status = PipelineStatuses.RUNNING
         taskService.update(task)
     }
-    private void afterRun(Task task, PipelineProcess pipelineProcess) {
-        ObservableStore store = pipelineProcess ? pipelineProcess.getStore() : null
-        def docs = store ? store.getData() : []
-        task.docs = docs
-        task.endOnUtc = new Date()
 
-        String status = PipelineStatuses.COMPLETED
-        if (pipelineProcess?.hasBeenStopped) {
-            status = PipelineStatuses.STOPPED
-        }
-        if (!pipelineProcess
-                || pipelineProcess?.hasErrors
-                || task.status == PipelineStatuses.ERROR) {
-            status = PipelineStatuses.ERROR
-        }
-        task.status = status
-        taskService.update(task)
-        destroyPipelineProcess(task)
-        taskProducer.taskFinish(task.id)
-        if (docs) {
-            uploadDataToElastic(docs as List<HashMap>, task)
-        }
-        pipelineService.updateFromTask(TaskMapper.toPendingTaskDto(task))
-    }
     private destroyPipelineProcess(Task task) {
         PipelineProcess pipelineProcessed = beanFactory.getSingleton(task.id) as PipelineProcess
         if (pipelineProcessed) {

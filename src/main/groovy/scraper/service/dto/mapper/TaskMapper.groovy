@@ -22,7 +22,7 @@ class TaskMapper {
                 status: task.status,
                 failureReason: task.failureReason,
                 hookUrl: task.hookUrl,
-                docs: task.docs
+                docs: []
         )
     }
 
@@ -37,7 +37,7 @@ class TaskMapper {
                 status: task.status,
                 failureReason: task.failureReason,
                 hookUrl: task.hookUrl,
-                docs: task.docs
+                docs: []
         )
     }
 

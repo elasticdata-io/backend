@@ -27,6 +27,7 @@ import scraper.service.service.PipelineService
 import scraper.service.service.TaskService
 import scraper.service.service.UserService
 import scraper.service.service.converter.CsvDataConverter
+import scraper.service.store.FileDataRepository
 
 import javax.servlet.http.HttpServletResponse
 
@@ -60,6 +61,9 @@ class PipelineDataController {
 
     @Autowired
     CsvDataConverter csvConverter
+
+    @Autowired
+    FileDataRepository fileDataRepository
 
     @RequestMapping('/{id}')
     PipelineDto get(@PathVariable String id) {
@@ -164,7 +168,7 @@ class PipelineDataController {
         if (tasks.size() == 0) {
             return
         }
-        return tasks.first().docs as List<HashMap>
+        return fileDataRepository.getDataFileToList(tasks.first())
     }
 
     /**
@@ -180,7 +184,7 @@ class PipelineDataController {
         if (tasks.size() == 0) {
             return
         }
-        List<HashMap> list = tasks.first().docs as List<HashMap>
+        List<HashMap> list = fileDataRepository.getDataFileToList(tasks.first()) as List<HashMap>
         String responseData = csvConverter.toCsv(list)
         response.setContentType("text/csv; charset=utf-8")
         response.setHeader("Content-disposition", "attachment;filename=${pipelineId}.csv")

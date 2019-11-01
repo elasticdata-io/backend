@@ -79,3 +79,7 @@ env:
   ES_ENABLED: true
 
   PROXY_SERVICE_URL: "http://proxy"
+
+  MINIO_URL: http://minio.minio
+  MINIO_ACCESS_KEY: elasticdataio
+  MINIO_SECRET_KEY: wJalrXUtnFEMI/9874c97c907209cpuvpw97bpb/asdasdasdasdasd

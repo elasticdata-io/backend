@@ -185,6 +185,7 @@ class TaskExecutorService {
         def config = TaskBucketObject.fromTask(task)
         fileStoreProvider.createIfNotExistsBucket(config.bucketName)
         fileStoreProvider.putObject(config.bucketName, config.objectName, jsonData)
+        task.docsUrl = fileStoreProvider.presignedGetObject(config.bucketName, config.objectName)
     }
 
     private PipelineProcess createPipelineProcess(Pipeline pipeline, List runtimeData, Task task) {

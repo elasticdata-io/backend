@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import scraper.core.pipeline.data.FileStoreProvider
 import scraper.service.dto.mapper.PipelineMapper
 import scraper.service.dto.model.task.PendingTaskDto
 import scraper.service.model.Pipeline
@@ -17,6 +18,9 @@ class PipelineService {
 
     @Autowired
     private PipelineWebsocketProducer pipelineWebsocketProducer
+
+    @Autowired
+    private FileStoreProvider fileStoreProvider
 
     @Autowired
     private PipelineRepository pipelineRepository
@@ -44,7 +48,7 @@ class PipelineService {
         logger.info("update pipeline from PendingTaskDto, task.id = ${taskDto.id}")
         if (taskDto.endOnUtc > pipeline.lastCompletedOn) {
             pipeline.lastCompletedOn = taskDto.endOnUtc
-            pipeline.parseRowsCount = taskDto.docs.size()
+            // pipeline.parseRowsCount = taskDto.docs.size()
             pipeline.status = taskDto.status
         }
         def tasksTotal = pipeline.tasksTotal ?: 0

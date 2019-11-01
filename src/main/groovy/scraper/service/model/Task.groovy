@@ -23,4 +23,5 @@ class Task {
     public String status
     public String failureReason
     public String hookUrl
+    public String docsUrl
 }

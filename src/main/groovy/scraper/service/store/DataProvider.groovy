@@ -23,7 +23,7 @@ class DataProvider implements FileStoreProvider {
 
     @PostConstruct
     init() {
-        minioClient = new MinioClient(url, accessKey, secretKey, false)
+        minioClient = new MinioClient(url, accessKey, secretKey, true)
     }
 
     void createIfNotExistsBucket(String bucketName) {

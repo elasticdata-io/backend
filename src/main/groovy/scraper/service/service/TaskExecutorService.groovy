@@ -182,10 +182,14 @@ class TaskExecutorService {
     }
 
     void saveDocs(String jsonData, Task task) {
-        def config = TaskBucketObject.fromTask(task)
-        fileStoreProvider.createIfNotExistsBucket(config.bucketName)
-        fileStoreProvider.putObject(config.bucketName, config.objectName, jsonData)
-        task.docsUrl = fileStoreProvider.presignedGetObject(config.bucketName, config.objectName)
+        try {
+            def config = TaskBucketObject.fromTask(task)
+            fileStoreProvider.createIfNotExistsBucket(config.bucketName)
+            fileStoreProvider.putObject(config.bucketName, config.objectName, jsonData)
+            task.docsUrl = fileStoreProvider.presignedGetObject(config.bucketName, config.objectName)
+        } catch(all) {
+            logger.error(all)
+        }
     }
 
     private PipelineProcess createPipelineProcess(Pipeline pipeline, List runtimeData, Task task) {

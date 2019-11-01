@@ -10,5 +10,5 @@ class TaskParsedLinesDto {
     String pipelineTaskId
     String pipelineId
     String userId
-    Map<String, String> line
+    Map<String, Object> line
 }

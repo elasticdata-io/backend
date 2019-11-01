@@ -1,5 +1,7 @@
 package scraper.service.service
 
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import scraper.service.amqp.producer.TaskProducer
@@ -10,6 +12,8 @@ import scraper.service.repository.TaskQueueRepository
 
 @Service
 class TaskQueueService {
+
+    private Logger logger = LogManager.getRootLogger()
 
     @Autowired
     UserService userService
@@ -40,6 +44,7 @@ class TaskQueueService {
     private run(TaskQueue taskQueue) {
         List<TaskQueue> runningTasks = findRunningTasksByUser(taskQueue.userId)
         if (runningTasks.size() >= userService.maxAvailableWorkers) {
+            logger.info("not maxAvailableWorkers >= runningTasks.size(), user: ${taskQueue.userId}")
             return
         }
         taskQueue.status = TaskQueueStatuses.RUNNING

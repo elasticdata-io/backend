@@ -52,6 +52,11 @@ class DataProvider implements FileStoreProvider {
         minioClient.putObject(bucketName, objectName, bais, bais.available(), contentType)
     }
 
+    void putObject(String bucketName, String objectName, byte[] data, String contentType) {
+        ByteArrayInputStream bais = new ByteArrayInputStream(data)
+        minioClient.putObject(bucketName, objectName, bais, bais.available(), contentType)
+    }
+
     String presignedGetObject(String bucketName, String objectName) {
         return minioClient.presignedGetObject(bucketName, objectName)
     }

@@ -1,6 +1,7 @@
 package scraper.service.amqp.consumer
 
 import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.ContentType
 import org.apache.http.entity.StringEntity
@@ -12,6 +13,8 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import scraper.service.amqp.QueueConstants
+import scraper.service.dto.mapper.TaskMapper
+import scraper.service.dto.model.task.PendingApiTaskDto
 import scraper.service.model.Pipeline
 import scraper.service.model.Task
 import scraper.service.service.PipelineService
@@ -62,7 +65,9 @@ class RunHooksConsumer {
         logger.info("start hooks ${url}, pipeline: ${pipeline.id}")
         CloseableHttpClient httpClient = HttpClients.createDefault()
         try {
-            String json = fileDataRepository.getDataFileToString(task)
+            PendingApiTaskDto pendingApiTaskDto = TaskMapper.toPendingApiTaskDto(task)
+            String json = new JsonBuilder(pendingApiTaskDto).toPrettyString()
+//            String json = fileDataRepository.getDataFileToString(task)
             StringEntity requestEntity = new StringEntity(
                     json,
                     ContentType.APPLICATION_JSON

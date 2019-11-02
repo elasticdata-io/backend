@@ -16,7 +16,8 @@ import scraper.core.browser.provider.Chrome
 import scraper.core.pipeline.Environment
 import scraper.core.pipeline.PipelineBuilder
 import scraper.core.pipeline.PipelineProcess
-import scraper.core.pipeline.data.FileStoreProvider
+import scraper.core.pipeline.data.FileStore
+import scraper.core.pipeline.data.storage.FileStoreProvider
 import scraper.core.pipeline.data.ObservableStore
 import scraper.service.amqp.producer.TaskProducer
 import scraper.service.constants.PipelineStatuses
@@ -157,11 +158,14 @@ class TaskExecutorService {
     }
     private void afterRun(Task task, PipelineProcess pipelineProcess) {
         ObservableStore store = pipelineProcess ? pipelineProcess.getStore() : null
-        def docs = store ? store.getData() : []
-        // task.docs = docs
+        List docs = []
+        if (store) {
+            FileStore fileStore = store as FileStore
+            task.docsUrl = fileStore.docsUrl
+            docs = fileStore.getData()
+        }
         task.endOnUtc = new Date()
 
-        saveDocs(store.jsonData, task)
         moveLocalFilesToStorage(pipelineProcess)
 
         String status = PipelineStatuses.COMPLETED
@@ -199,17 +203,6 @@ class TaskExecutorService {
         }
     }
 
-    void saveDocs(String jsonData, Task task) {
-        try {
-            def config = TaskBucketObject.fromTask(task)
-            fileStoreProvider.createIfNotExistsBucket(config.bucketName)
-            fileStoreProvider.putObject(config.bucketName, config.objectName, jsonData)
-            task.docsUrl = fileStoreProvider.presignedGetObject(config.bucketName, config.objectName)
-        } catch(all) {
-            logger.error(all)
-        }
-    }
-
     private PipelineProcess createPipelineProcess(Pipeline pipeline, List runtimeData, Task task) {
         PipelineBuilder pipelineBuilder = new PipelineBuilder()
         String tmpFolder = "${RUN_DIRECTORY}/${task.id}"
@@ -228,6 +221,7 @@ class TaskExecutorService {
         PipelineProcess pipelineProcess = pipelineBuilder
                 .setBrowser(browser)
                 .setEnvironment(environment)
+                .setFileStoreProvider(fileStoreProvider)
                 .build()
         return pipelineProcess
     }
@@ -263,6 +257,7 @@ class TaskExecutorService {
     private destroyPipelineProcess(Task task) {
         PipelineProcess pipelineProcessed = beanFactory.getSingleton(task.id) as PipelineProcess
         if (pipelineProcessed) {
+            pipelineProcessed.destroy()
             beanFactory.destroySingleton(task.id)
         }
     }

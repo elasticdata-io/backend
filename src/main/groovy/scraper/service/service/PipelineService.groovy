@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import scraper.core.pipeline.data.FileStoreProvider
+import scraper.core.pipeline.data.storage.FileStoreProvider
 import scraper.service.dto.mapper.PipelineMapper
 import scraper.service.dto.model.task.PendingTaskDto
 import scraper.service.model.Pipeline

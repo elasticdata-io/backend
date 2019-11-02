@@ -3,7 +3,7 @@ package scraper.service.store
 import io.minio.MinioClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import scraper.core.pipeline.data.FileStoreProvider
+import scraper.core.pipeline.data.storage.FileStoreProvider
 
 import javax.annotation.PostConstruct
 
@@ -43,9 +43,13 @@ class DataProvider implements FileStoreProvider {
         minioClient.getObject(bucketName, objectName)
     }
 
-    void putObject(String bucketName, String objectName, String data) {
+    void putJsonObject(String bucketName, String objectName, String data) {
+        putObject(bucketName, objectName, data,  "application/json;charset=UTF-8")
+    }
+
+    void putObject(String bucketName, String objectName, String data, String contentType) {
         ByteArrayInputStream bais = new ByteArrayInputStream(data.getBytes("UTF-8"))
-        minioClient.putObject(bucketName, objectName, bais, bais.available(), "application/json")
+        minioClient.putObject(bucketName, objectName, bais, bais.available(), contentType)
     }
 
     String presignedGetObject(String bucketName, String objectName) {

@@ -9,7 +9,7 @@
     "status": "pending", <2>
     "failureReason": "", <3>
     "commands": "...", <4>
-    "docs": null,
+    "docsUrl": null,
     "hookUrl": "https://my-simplesite.com/callback"
 }
 ----

@@ -28,7 +28,6 @@ import scraper.service.elastic.ElasticSearchService
 import scraper.service.model.Pipeline
 import scraper.service.model.Task
 import scraper.service.proxy.ProxyAssigner
-import scraper.service.store.TaskBucketObject
 import scraper.service.ws.TaskWebsocketProducer
 
 import javax.annotation.PostConstruct

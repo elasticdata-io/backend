@@ -9,4 +9,5 @@ class TaskDto {
     String status
     public String failureReason
     public String hookUrl
+    public String docsUrl
 }

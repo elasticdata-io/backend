@@ -1,5 +1,6 @@
 package scraper.service.service
 
+import groovy.io.FileType
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
@@ -161,6 +162,7 @@ class TaskExecutorService {
         task.endOnUtc = new Date()
 
         saveDocs(store.jsonData, task)
+        moveLocalFilesToStorage(pipelineProcess)
 
         String status = PipelineStatuses.COMPLETED
         if (pipelineProcess?.hasBeenStopped) {
@@ -179,6 +181,22 @@ class TaskExecutorService {
             uploadDataToElastic(docs as List<HashMap>, task)
         }
         pipelineService.updateFromTask(TaskMapper.toPendingTaskDto(task))
+    }
+
+    def moveLocalFilesToStorage(PipelineProcess pipelineProcess) {
+        pipelineProcess.environment.runningTmpDir
+        def logsDir = new File(pipelineProcess.environment.runningTmpDir)
+        if (logsDir.exists()) {
+            logsDir.eachFile (FileType.FILES) { file ->
+                println file
+            }
+        }
+        def screenshotsDir = new File("${pipelineProcess.environment.runningTmpDir}/screenshots")
+        if (screenshotsDir.exists()) {
+            screenshotsDir.eachFile (FileType.FILES) { file ->
+                println file
+            }
+        }
     }
 
     void saveDocs(String jsonData, Task task) {

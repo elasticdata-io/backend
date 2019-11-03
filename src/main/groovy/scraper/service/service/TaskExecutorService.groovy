@@ -187,6 +187,9 @@ class TaskExecutorService {
     }
 
     def moveLocalFilesToStorage(PipelineProcess pipelineProcess) {
+        if (!pipelineProcess || pipelineProcess.environment) {
+            return
+        }
         pipelineProcess.environment.runningTmpDir
         def logsDir = new File(pipelineProcess.environment.runningTmpDir)
         if (logsDir.exists()) {

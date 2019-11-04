@@ -18,6 +18,9 @@ class TaskService {
     private Logger logger = LogManager.getRootLogger()
 
     @Autowired
+    TaskStatusControllerManager taskStatusControllerManager
+
+    @Autowired
     TaskRepository taskRepository
 
     @Autowired
@@ -44,6 +47,18 @@ class TaskService {
         return taskRepository.findByPipelineIdAndFailureReasonOrderByStartOnUtcDesc(pipelineId, error, top)
     }
 
+    List<Task> findByStatusInAndUserId(List<String> statuses, String userId) {
+        return taskRepository.findByStatusInAndUserId(statuses, userId)
+    }
+
+    Task findFirstWaitingTaskByUserId(String userId) {
+        def tasks = taskRepository.findByStatusInAndUserIdOrderByStartOnUtcDesc([PipelineStatuses.PENDING], userId)
+        if (tasks.empty) {
+            return
+        }
+        return tasks.first()
+    }
+
     void deleteById(String id) {
         taskRepository.deleteById(id)
     }
@@ -57,7 +72,7 @@ class TaskService {
                 commands: pipeline.jsonCommands,
                 status: PipelineStatuses.PENDING
         )
-        taskRepository.save(task)
+        update(task)
         return task
     }
 
@@ -81,10 +96,11 @@ class TaskService {
 
     void update(Task task) {
         taskRepository.save(task)
-        notifyChangeTask(task)
+        taskStatusControllerManager.update(task)
+        notifyChangeTaskToClient(task)
     }
 
-    private void notifyChangeTask(Task task) {
+    private void notifyChangeTaskToClient(Task task) {
         def taskDto = TaskMapper.toTaskDto(task)
         taskWebsocketProducer.change(taskDto)
     }

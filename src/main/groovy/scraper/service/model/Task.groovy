@@ -22,6 +22,8 @@ class Task {
 
     @Indexed(name = "pipeline_id_index", direction = IndexDirection.DESCENDING)
     public String pipelineId
+
+    @Indexed(name = "user_id_index", direction = IndexDirection.DESCENDING)
     public String userId
 
     public String commands

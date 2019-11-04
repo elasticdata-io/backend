@@ -4,6 +4,7 @@ class PipelineStatuses {
 
     public static NOT_RUNNING = 'not running'
     public static PENDING = 'pending'
+    public static QUEUE = 'queue' // in rabbitmq queue
     public static RUNNING = 'running'
     public static COMPLETED = 'completed'
     public static ERROR = 'error'

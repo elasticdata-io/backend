@@ -24,9 +24,6 @@ class PipelineRunnerService {
     PipelineService pipelineService
 
     @Autowired
-    TaskQueueService taskQueueService
-
-    @Autowired
     TaskService taskService
 
     PendingApiTaskDto pendingFromApi(String pipelineId, PipelineRunDto dto) {
@@ -47,7 +44,6 @@ class PipelineRunnerService {
         }
         Task task = taskService.createFromPipeline(pipeline)
         def pendingApiTaskDto = TaskMapper.toPendingApiTaskDto(task)
-        taskQueueService.toRunTaskQueue(pendingApiTaskDto)
         return pendingApiTaskDto
     }
 
@@ -59,7 +55,6 @@ class PipelineRunnerService {
         }
         Task task = taskService.createFromPipeline(pipeline)
         def pendingTaskDto = TaskMapper.toPendingTaskDto(task)
-        taskQueueService.toRunTaskQueue(pendingTaskDto)
         return pendingTaskDto
     }
 
@@ -71,7 +66,6 @@ class PipelineRunnerService {
         }
         task.status = PipelineStatuses.STOPPING
         taskService.update(task)
-        taskQueueService.toStopTaskQueue(taskId)
         return TaskMapper.toPendingTaskDto(task)
     }
 }

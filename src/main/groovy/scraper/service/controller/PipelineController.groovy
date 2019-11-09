@@ -17,11 +17,9 @@ import scraper.core.command.input.UserInput
 import scraper.service.dto.model.task.PendingApiTaskDto
 import scraper.service.dto.model.task.PendingTaskDto
 import scraper.service.dto.model.task.PipelineRunDto
-import scraper.service.service.PipelineInputService
 import scraper.service.service.PipelineRunnerService
 import scraper.service.service.PipelineService
 import scraper.service.repository.PipelineRepository
-import scraper.service.service.PipelineStructureService
 
 @RestController
 @RequestMapping("/pipeline")
@@ -33,13 +31,7 @@ class PipelineController {
     PipelineRepository pipelineRepository
 
     @Autowired
-    PipelineStructureService pipelineStructure
-
-    @Autowired
     PipelineService pipelineService
-
-    @Autowired
-    PipelineInputService pipelineInputService
 
     @Autowired
     PipelineRunnerService pipelineRunnerService
@@ -56,7 +48,7 @@ class PipelineController {
 
     /**
      * Runs pipeline process by pipeline pipelineId.
-     * @param id
+     * @param idjp0
      */
     @PostMapping("/run-from-client/{id}")
     PendingTaskDto runFromClient(@PathVariable String id) {

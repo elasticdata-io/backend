@@ -39,6 +39,10 @@ class TaskService {
         return task.present ? task.get() : null
     }
 
+    List<Task> findAllById(List <String> ids) {
+        return taskRepository.findAllById(ids)
+    }
+
     List<Task> findByPipelineAndUserOrderByStartOnDesc(String pipelineId, String userId, Pageable top) {
         return taskRepository.findByPipelineIdAndUserIdOrderByStartOnUtcDesc(pipelineId, userId, top)
     }
@@ -59,8 +63,26 @@ class TaskService {
         return tasks.first()
     }
 
+    Task findByDependencyTasksAndUserId(String dependencyTaskId, String userId) {
+        return taskRepository.findByDependencyTasksAndUserId(dependencyTaskId, userId)
+    }
+
     void deleteById(String id) {
         taskRepository.deleteById(id)
+    }
+
+    Task createFromParentTask(Pipeline pipeline, Task parentTask) {
+        Task task = new Task(
+                pipelineId: pipeline.id,
+                startOnUtc: new Date(),
+                userId: pipeline.user.id,
+                hookUrl: pipeline.hookUrl,
+                commands: pipeline.jsonCommands,
+                status: PipelineStatuses.PENDING,
+                parentTaskId: parentTask.id,
+        )
+        update(task)
+        return task
     }
 
     Task createFromPipeline(Pipeline pipeline) {

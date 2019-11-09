@@ -19,6 +19,9 @@ class TaskStatusControllerManager {
     TaskProducer taskProducer
 
     @Autowired
+    TaskDependencyAssigner taskDependencyAssigner
+
+    @Autowired
     UserService userService
 
     void update(Task task) {
@@ -47,7 +50,37 @@ class TaskStatusControllerManager {
     }
 
     void handleFinishedTask(Task task) {
+        // handleFinishedDependencies(task)
         runWaitingTask(task.userId)
+    }
+
+    void handleFinishedDependencies(Task task) {
+        Task parentTask = taskService.findByDependencyTasksAndUserId(task.id, task.userId)
+        if (!parentTask) {
+            return
+        }
+        if (parentTask.status != PipelineStatuses.WAIT_OTHER_PIPELINE) {
+            return
+        }
+        List<String> depsTaskIdList = parentTask.dependencyTaskIds
+        List<Task> depsTasks = taskService.findAllById(depsTaskIdList)
+        Boolean completed = depsTasks.every {
+            return it.status == PipelineStatuses.COMPLETED
+        }
+        if (completed) {
+            parentTask.status = PipelineStatuses.PENDING
+            taskService.update(task)
+        }
+        Boolean stopped = depsTasks.any {
+            return it.status == PipelineStatuses.STOPPED
+        }
+        Boolean error = depsTasks.any {
+            return it.status == PipelineStatuses.ERROR
+        }
+        if (stopped || error) {
+            parentTask.status = PipelineStatuses.STOPPING
+            taskService.update(task)
+        }
     }
 
     /**
@@ -59,8 +92,13 @@ class TaskStatusControllerManager {
     }
 
     void handlePendingTask(Task task) {
+        Boolean isAssignDeps = taskDependencyAssigner.assignDependencies(task)
+        if (isAssignDeps) {
+            task.status = PipelineStatuses.WAIT_OTHER_PIPELINE
+            taskService.update(task)
+            return
+        }
         if (hasFreeWorker(task.userId)) {
-            // todo : check deps
             task.status = PipelineStatuses.QUEUE
             taskService.update(task)
         }

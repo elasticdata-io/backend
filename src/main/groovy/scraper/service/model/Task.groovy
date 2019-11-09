@@ -31,4 +31,6 @@ class Task {
     public String failureReason
     public String hookUrl
     public String docsUrl
+    public List<String> dependencyTaskIds
+    public String parentTaskId
 }

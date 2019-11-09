@@ -5,6 +5,7 @@
 * link:++#task-check++[Перевірка статусу задачі]
 * link:++#pipeline-data++[Отримання данних]
 * link:++#task-stop++[Зупинка запущеної задачі]
+* link:++#java-api-client++[Java API client]
 
 [#run-pipeline]
 === 1. Запуск павука
@@ -96,3 +97,9 @@ path - `/api/task/stop/*[taskId]*` +
 |===
 
 IMPORTANT: Після повного зупинення задачі спрацює hook мехінізм.
+
+
+[#java-api-client]
+=== 5. Java API client
+
+IMPORTANT: [Детальніше за ссилкою](https://github.com/sergeytkachenko/elasticdata-java-client)

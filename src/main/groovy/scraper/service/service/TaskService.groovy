@@ -30,7 +30,10 @@ class TaskService {
     private TaskWebsocketProducer taskWebsocketProducer
 
     TaskDto getTask(String id) {
-        def task = findById(id)
+        Task task = findById(id)
+        if (!task) {
+            new Exception("task with id:${id} not found")
+        }
         return TaskMapper.toTaskDto(task)
     }
 

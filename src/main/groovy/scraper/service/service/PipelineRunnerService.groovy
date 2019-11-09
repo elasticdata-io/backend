@@ -64,6 +64,9 @@ class PipelineRunnerService {
         if (!task) {
             throw new Exception("task id id: ${taskId} not found")
         }
+        if (task.status == PipelineStatuses.ERROR || task.status == PipelineStatuses.COMPLETED) {
+            throw new Exception("this task: ${taskId} can not be stopped")
+        }
         task.status = PipelineStatuses.STOPPING
         taskService.update(task)
         return TaskMapper.toPendingTaskDto(task)

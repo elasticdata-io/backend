@@ -65,7 +65,7 @@ class PipelineDataController {
     @Autowired
     FileDataRepository fileDataRepository
 
-    @RequestMapping('/{id}')
+    @GetMapping('/{id}')
     PipelineDto get(@PathVariable String id) {
         Pipeline pipeline = pipelineService.findById(id)
         if (!pipeline) {
@@ -74,13 +74,13 @@ class PipelineDataController {
         return PipelineMapper.toPipelineDto(pipeline)
     }
 
-    @RequestMapping('/{id}/commands')
+    @GetMapping('/{id}/commands')
     Pipeline commands(@PathVariable String id) {
         PipelineDto pipeline = get(id)
         String json = pipeline.jsonCommands
     }
 
-    @RequestMapping('/list')
+    @GetMapping('/list')
     List<PipelineDto> list(@RequestHeader("token") String token) {
         String userId = tokenService.getUserId(token)
         List<Pipeline> pipelines = pipelineRepository.findByUserOrderByCreatedOnDesc(userId)
@@ -89,7 +89,7 @@ class PipelineDataController {
         }
     }
 
-    @RequestMapping('/list-depends/{pipelineId}')
+    @GetMapping('/list-depends/{pipelineId}')
     List<PipelineDto> listDepends(@RequestHeader("token") String token, @PathVariable String pipelineId) {
         String userId = tokenService.getUserId(token)
         def pipelines = pipelineRepository.findByUserAndIdNotIn(userId, [pipelineId])
@@ -160,13 +160,17 @@ class PipelineDataController {
      * @param pipelineId
      * @return Last parsed data by pipeline pipelineId.
      */
-    @RequestMapping("/data/{pipelineId}")
+    @GetMapping("/data/{pipelineId}")
     List<HashMap> getData(@PathVariable String pipelineId) {
+        Optional<Pipeline> pipelineOptional = pipelineRepository.findById(pipelineId)
+        if (!pipelineOptional.present) {
+            throw new Exception("pipeline with id ${pipelineId} not found")
+        }
         PageRequest page = new PageRequest(0, 1)
         List<Task> tasks = taskService
                 .findByPipelineAndErrorOrderByStartOnDesc(pipelineId, null, page)
         if (tasks.size() == 0) {
-            return
+            return new ArrayList<HashMap>()
         }
         return fileDataRepository.getDataFileToList(tasks.first())
     }
@@ -176,7 +180,7 @@ class PipelineDataController {
      * @param pipelineId
      * @return Last parsed data by pipeline pipelineId.
      */
-    @RequestMapping("/data/csv/{pipelineId}")
+    @GetMapping("/data/csv/{pipelineId}")
     List<HashMap> getCsvData(@PathVariable String pipelineId, HttpServletResponse response) {
         PageRequest page = new PageRequest(0, 1)
         List<Task> tasks = taskService

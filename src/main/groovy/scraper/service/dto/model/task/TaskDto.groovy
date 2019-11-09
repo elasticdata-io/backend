@@ -7,7 +7,7 @@ class TaskDto {
     Date startOnUtc
     Date endOnUtc
     String status
-    public String failureReason
-    public String hookUrl
-    public String docsUrl
+    String failureReason
+    String hookUrl
+    String docsUrl
 }

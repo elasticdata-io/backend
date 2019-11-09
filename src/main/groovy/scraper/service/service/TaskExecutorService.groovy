@@ -179,11 +179,11 @@ class TaskExecutorService {
         task.status = status
         taskService.update(task)
         destroyPipelineProcess(task)
-        taskProducer.taskFinish(task.id)
         if (docs) {
             uploadDataToElastic(docs as List<HashMap>, task)
         }
         pipelineService.updateFromTask(TaskMapper.toPendingTaskDto(task))
+        taskProducer.taskFinish(task.id)
     }
 
     def moveLocalFilesToStorage(PipelineProcess pipelineProcess) {

@@ -102,4 +102,6 @@ IMPORTANT: Після повного зупинення задачі спрац�
 [#java-api-client]
 === 5. Java API client
 
-IMPORTANT: [Детальніше за ссилкою](https://github.com/sergeytkachenko/elasticdata-java-client)
+Також ви можете використовувати java api client, бібліотека яка спрощує інтеграцію.
+
+Детальніше за посиланням - https://github.com/sergeytkachenko/elasticdata-java-client)

@@ -142,6 +142,7 @@ class TaskExecutorService {
         } catch (all) {
             logger.error(all)
             task.status = PipelineStatuses.ERROR
+            task.endOnUtc = new Data()
             taskService.update(task)
         }
         logger.info("finished task ${task.id}")

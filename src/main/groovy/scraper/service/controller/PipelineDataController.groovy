@@ -166,13 +166,11 @@ class PipelineDataController {
         if (!pipelineOptional.present) {
             throw new Exception("pipeline with id ${pipelineId} not found")
         }
-        PageRequest page = new PageRequest(0, 1)
-        List<Task> tasks = taskService
-                .findByPipelineAndErrorOrderByStartOnDesc(pipelineId, null, page)
-        if (tasks.size() == 0) {
+        Task task = taskService.findLastCompletedTask(pipelineId)
+        if (!task) {
             return new ArrayList<HashMap>()
         }
-        return fileDataRepository.getDataFileToList(tasks.first())
+        return fileDataRepository.getDataFileToList(task)
     }
 
     /**

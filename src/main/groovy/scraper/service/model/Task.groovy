@@ -31,4 +31,13 @@ class Task {
     public String failureReason
     public String hookUrl
     public String docsUrl
+
+    /**
+     * такси которые созданы из блока depends pipeline
+     */
+    public List<String> childrenTaskIds
+    /**
+     * Указатель на родителя
+     */
+    public String parentTaskId
 }

@@ -3,6 +3,7 @@ package scraper.service.service
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import scraper.service.constants.PipelineStatuses
@@ -48,6 +49,16 @@ class TaskService {
 
     List<Task> findByPipelineAndErrorOrderByStartOnDesc(String pipelineId, String error, Pageable top) {
         return taskRepository.findByPipelineIdAndFailureReasonOrderByStartOnUtcDesc(pipelineId, error, top)
+    }
+
+    Task findLastCompletedTask(String pipelineId) {
+        List<String> statuses = [PipelineStatuses.COMPLETED]
+        PageRequest page = new PageRequest(0, 1)
+        List<Task> tasks = taskRepository.findByPipelineIdAndStatusInOrderByStartOnUtcDesc(pipelineId, statuses, page)
+        if (!tasks || tasks.empty) {
+            return null
+        }
+        return tasks.first()
     }
 
     List<Task> findByStatusInAndUserId(List<String> statuses, String userId) {

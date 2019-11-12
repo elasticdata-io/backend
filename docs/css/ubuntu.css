@@ -1,8 +1,0 @@
-@import url(https://fonts.googleapis.com/css?family=Ubuntu);
-@import "asciidoctor.css"; /* Default asciidoc style framework - important */
-
-/* CUSTOMISATIONS */
-/* Change the values in root for quick customisation. If you want even more fine grain... venture further. */
-
-/* Text styles */
-body{font-family: "Ubuntu",sans-serif;}

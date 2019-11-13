@@ -83,7 +83,7 @@ class PipelineDataController {
     @GetMapping('/list')
     List<PipelineDto> list(@RequestHeader("token") String token) {
         String userId = tokenService.getUserId(token)
-        List<Pipeline> pipelines = pipelineRepository.findByUserOrderByCreatedOnDesc(userId)
+        List<Pipeline> pipelines = pipelineRepository.findByUserOrderByModifiedOnDesc(userId)
         return pipelines.collect {pipeline ->
             return PipelineMapper.toPipelineDto(pipeline)
         }

@@ -66,7 +66,7 @@ class TaskService {
     }
 
     Task findFirstWaitingTaskByUserId(String userId) {
-        def tasks = taskRepository.findByStatusInAndUserIdOrderByStartOnUtcDesc([PipelineStatuses.PENDING], userId)
+        def tasks = taskRepository.findByStatusInAndUserIdOrderByStartOnUtcAsc([PipelineStatuses.PENDING], userId)
         if (tasks.empty) {
             return
         }

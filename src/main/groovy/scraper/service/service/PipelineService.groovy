@@ -31,6 +31,7 @@ class PipelineService {
     }
 
     void save(Pipeline pipeline) {
+        pipeline.modifiedOn = new Date()
         pipelineRepository.save(pipeline)
     }
 

@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component
 @Component
 class QueueConstants {
 
+    @Value('${spring.rabbitmq.queue.taskChanged}')
+    String TASK_CHANGED
+
     @Value('${spring.rabbitmq.queue.pipelineTaskRun}')
     String PIPELINE_TASK_RUN
 

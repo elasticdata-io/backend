@@ -39,4 +39,11 @@ class TaskProducer {
     void taskFinish(String taskId) {
         rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.PIPELINE_TASK_FINISH, taskId)
     }
+
+    /**
+     * @param taskId
+     */
+    void taskChanged(String taskId) {
+        rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.TASK_CHANGED, taskId)
+    }
 }

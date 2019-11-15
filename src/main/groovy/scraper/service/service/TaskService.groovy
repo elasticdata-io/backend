@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import scraper.service.amqp.producer.TaskProducer
 import scraper.service.constants.PipelineStatuses
 import scraper.service.dto.mapper.TaskMapper
 import scraper.service.dto.model.task.TaskDto
@@ -19,7 +20,7 @@ class TaskService {
     private Logger logger = LogManager.getRootLogger()
 
     @Autowired
-    TaskStatusControllerManager taskStatusControllerManager
+    TaskProducer taskProducer
 
     @Autowired
     TaskRepository taskRepository
@@ -110,7 +111,7 @@ class TaskService {
 
     void update(Task task) {
         taskRepository.save(task)
-        taskStatusControllerManager.update(task)
+        taskProducer.taskChanged(task.id)
         notifyChangeTaskToClient(task)
     }
 

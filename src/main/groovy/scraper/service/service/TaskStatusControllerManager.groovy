@@ -21,6 +21,9 @@ class TaskStatusControllerManager {
     @Autowired
     UserService userService
 
+    @Autowired
+    TaskDependenciesScheduler taskDependenciesScheduler
+
     void update(Task task) {
         switch(task.status) {
             case PipelineStatuses.PENDING:
@@ -41,36 +44,53 @@ class TaskStatusControllerManager {
             case PipelineStatuses.ERROR:
                 handleFinishedTask(task)
                 break
+            case PipelineStatuses.WAIT_OTHER_PIPELINE:
+                // handleWaitOtherPipelineTask(task)
+                break
             default:
                 return
         }
     }
 
-    void handleFinishedTask(Task task) {
+    void handleWaitOtherPipelineTask(Task task) {
+        def depsFinished = task.taskDependencies.every {dep ->
+            def status = dep.dependencyTaskStatus
+            return status == PipelineStatuses.COMPLETED || status == PipelineStatuses.ERROR  || status == PipelineStatuses.STOPPED
+        }
+        if (depsFinished) {
+            task.status = PipelineStatuses.QUEUE
+            taskService.update(task)
+        }
+    }
+
+    private void handleFinishedTask(Task task) {
         runWaitingTask(task.userId)
+        Task parentTask = taskDependenciesScheduler.updateParentTask(task)
+        if (parentTask) {
+            taskService.silentUpdate(parentTask)
+        }
     }
 
     /**
      * push to rabbitmq task need stop
      * @param task
      */
-    void handleStoppingTask(Task task) {
+    private void handleStoppingTask(Task task) {
         taskProducer.taskStop(task.id)
     }
 
-    void handlePendingTask(Task task) {
-        if (hasFreeWorker(task.userId)) {
-            // todo : check deps
-            task.status = PipelineStatuses.QUEUE
-            taskService.update(task)
+    private void handlePendingTask(Task task) {
+        if (!hasFreeWorker(task.userId)) {
+            return
         }
+        checkDependencies(task)
     }
 
     /**
      * push task to rabbitmq queue
      * @param task
      */
-    void handleQueueTask(Task task) {
+    private void handleQueueTask(Task task) {
         taskProducer.taskRun(task.id)
     }
 
@@ -92,8 +112,15 @@ class TaskStatusControllerManager {
         if (!waitingTask) {
             return
         }
-        // todo: check deps
-        waitingTask.status = PipelineStatuses.QUEUE
+        checkDependencies(waitingTask)
+    }
+
+    private void checkDependencies(Task waitingTask) {
+        List<Task> taskDependencies = taskDependenciesScheduler.createTaskDependencies(waitingTask)
+        waitingTask.status = taskDependencies.isEmpty()
+                ? PipelineStatuses.QUEUE
+                : PipelineStatuses.WAIT_OTHER_PIPELINE
         taskService.update(waitingTask)
+        taskService.update(taskDependencies)
     }
 }

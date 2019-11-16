@@ -74,20 +74,33 @@ class TaskService {
         return tasks.first()
     }
 
+    List<Task> findWaitingOtherPipelineTasks(Pageable page) {
+        return taskRepository.findByStatusInOrderByStartOnUtcAsc(
+                [PipelineStatuses.WAIT_OTHER_PIPELINE], page)
+    }
+
     void deleteById(String id) {
         taskRepository.deleteById(id)
     }
 
-    Task createFromPipeline(Pipeline pipeline) {
-        Task task = new Task(
-                pipelineId: pipeline.id,
-                startOnUtc: new Date(),
-                userId: pipeline.user.id,
-                hookUrl: pipeline.hookUrl,
-                commands: pipeline.jsonCommands,
-                status: PipelineStatuses.PENDING
-        )
+    Task create(Pipeline pipeline) {
+        return create(pipeline, new Task())
+    }
+
+    Task create(Pipeline pipeline, Task task) {
+        createSilent(pipeline, task)
         update(task)
+        return task
+    }
+
+    Task createSilent(Pipeline pipeline, Task task) {
+        task.pipelineId = pipeline.id
+        task.startOnUtc = new Date()
+        task.userId = pipeline.user.id
+        task.hookUrl = pipeline.hookUrl
+        task.commands = pipeline.jsonCommands
+        task.status = PipelineStatuses.PENDING
+        taskRepository.save(task)
         return task
     }
 
@@ -95,6 +108,10 @@ class TaskService {
         Task task = findById(taskId)
         if (!task) {
             logger.error("task with id ${taskId} not found")
+            return
+        }
+        if (task.status != PipelineStatuses.QUEUE) {
+            logger.error("task ${task.id} not runnig, current status = ${task.status}")
             return
         }
         return taskExecutorService.run(task)
@@ -109,10 +126,22 @@ class TaskService {
         return taskExecutorService.stop(task)
     }
 
+    void update(List<Task> tasks) {
+        tasks.each {task ->
+            update(task)
+        }
+    }
+
     void update(Task task) {
+        logger.info("TaskService.update taskId ${task.id}")
         taskRepository.save(task)
         taskProducer.taskChanged(task.id)
         notifyChangeTaskToClient(task)
+    }
+
+    void silentUpdate(Task task) {
+        logger.info("TaskService.silentUpdate taskId ${task.id}")
+        taskRepository.save(task)
     }
 
     private void notifyChangeTaskToClient(Task task) {

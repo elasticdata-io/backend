@@ -42,7 +42,7 @@ class PipelineRunnerService {
         if (dto && dto.hookUrl) {
             pipeline.hookUrl = dto.hookUrl
         }
-        Task task = taskService.createFromPipeline(pipeline)
+        Task task = taskService.create(pipeline)
         def pendingApiTaskDto = TaskMapper.toPendingApiTaskDto(task)
         return pendingApiTaskDto
     }
@@ -53,9 +53,19 @@ class PipelineRunnerService {
         if (!pipeline) {
             throw new Exception("pipeline with id: ${pipelineId} not found")
         }
-        Task task = taskService.createFromPipeline(pipeline)
+        Task task = taskService.create(pipeline)
         def pendingTaskDto = TaskMapper.toPendingTaskDto(task)
         return pendingTaskDto
+    }
+
+    Task pendingFromDependencies(String pipelineId, String parentTaskId) {
+        logger.info("pendingFromDependencies: ${pipelineId}")
+        Pipeline pipeline = pipelineService.findById(pipelineId)
+        if (!pipeline) {
+            throw new Exception("pipeline with id: ${pipelineId} not found")
+        }
+        Task task = new Task(parentTaskId: parentTaskId)
+        return taskService.createSilent(pipeline, task)
     }
 
     PendingTaskDto stoppingFromClient(String taskId) {

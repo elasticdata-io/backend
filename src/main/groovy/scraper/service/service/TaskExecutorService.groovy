@@ -127,11 +127,13 @@ class TaskExecutorService {
             pipelineProcess.run()
         } catch (Error error) {
             logger.error(error)
+            task = taskService.findById(task.id)
             task.failureReason = "${error.getClass()}"
             task.status = PipelineStatuses.ERROR
             taskService.update(task)
         } catch (all) {
             logger.error(all)
+            task = taskService.findById(task.id)
             task.failureReason = "${all.getMessage()}. ${all.printStackTrace()}"
             task.status = PipelineStatuses.ERROR
             taskService.update(task)
@@ -141,6 +143,7 @@ class TaskExecutorService {
             afterRun(task, pipelineProcess)
         } catch (all) {
             logger.error(all)
+            task = taskService.findById(task.id)
             task.status = PipelineStatuses.ERROR
             task.endOnUtc = new Date()
             taskService.update(task)

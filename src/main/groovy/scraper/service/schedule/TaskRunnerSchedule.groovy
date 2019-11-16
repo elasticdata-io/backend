@@ -25,7 +25,7 @@ class TaskRunnerSchedule {
         List<Task> tasks = taskService.findNeedRunTasks()
         logger.info("find ${tasks.size()} need run tasks")
         tasks.each {task->
-            needRunTaskStatusScheduler.checkTaskStatus(task)
+            needRunTaskStatusScheduler.checkChangeTaskStatus(task)
         }
     }
 }

@@ -26,7 +26,7 @@ class NeedRunTaskStatusScheduler extends AbstractTaskStatusScheduler {
     TaskProducer taskProducer
 
     @Override
-    Boolean checkTaskStatus(Task task) {
+    Boolean checkChangeTaskStatus(Task task) {
         if (task.status != PipelineStatuses.NEED_RUN) {
             return false
         }

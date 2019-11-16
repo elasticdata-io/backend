@@ -18,7 +18,7 @@ class NeedDepsTaskStatusScheduler extends AbstractTaskStatusScheduler {
     TaskDependenciesService taskDependenciesService
 
     @Override
-    Boolean checkTaskStatus(Task task) {
+    Boolean checkChangeTaskStatus(Task task) {
         if (task.status != PipelineStatuses.NEED_DEPS) {
             return false
         }

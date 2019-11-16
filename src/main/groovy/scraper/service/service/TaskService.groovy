@@ -139,7 +139,7 @@ class TaskService {
         task.status = status
         taskRepository.save(task)
         taskStatusSchedulers.each {scheduler ->
-            scheduler.checkTaskStatus(task)
+            scheduler.checkChangeTaskStatus(task)
         }
         notifyChangeTaskToClient(task)
         return task

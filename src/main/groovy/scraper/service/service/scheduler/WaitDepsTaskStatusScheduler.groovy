@@ -13,7 +13,7 @@ class WaitDepsTaskStatusScheduler extends AbstractTaskStatusScheduler {
     }
 
     @Override
-    Boolean checkTaskStatus(Task task) {
+    Boolean checkChangeTaskStatus(Task task) {
         if (task.status != PipelineStatuses.WAIT_DEPS) {
             return false
         }

@@ -22,7 +22,7 @@ class CompletedTaskStatusScheduler extends AbstractTaskStatusScheduler {
     TaskProducer taskProducer
 
     @Override
-    Boolean checkTaskStatus(Task task) {
+    Boolean checkChangeTaskStatus(Task task) {
         if (task.status != PipelineStatuses.COMPLETED) {
             return false
         }

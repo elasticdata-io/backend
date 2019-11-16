@@ -19,10 +19,10 @@ class TaskStatusControllerManager {
     TaskProducer taskProducer
 
     @Autowired
-    TaskDependencyAssigner taskDependencyAssigner
+    UserService userService
 
     @Autowired
-    UserService userService
+    TaskDependenciesScheduler taskDependenciesScheduler
 
     void update(Task task) {
         switch(task.status) {
@@ -44,42 +44,30 @@ class TaskStatusControllerManager {
             case PipelineStatuses.ERROR:
                 handleFinishedTask(task)
                 break
+            case PipelineStatuses.WAIT_OTHER_PIPELINE:
+                // handleWaitOtherPipelineTask(task)
+                break
             default:
                 return
         }
     }
 
-    void handleFinishedTask(Task task) {
-        // handleFinishedDependencies(task)
-        runWaitingTask(task.userId)
+    void handleWaitOtherPipelineTask(Task task) {
+        def depsFinished = task.taskDependencies.every {dep ->
+            def status = dep.dependencyTaskStatus
+            return status == PipelineStatuses.COMPLETED || status == PipelineStatuses.ERROR  || status == PipelineStatuses.STOPPED
+        }
+        if (depsFinished) {
+            task.status = PipelineStatuses.QUEUE
+            taskService.update(task)
+        }
     }
 
-    void handleFinishedDependencies(Task task) {
-        Task parentTask = taskService.findByDependencyTasksAndUserId(task.id, task.userId)
-        if (!parentTask) {
-            return
-        }
-        if (parentTask.status != PipelineStatuses.WAIT_OTHER_PIPELINE) {
-            return
-        }
-        List<String> depsTaskIdList = parentTask.dependencyTaskIds
-        List<Task> depsTasks = taskService.findAllById(depsTaskIdList)
-        Boolean completed = depsTasks.every {
-            return it.status == PipelineStatuses.COMPLETED
-        }
-        if (completed) {
-            parentTask.status = PipelineStatuses.PENDING
-            taskService.update(task)
-        }
-        Boolean stopped = depsTasks.any {
-            return it.status == PipelineStatuses.STOPPED
-        }
-        Boolean error = depsTasks.any {
-            return it.status == PipelineStatuses.ERROR
-        }
-        if (stopped || error) {
-            parentTask.status = PipelineStatuses.STOPPING
-            taskService.update(task)
+    private void handleFinishedTask(Task task) {
+        runWaitingTask(task.userId)
+        Task parentTask = taskDependenciesScheduler.updateParentTask(task)
+        if (parentTask) {
+            taskService.silentUpdate(parentTask)
         }
     }
 
@@ -87,28 +75,22 @@ class TaskStatusControllerManager {
      * push to rabbitmq task need stop
      * @param task
      */
-    void handleStoppingTask(Task task) {
+    private void handleStoppingTask(Task task) {
         taskProducer.taskStop(task.id)
     }
 
-    void handlePendingTask(Task task) {
-        Boolean isAssignDeps = taskDependencyAssigner.assignDependencies(task)
-        if (isAssignDeps) {
-            task.status = PipelineStatuses.WAIT_OTHER_PIPELINE
-            taskService.update(task)
+    private void handlePendingTask(Task task) {
+        if (!hasFreeWorker(task.userId)) {
             return
         }
-        if (hasFreeWorker(task.userId)) {
-            task.status = PipelineStatuses.QUEUE
-            taskService.update(task)
-        }
+        checkDependencies(task)
     }
 
     /**
      * push task to rabbitmq queue
      * @param task
      */
-    void handleQueueTask(Task task) {
+    private void handleQueueTask(Task task) {
         taskProducer.taskRun(task.id)
     }
 
@@ -130,8 +112,15 @@ class TaskStatusControllerManager {
         if (!waitingTask) {
             return
         }
-        // todo: check deps
-        waitingTask.status = PipelineStatuses.QUEUE
+        checkDependencies(waitingTask)
+    }
+
+    private void checkDependencies(Task waitingTask) {
+        List<Task> taskDependencies = taskDependenciesScheduler.createTaskDependencies(waitingTask)
+        waitingTask.status = taskDependencies.isEmpty()
+                ? PipelineStatuses.QUEUE
+                : PipelineStatuses.WAIT_OTHER_PIPELINE
         taskService.update(waitingTask)
+        taskService.update(taskDependencies)
     }
 }

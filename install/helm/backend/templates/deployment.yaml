@@ -74,6 +74,9 @@ spec:
               value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_RUN_HOOKS }}
             - name: RABBITMQ_QUEUE_PIPELINE_FINISHED
               value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_FINISHED }}
+            - name: RABBITMQ_QUEUE_TASK_CHANGED
+              value: {{ .Values.env.RABBITMQ_QUEUE_TASK_CHANGED }}
+
             - name: STATIC_RUN_DIRECTORY
               value: {{ .Values.env.STATIC_RUN_DIRECTORY }}
 
@@ -85,6 +88,8 @@ spec:
               value: {{ .Values.env.RABBITMQ_ROUTING_PIPELINE_TASK_STOP }}
             - name: RABBITMQ_ROUTING_PIPELINE_FINISHED
               value: {{ .Values.env.RABBITMQ_ROUTING_PIPELINE_FINISHED }}
+            - name: RABBITMQ_ROUTING_TASK_CHANGED
+              value: {{ .Values.env.RABBITMQ_ROUTING_TASK_CHANGED }}
 
             - name: ES_HOST_NAME
               value: {{ .Values.env.ES_HOST_NAME }}

@@ -3,8 +3,10 @@ package scraper.service.service
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import scraper.service.amqp.producer.TaskProducer
 import scraper.service.constants.PipelineStatuses
 import scraper.service.dto.mapper.TaskMapper
 import scraper.service.dto.model.task.TaskDto
@@ -18,7 +20,7 @@ class TaskService {
     private Logger logger = LogManager.getRootLogger()
 
     @Autowired
-    TaskStatusControllerManager taskStatusControllerManager
+    TaskProducer taskProducer
 
     @Autowired
     TaskRepository taskRepository
@@ -30,17 +32,16 @@ class TaskService {
     private TaskWebsocketProducer taskWebsocketProducer
 
     TaskDto getTask(String id) {
-        def task = findById(id)
+        Task task = findById(id)
+        if (!task) {
+            new Exception("task with id:${id} not found")
+        }
         return TaskMapper.toTaskDto(task)
     }
 
     Task findById(String id) {
         Optional<Task> task = taskRepository.findById(id)
         return task.present ? task.get() : null
-    }
-
-    List<Task> findAllById(List <String> ids) {
-        return taskRepository.findAllById(ids)
     }
 
     List<Task> findByPipelineAndUserOrderByStartOnDesc(String pipelineId, String userId, Pageable top) {
@@ -51,50 +52,55 @@ class TaskService {
         return taskRepository.findByPipelineIdAndFailureReasonOrderByStartOnUtcDesc(pipelineId, error, top)
     }
 
+    Task findLastCompletedTask(String pipelineId) {
+        List<String> statuses = [PipelineStatuses.COMPLETED]
+        PageRequest page = new PageRequest(0, 1)
+        List<Task> tasks = taskRepository.findByPipelineIdAndStatusInOrderByStartOnUtcDesc(pipelineId, statuses, page)
+        if (!tasks || tasks.empty) {
+            return null
+        }
+        return tasks.first()
+    }
+
     List<Task> findByStatusInAndUserId(List<String> statuses, String userId) {
         return taskRepository.findByStatusInAndUserId(statuses, userId)
     }
 
     Task findFirstWaitingTaskByUserId(String userId) {
-        def tasks = taskRepository.findByStatusInAndUserIdOrderByStartOnUtcDesc([PipelineStatuses.PENDING], userId)
+        def tasks = taskRepository.findByStatusInAndUserIdOrderByStartOnUtcAsc([PipelineStatuses.PENDING], userId)
         if (tasks.empty) {
             return
         }
         return tasks.first()
     }
 
-    Task findByDependencyTasksAndUserId(String dependencyTaskId, String userId) {
-        return taskRepository.findByDependencyTasksAndUserId(dependencyTaskId, userId)
+    List<Task> findWaitingOtherPipelineTasks(Pageable page) {
+        return taskRepository.findByStatusInOrderByStartOnUtcAsc(
+                [PipelineStatuses.WAIT_OTHER_PIPELINE], page)
     }
 
     void deleteById(String id) {
         taskRepository.deleteById(id)
     }
 
-    Task createFromParentTask(Pipeline pipeline, Task parentTask) {
-        Task task = new Task(
-                pipelineId: pipeline.id,
-                startOnUtc: new Date(),
-                userId: pipeline.user.id,
-                hookUrl: pipeline.hookUrl,
-                commands: pipeline.jsonCommands,
-                status: PipelineStatuses.PENDING,
-                parentTaskId: parentTask.id,
-        )
+    Task create(Pipeline pipeline) {
+        return create(pipeline, new Task())
+    }
+
+    Task create(Pipeline pipeline, Task task) {
+        createSilent(pipeline, task)
         update(task)
         return task
     }
 
-    Task createFromPipeline(Pipeline pipeline) {
-        Task task = new Task(
-                pipelineId: pipeline.id,
-                startOnUtc: new Date(),
-                userId: pipeline.user.id,
-                hookUrl: pipeline.hookUrl,
-                commands: pipeline.jsonCommands,
-                status: PipelineStatuses.PENDING
-        )
-        update(task)
+    Task createSilent(Pipeline pipeline, Task task) {
+        task.pipelineId = pipeline.id
+        task.startOnUtc = new Date()
+        task.userId = pipeline.user.id
+        task.hookUrl = pipeline.hookUrl
+        task.commands = pipeline.jsonCommands
+        task.status = PipelineStatuses.PENDING
+        taskRepository.save(task)
         return task
     }
 
@@ -102,6 +108,10 @@ class TaskService {
         Task task = findById(taskId)
         if (!task) {
             logger.error("task with id ${taskId} not found")
+            return
+        }
+        if (task.status != PipelineStatuses.QUEUE) {
+            logger.error("task ${task.id} not runnig, current status = ${task.status}")
             return
         }
         return taskExecutorService.run(task)
@@ -116,10 +126,22 @@ class TaskService {
         return taskExecutorService.stop(task)
     }
 
+    void update(List<Task> tasks) {
+        tasks.each {task ->
+            update(task)
+        }
+    }
+
     void update(Task task) {
+        logger.info("TaskService.update taskId ${task.id}")
         taskRepository.save(task)
-        taskStatusControllerManager.update(task)
+        taskProducer.taskChanged(task.id)
         notifyChangeTaskToClient(task)
+    }
+
+    void silentUpdate(Task task) {
+        logger.info("TaskService.silentUpdate taskId ${task.id}")
+        taskRepository.save(task)
     }
 
     private void notifyChangeTaskToClient(Task task) {

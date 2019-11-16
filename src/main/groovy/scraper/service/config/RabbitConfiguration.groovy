@@ -76,6 +76,19 @@ class RabbitConfiguration {
     }
 
     @Bean
+    Queue taskChangedQueue() {
+        return new Queue(queueConstants.TASK_CHANGED)
+    }
+
+    @Bean
+    Binding bindTaskChangedRun(final Queue taskChangedQueue, final TopicExchange exchange) {
+        return BindingBuilder
+                .bind(taskChangedQueue)
+                .to(exchange)
+                .with(routingConstants.TASK_CHANGED)
+    }
+
+    @Bean
     Queue pipelineTaskRunQueue() {
         return new Queue(queueConstants.PIPELINE_TASK_RUN)
     }

@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component
 @Component
 class RoutingConstants {
 
+    @Value('${spring.rabbitmq.routing.taskChanged}')
+    String TASK_CHANGED
+
     @Value('${spring.rabbitmq.routing.pipelineTaskRun}')
     String PIPELINE_TASK_RUN
 

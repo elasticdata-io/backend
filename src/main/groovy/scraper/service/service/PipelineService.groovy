@@ -31,6 +31,7 @@ class PipelineService {
     }
 
     void save(Pipeline pipeline) {
+        pipeline.modifiedOn = new Date()
         pipelineRepository.save(pipeline)
     }
 
@@ -45,7 +46,7 @@ class PipelineService {
         if (!pipeline) {
             return
         }
-        logger.info("update pipeline from PendingTaskDto, task.id = ${taskDto.id}")
+        logger.info("update pipeline from PendingTaskDto, taskDto = ${taskDto}")
         if (taskDto.endOnUtc > pipeline.lastCompletedOn) {
             pipeline.lastCompletedOn = taskDto.endOnUtc
             // pipeline.parseRowsCount = taskDto.docs.size()

@@ -12,6 +12,7 @@ public interface PipelineRepository extends MongoRepository<Pipeline, String> {
 
 	Optional<Pipeline> findById(String id);
 	List<Pipeline> findByUserOrderByCreatedOnDesc(String userId);
+	List<Pipeline> findByUserOrderByModifiedOnDesc(String userId);
 	Pipeline findByIdAndUser(String id, String userId);
 	List<Pipeline> findByUser(User user);
 	List<Pipeline> findByUserAndIdNotIn(String userId, List<String> dependsOn);

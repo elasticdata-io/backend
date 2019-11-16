@@ -12,3 +12,5 @@ scraper-core
 scraper-service.iml
 scraper-service.ipr
 scraper-service.iws
+scraper-service.main.iml
+scraper-service.test.iml

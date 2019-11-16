@@ -12,7 +12,9 @@ public interface TaskRepository extends MongoRepository<Task, String> {
 	List<Task> findByPipelineIdAndUserIdOrderByStartOnUtcDesc(String pipelineId, String userId, Pageable top);
 	Task findFirstByPipelineIdAndFailureReasonOrderByEndOnUtcDesc(String pipelineId, String failureReason);
 	List<Task> findByPipelineIdAndFailureReasonOrderByStartOnUtcDesc(String pipelineId, String failureReason, Pageable pageable);
+	List<Task> findByPipelineIdAndStatusInOrderByStartOnUtcDesc(String pipelineId, List<String> statuses, Pageable pageable);
 	List<Task> findByStatusInAndUserId(List<String> statuses, String userId);
 	List<Task> findByStatusInAndUserIdOrderByStartOnUtcDesc(List<String> statuses, String userId);
-	Task findByDependencyTasksAndUserId(String dependencyTaskId, String userId);
+	List<Task> findByStatusInAndUserIdOrderByStartOnUtcAsc(List<String> statuses, String userId);
+	List<Task> findByStatusInOrderByStartOnUtcAsc(List<String> statuses, Pageable page);
 }

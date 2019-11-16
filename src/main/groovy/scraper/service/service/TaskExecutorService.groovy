@@ -127,11 +127,13 @@ class TaskExecutorService {
             pipelineProcess.run()
         } catch (Error error) {
             logger.error(error)
+            task = taskService.findById(task.id)
             task.failureReason = "${error.getClass()}"
             task.status = PipelineStatuses.ERROR
             taskService.update(task)
         } catch (all) {
             logger.error(all)
+            task = taskService.findById(task.id)
             task.failureReason = "${all.getMessage()}. ${all.printStackTrace()}"
             task.status = PipelineStatuses.ERROR
             taskService.update(task)
@@ -141,7 +143,9 @@ class TaskExecutorService {
             afterRun(task, pipelineProcess)
         } catch (all) {
             logger.error(all)
+            task = taskService.findById(task.id)
             task.status = PipelineStatuses.ERROR
+            task.endOnUtc = new Date()
             taskService.update(task)
         }
         logger.info("finished task ${task.id}")
@@ -179,11 +183,11 @@ class TaskExecutorService {
         task.status = status
         taskService.update(task)
         destroyPipelineProcess(task)
-        taskProducer.taskFinish(task.id)
         if (docs) {
             uploadDataToElastic(docs as List<HashMap>, task)
         }
         pipelineService.updateFromTask(TaskMapper.toPendingTaskDto(task))
+        taskProducer.taskFinish(task.id)
     }
 
     def moveLocalFilesToStorage(PipelineProcess pipelineProcess) {

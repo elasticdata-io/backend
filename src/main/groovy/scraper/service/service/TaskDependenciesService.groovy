@@ -3,10 +3,9 @@ package scraper.service.service
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import scraper.service.model.Task
-import scraper.service.model.TaskDependency
 
 @Service
-class TaskDependenciesScheduler {
+class TaskDependenciesService {
 
     @Autowired
     PipelineRunnerService pipelineRunnerService
@@ -16,6 +15,16 @@ class TaskDependenciesScheduler {
 
     @Autowired
     PipelineService pipelineService
+
+    Boolean checkNeedDependencies(Task task) {
+        def taskDependencies = task.taskDependencies
+        if (taskDependencies && !taskDependencies.empty) {
+            return false
+        }
+        def pipeline = pipelineService.findById(task.pipelineId)
+        def dependencies = pipeline.dependencies
+        return dependencies && dependencies.empty == false
+    }
 
     List<Task> createTaskDependencies(Task task) {
         def taskDependencies = task.taskDependencies
@@ -30,27 +39,10 @@ class TaskDependenciesScheduler {
             dependencies.each {dep ->
                 def innerTask = pipelineRunnerService.pendingFromDependencies(dep.pipelineId, task.id)
                 innerTasks.add(innerTask)
-                def dependency = new TaskDependency(
-                        dependencyTaskId: innerTask.id,
-                        dependencyTaskStatus: innerTask.status
-                )
-                task.taskDependencies.add(dependency)
+                task.taskDependencies.add(innerTask.id)
             }
             return innerTasks
         }
         return []
-    }
-
-    Task updateParentTask(Task task) {
-        def parentTaskId = task.parentTaskId
-        if (!parentTaskId) {
-            return
-        }
-        def parentTask = taskService.findById(parentTaskId)
-        def dependencyTask = parentTask.taskDependencies.find {dep ->
-            return dep.dependencyTaskId == task.id
-        }
-        dependencyTask.dependencyTaskStatus = task.status
-        return parentTask
     }
 }

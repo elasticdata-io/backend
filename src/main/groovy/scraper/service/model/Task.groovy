@@ -32,15 +32,13 @@ class Task {
     public String userId
 
     public String commands
+
+    @Indexed(name = "status_index", direction = IndexDirection.DESCENDING)
     public String status
     public String failureReason
     public String hookUrl
     public String docsUrl
 
-    /**
-     * Указатель на родителя
-     */
     public String parentTaskId
-
-    public List<TaskDependency> taskDependencies
+    public List<String> taskDependencies
 }

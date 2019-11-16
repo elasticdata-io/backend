@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import scraper.service.amqp.QueueConstants
 import scraper.service.service.TaskService
-import scraper.service.service.TaskStatusControllerManager
 
 @Component
 class TaskWatchConsumer {
@@ -19,16 +18,13 @@ class TaskWatchConsumer {
     @Autowired
     QueueConstants queueConstants
 
-    @Autowired
-    TaskStatusControllerManager taskStatusControllerManager
-
     /**
      * @param taskId
      */
     @RabbitListener(queues = '#{queueConstants.TASK_CHANGED}', containerFactory="defaultConnectionFactory")
     void watchTaskChangedWorker(String taskId) {
-        logger.info("watchTaskChangedWorker taskId: ${taskId}")
-        def task = taskService.findById(taskId)
-        taskStatusControllerManager.update(task)
+        // logger.info("watchTaskChangedWorker taskId: ${taskId}")
+        // def task = taskService.findById(taskId)
+        // taskStatusControllerManager.update(task)
     }
 }

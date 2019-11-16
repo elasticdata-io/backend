@@ -13,6 +13,7 @@ import scraper.service.dto.model.task.TaskDto
 import scraper.service.model.Pipeline
 import scraper.service.model.Task
 import scraper.service.repository.TaskRepository
+import scraper.service.service.scheduler.TaskStatusScheduler
 import scraper.service.ws.TaskWebsocketProducer
 
 @Service
@@ -29,6 +30,9 @@ class TaskService {
     TaskExecutorService taskExecutorService
 
     @Autowired
+    List<TaskStatusScheduler> taskStatusSchedulers
+
+    @Autowired
     private TaskWebsocketProducer taskWebsocketProducer
 
     TaskDto getTask(String id) {
@@ -42,6 +46,10 @@ class TaskService {
     Task findById(String id) {
         Optional<Task> task = taskRepository.findById(id)
         return task.present ? task.get() : null
+    }
+
+    List<Task> findByIds(List<String> ids) {
+        return taskRepository.findByIdIn(ids)
     }
 
     List<Task> findByPipelineAndUserOrderByStartOnDesc(String pipelineId, String userId, Pageable top) {
@@ -66,41 +74,33 @@ class TaskService {
         return taskRepository.findByStatusInAndUserId(statuses, userId)
     }
 
-    Task findFirstWaitingTaskByUserId(String userId) {
-        def tasks = taskRepository.findByStatusInAndUserIdOrderByStartOnUtcAsc([PipelineStatuses.PENDING], userId)
-        if (tasks.empty) {
-            return
-        }
-        return tasks.first()
+    List<Task> findNeedRunTasks() {
+        return taskRepository
+                .findByStatusOrderByStartOnUtcAsc(PipelineStatuses.NEED_RUN, PageRequest.of(0, 50))
     }
 
     List<Task> findWaitingOtherPipelineTasks(Pageable page) {
         return taskRepository.findByStatusInOrderByStartOnUtcAsc(
-                [PipelineStatuses.WAIT_OTHER_PIPELINE], page)
+                [PipelineStatuses.WAIT_DEPS], page)
     }
 
     void deleteById(String id) {
         taskRepository.deleteById(id)
     }
 
-    Task create(Pipeline pipeline) {
-        return create(pipeline, new Task())
+    Task createAndRun(Pipeline pipeline) {
+        Task task = createWithoutRun(pipeline, new Task())
+        return updateStatus(task.id, PipelineStatuses.PENDING)
     }
 
-    Task create(Pipeline pipeline, Task task) {
-        createSilent(pipeline, task)
-        update(task)
-        return task
-    }
-
-    Task createSilent(Pipeline pipeline, Task task) {
+    Task createWithoutRun(Pipeline pipeline, Task task) {
         task.pipelineId = pipeline.id
         task.startOnUtc = new Date()
         task.userId = pipeline.user.id
         task.hookUrl = pipeline.hookUrl
         task.commands = pipeline.jsonCommands
-        task.status = PipelineStatuses.PENDING
         taskRepository.save(task)
+        update(task)
         return task
     }
 
@@ -126,12 +126,6 @@ class TaskService {
         return taskExecutorService.stop(task)
     }
 
-    void update(List<Task> tasks) {
-        tasks.each {task ->
-            update(task)
-        }
-    }
-
     void update(Task task) {
         logger.info("TaskService.update taskId ${task.id}")
         taskRepository.save(task)
@@ -139,9 +133,16 @@ class TaskService {
         notifyChangeTaskToClient(task)
     }
 
-    void silentUpdate(Task task) {
-        logger.info("TaskService.silentUpdate taskId ${task.id}")
+    Task updateStatus(String taskId, String status) {
+        // todo: update status with only status field
+        Task task = findById(taskId)
+        task.status = status
         taskRepository.save(task)
+        taskStatusSchedulers.each {scheduler ->
+            scheduler.checkTaskStatus(task)
+        }
+        notifyChangeTaskToClient(task)
+        return task
     }
 
     private void notifyChangeTaskToClient(Task task) {

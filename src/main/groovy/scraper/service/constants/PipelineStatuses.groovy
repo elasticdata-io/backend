@@ -4,11 +4,13 @@ class PipelineStatuses {
 
     public static NOT_RUNNING = 'not running'
     public static PENDING = 'pending'
+    public static NEED_DEPS = 'need_other_pipeline'
+    public static WAIT_DEPS = 'wait_other_pipeline'
+    public static NEED_RUN = 'need_run'
     public static QUEUE = 'queue' // in rabbitmq queue
     public static RUNNING = 'running'
     public static COMPLETED = 'completed'
     public static ERROR = 'error'
     public static STOPPING = 'stopping'
     public static STOPPED = 'stopped'
-    public static WAIT_OTHER_PIPELINE = 'wait_other_pipeline'
 }

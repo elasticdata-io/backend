@@ -1,20 +1,29 @@
 package scraper.service.service
 
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Service
 import scraper.service.auth.TokenService
+import scraper.service.constants.PipelineStatuses
+import scraper.service.model.Task
 import scraper.service.model.User
 import scraper.service.repository.UserRepository
 
 @Service
 class UserService {
 
+    private Logger logger = LogManager.getRootLogger()
+
     @Autowired
     TokenService tokenService
 
     @Autowired
     UserRepository userRepository
+
+    @Autowired
+    TaskService taskService
 
     User findById(String id) {
         Optional<User> user = userRepository.findById(id)
@@ -77,5 +86,15 @@ class UserService {
     Number getMaxAvailableWorkers() {
         // todo : get from database
         return 2
+    }
+
+    Boolean hasFreeWorker(String userId) {
+        def statuses = [PipelineStatuses.RUNNING, PipelineStatuses.QUEUE]
+        List<Task> tasks = taskService.findByStatusInAndUserId(statuses, userId)
+        if (tasks.size() >= maxAvailableWorkers) {
+            logger.info("not has free worker for user: ${userId}")
+            return false
+        }
+        return true
     }
 }

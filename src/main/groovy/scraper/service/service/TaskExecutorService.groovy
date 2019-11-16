@@ -100,14 +100,15 @@ class TaskExecutorService {
     Task stop(Task task) {
         PipelineProcess pipelineProcess = (PipelineProcess) beanFactory.getSingleton(task.id)
         if (pipelineProcess) {
-            logger.trace("run stopping pipelineProcess by task.id: ${task.id}")
+            logger.info("run stopping pipelineProcess by task.id: ${task.id}")
             pipelineProcess.stop()
         } else {
-            logger.trace("runnning pipelineProcess by task.id: ${task.id} not found")
+            logger.info("runnning pipelineProcess by task.id: ${task.id} not found")
         }
-        task.status = PipelineStatuses.STOPPED
+        task = taskService.findById(task.id)
         task.endOnUtc = new Date()
         taskService.update(task)
+        taskService.updateStatus(task.id, PipelineStatuses.STOPPED)
     }
 
     private Task runPipeline(Task task, Pipeline pipeline) {
@@ -121,7 +122,7 @@ class TaskExecutorService {
         try {
             pipelineProcess = createPipelineProcess(pipeline, null, task)
             beanFactory.registerSingleton(task.id, pipelineProcess)
-            afterRegisterPipelineProcessBean(task)
+            task = afterRegisterPipelineProcessBean(task)
             bindStoreObserver(pipelineProcess, task)
             bindCommandObserver(pipelineProcess, task)
             pipelineProcess.run()
@@ -129,14 +130,14 @@ class TaskExecutorService {
             logger.error(error)
             task = taskService.findById(task.id)
             task.failureReason = "${error.getClass()}"
-            task.status = PipelineStatuses.ERROR
             taskService.update(task)
+            taskService.updateStatus(task.id, PipelineStatuses.ERROR)
         } catch (all) {
             logger.error(all)
             task = taskService.findById(task.id)
             task.failureReason = "${all.getMessage()}. ${all.printStackTrace()}"
-            task.status = PipelineStatuses.ERROR
             taskService.update(task)
+            taskService.updateStatus(task.id, PipelineStatuses.ERROR)
         }
 
         try {
@@ -144,9 +145,9 @@ class TaskExecutorService {
         } catch (all) {
             logger.error(all)
             task = taskService.findById(task.id)
-            task.status = PipelineStatuses.ERROR
             task.endOnUtc = new Date()
             taskService.update(task)
+            taskService.updateStatus(task.id, PipelineStatuses.ERROR)
         }
         logger.info("finished task ${task.id}")
         return task
@@ -180,8 +181,8 @@ class TaskExecutorService {
                 || task.status == PipelineStatuses.ERROR) {
             status = PipelineStatuses.ERROR
         }
-        task.status = status
         taskService.update(task)
+        taskService.updateStatus(task.id, status)
         destroyPipelineProcess(task)
         if (docs) {
             uploadDataToElastic(docs as List<HashMap>, task)
@@ -255,9 +256,8 @@ class TaskExecutorService {
         return factory.createFromClass(DEFAULT_BROWSER, config)
     }
 
-    private void afterRegisterPipelineProcessBean(Task task) {
-        task.status = PipelineStatuses.RUNNING
-        taskService.update(task)
+    private Task afterRegisterPipelineProcessBean(Task task) {
+        return taskService.updateStatus(task.id, PipelineStatuses.RUNNING)
     }
 
     private destroyPipelineProcess(Task task) {

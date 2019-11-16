@@ -78,7 +78,7 @@ class PipelineRunnerService {
             throw new Exception("this task: ${taskId} can not be stopped")
         }
         task.status = PipelineStatuses.STOPPING
-        taskService.update(task)
+        taskService.updateStatus(task.id, PipelineStatuses.STOPPING)
         return TaskMapper.toPendingTaskDto(task)
     }
 }

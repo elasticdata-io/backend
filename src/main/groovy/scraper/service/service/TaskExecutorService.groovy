@@ -19,6 +19,7 @@ import scraper.core.pipeline.PipelineProcess
 import scraper.core.pipeline.data.FileStore
 import scraper.core.pipeline.data.storage.FileStoreProvider
 import scraper.core.pipeline.data.ObservableStore
+import scraper.core.pipeline.exception.PipelineStoppingException
 import scraper.service.amqp.producer.TaskProducer
 import scraper.service.constants.PipelineStatuses
 import scraper.service.controller.listener.PipelineStateCommandsObserver
@@ -97,18 +98,15 @@ class TaskExecutorService {
      * @param task
      * @return
      */
-    Task stop(Task task) {
+    void stop(Task task) {
         PipelineProcess pipelineProcess = (PipelineProcess) beanFactory.getSingleton(task.id)
         if (pipelineProcess) {
             logger.info("run stopping pipelineProcess by task.id: ${task.id}")
             pipelineProcess.stop()
         } else {
             logger.info("runnning pipelineProcess by task.id: ${task.id} not found")
+            taskService.updateStatus(task.id, PipelineStatuses.STOPPED)
         }
-        task = taskService.findById(task.id)
-        task.endOnUtc = new Date()
-        taskService.update(task)
-        taskService.updateStatus(task.id, PipelineStatuses.STOPPED)
     }
 
     private Task runPipeline(Task task, Pipeline pipeline) {
@@ -117,9 +115,9 @@ class TaskExecutorService {
             logger.info("runningPipelineProcess has been started for task ${task.id}")
             return task
         }
-        beforeRun(task)
         PipelineProcess pipelineProcess = null
         try {
+            beforeRun(task)
             pipelineProcess = createPipelineProcess(pipeline, null, task)
             beanFactory.registerSingleton(task.id, pipelineProcess)
             task = afterRegisterPipelineProcessBean(task)
@@ -132,6 +130,8 @@ class TaskExecutorService {
             task.failureReason = "${error.getClass()}"
             taskService.update(task)
             taskService.updateStatus(task.id, PipelineStatuses.ERROR)
+        } catch (PipelineStoppingException e) {
+            logger.error(e)
         } catch (all) {
             logger.error(all)
             task = taskService.findById(task.id)
@@ -141,6 +141,7 @@ class TaskExecutorService {
         }
 
         try {
+            task = taskService.findById(task.id)
             afterRun(task, pipelineProcess)
         } catch (all) {
             logger.error(all)
@@ -153,11 +154,22 @@ class TaskExecutorService {
         return task
     }
 
+    void checkTaskIsStopping(String taskId) {
+        Task task = taskService.findById(taskId)
+        if (task.status == PipelineStatuses.STOPPED || task.status == PipelineStatuses.STOPPING) {
+            stop(task)
+        }
+    }
+
     private PipelineProcess getPipelineProcessBean(Task task) {
         return beanFactory.getSingleton(task.id) as PipelineProcess
     }
 
     private Task beforeRun(Task task) {
+        task = taskService.findById(task.id)
+        if (task.status != PipelineStatuses.QUEUE) {
+            throw new Exception("task ${task.id} has been stopped")
+        }
         return task
     }
     private void afterRun(Task task, PipelineProcess pipelineProcess) {
@@ -257,6 +269,7 @@ class TaskExecutorService {
     }
 
     private Task afterRegisterPipelineProcessBean(Task task) {
+        checkTaskIsStopping(task.id)
         return taskService.updateStatus(task.id, PipelineStatuses.RUNNING)
     }
 

@@ -3,6 +3,7 @@ package scraper.service.service
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.OptimisticLockingFailureException
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -79,6 +80,11 @@ class TaskService {
                 .findByStatusOrderByStartOnUtcAsc(PipelineStatuses.NEED_RUN, PageRequest.of(0, 50))
     }
 
+    List<Task> findNeedStopTasks() {
+        return taskRepository
+                .findByStatusOrderByStartOnUtcAsc(PipelineStatuses.STOPPING, PageRequest.of(0, 50))
+    }
+
     List<Task> findWaitingOtherPipelineTasks(Pageable page) {
         return taskRepository.findByStatusInOrderByStartOnUtcAsc(
                 [PipelineStatuses.WAIT_DEPS], page)
@@ -123,18 +129,23 @@ class TaskService {
             logger.error("task with id ${taskId} not found")
             return
         }
-        return taskExecutorService.stop(task)
+        taskExecutorService.stop(task)
     }
 
     void update(Task task) {
         logger.info("TaskService.update taskId ${task.id}")
-        taskRepository.save(task)
-        taskProducer.taskChanged(task.id)
-        notifyChangeTaskToClient(task)
+        try {
+            taskRepository.save(task)
+            taskProducer.taskChanged(task.id)
+            notifyChangeTaskToClient(task)
+        } catch(OptimisticLockingFailureException e) {
+            logger.error("OptimisticLockingFailureException taskId = ${task.id}")
+        }
     }
 
     Task updateStatus(String taskId, String status) {
         // todo: update status with only status field
+        logger.info("TaskService.updateStatus taskId ${taskId}, status = ${status}")
         Task task = findById(taskId)
         task.status = status
         taskRepository.save(task)

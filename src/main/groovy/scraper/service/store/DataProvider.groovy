@@ -1,6 +1,10 @@
 package scraper.service.store
 
 import io.minio.MinioClient
+import io.minio.ObjectStat
+import io.minio.errors.MinioException
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import scraper.core.pipeline.data.storage.FileStoreProvider
@@ -9,6 +13,7 @@ import javax.annotation.PostConstruct
 
 @Service
 class DataProvider implements FileStoreProvider {
+    private Logger logger = LogManager.getRootLogger()
 
     @Value('${minio.url}')
     String url
@@ -58,6 +63,11 @@ class DataProvider implements FileStoreProvider {
     }
 
     String presignedGetObject(String bucketName, String objectName) {
-        return minioClient.presignedGetObject(bucketName, objectName)
+        try {
+            minioClient.statObject(bucketName, objectName)
+            return minioClient.presignedGetObject(bucketName, objectName)
+        } catch(MinioException e) {
+            // logger.error(e)
+        }
     }
 }

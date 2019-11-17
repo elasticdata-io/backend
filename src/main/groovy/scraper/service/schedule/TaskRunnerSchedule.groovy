@@ -9,6 +9,7 @@ import scraper.service.model.Task
 import scraper.service.service.TaskService
 import scraper.service.service.scheduler.NeedRunTaskStatusScheduler
 import scraper.service.service.scheduler.StoppingTaskStatusScheduler
+import scraper.service.service.scheduler.WaitDepsTaskStatusScheduler
 
 @Component
 class TaskRunnerSchedule {
@@ -17,6 +18,9 @@ class TaskRunnerSchedule {
 
     @Autowired
     NeedRunTaskStatusScheduler needRunTaskStatusScheduler
+
+    @Autowired
+    WaitDepsTaskStatusScheduler waitDepsTaskStatusScheduler
 
     @Autowired
     StoppingTaskStatusScheduler stoppingTaskStatusScheduler
@@ -39,6 +43,15 @@ class TaskRunnerSchedule {
         logger.info("find ${tasks.size()} need stop tasks")
         tasks.each {task->
             stoppingTaskStatusScheduler.checkChangeTaskStatus(task)
+        }
+    }
+
+    @Scheduled(cron='*/5 * * * * * ')
+    void checkWaitDepsTask() {
+        List<Task> tasks = taskService.findWaitDepsTasks()
+        logger.info("find ${tasks.size()} wait deps tasks")
+        tasks.each {task->
+            waitDepsTaskStatusScheduler.checkChangeTaskStatus(task)
         }
     }
 }

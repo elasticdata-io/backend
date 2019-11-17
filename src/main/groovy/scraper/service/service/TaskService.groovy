@@ -85,6 +85,11 @@ class TaskService {
                 .findByStatusOrderByStartOnUtcAsc(PipelineStatuses.STOPPING, PageRequest.of(0, 50))
     }
 
+    List<Task> findWaitDepsTasks() {
+        return taskRepository
+                .findByStatusOrderByStartOnUtcAsc(PipelineStatuses.WAIT_DEPS, PageRequest.of(0, 50))
+    }
+
     List<Task> findWaitingOtherPipelineTasks(Pageable page) {
         return taskRepository.findByStatusInOrderByStartOnUtcAsc(
                 [PipelineStatuses.WAIT_DEPS], page)

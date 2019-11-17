@@ -23,7 +23,9 @@ class NeedDepsTaskStatusScheduler extends AbstractTaskStatusScheduler {
             return false
         }
         changeStatus(task.id, PipelineStatuses.WAIT_DEPS)
+        task = taskService.findById(task.id)
         List<Task> innerTasks = taskDependenciesService.createTaskDependencies(task)
+        taskService.update(task)
         innerTasks.each {innerTask ->
             changeStatus(innerTask.id, PipelineStatuses.PENDING)
         }

@@ -18,6 +18,9 @@ class WaitDepsTaskStatusScheduler extends AbstractTaskStatusScheduler {
             return false
         }
         List<Task> taskDependencies = taskService.findByIds(task.taskDependencies)
+        if (taskDependencies.empty) {
+            return false
+        }
         Boolean depsIsFinished = taskDependencies.every {t ->
             t.status == PipelineStatuses.COMPLETED || t.status == PipelineStatuses.ERROR || t.status == PipelineStatuses.STOPPED
         }

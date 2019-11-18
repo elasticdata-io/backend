@@ -12,5 +12,5 @@ env:
   RABBITMQ_ROUTING_PIPELINE_FINISHED: PROD_PIPELINE_FINISH.*
   RABBITMQ_ROUTING_TASK_CHANGED: PROD_TASK_CHANGED.*
 
-  MINIO_URL: http://minio:9000
+  MINIO_URL: https://storage.elasticdata.io
   MINIO_PUBLIC_URL: https://storage.elasticdata.io

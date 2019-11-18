@@ -68,8 +68,7 @@ class DataProvider implements FileStoreProvider {
     String presignedGetObject(String bucketName, String objectName) {
         try {
             minioClient.statObject(bucketName, objectName)
-            String internalUrl = minioClient.presignedGetObject(bucketName, objectName)
-            return internalUrl.replace(url, publicUrl)
+            return minioClient.presignedGetObject(bucketName, objectName)
         } catch(MinioException e) {
             // logger.error(e)
         }

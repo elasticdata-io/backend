@@ -170,6 +170,8 @@ class TaskExecutorService {
         if (task.status != PipelineStatuses.QUEUE) {
             throw new Exception("task ${task.id} has been stopped")
         }
+        task.runOnUtc = new Date()
+        taskService.update(task)
         return task
     }
     private void afterRun(Task task, PipelineProcess pipelineProcess) {

@@ -23,6 +23,10 @@ class Task {
     public Date startOnUtc
 
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @Indexed(name = "run_on_utc_index", direction = IndexDirection.DESCENDING)
+    public Date runOnUtc
+
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     public Date endOnUtc
 
     @Indexed(name = "pipeline_id_index", direction = IndexDirection.DESCENDING)

@@ -3,6 +3,9 @@ package scraper.service.store
 import io.minio.MinioClient
 import io.minio.ObjectStat
 import io.minio.errors.MinioException
+import io.minio.messages.DurationUnit
+import io.minio.messages.ObjectLockConfiguration
+import io.minio.messages.RetentionMode
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Value
@@ -40,6 +43,12 @@ class DataProvider implements FileStoreProvider {
             System.out.println("Bucket already exists.")
         } else {
             minioClient.makeBucket(bucketName)
+            ObjectLockConfiguration config = new ObjectLockConfiguration(
+                    RetentionMode.COMPLIANCE,
+                    7,
+                    DurationUnit.DAYS
+            )
+            minioClient.setDefaultRetention(bucketName, config)
         }
     }
 

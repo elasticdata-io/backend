@@ -31,7 +31,7 @@ class DataProvider implements FileStoreProvider {
 
     @PostConstruct
     init() {
-        minioClient = new MinioClient(url, accessKey, secretKey, false)
+        minioClient = new MinioClient(url, accessKey, secretKey, true)
     }
 
     void createIfNotExistsBucket(String bucketName) {
@@ -60,6 +60,15 @@ class DataProvider implements FileStoreProvider {
         minioClient.putObject(bucketName, objectName, bais, bais.available(), contentType)
     }
 
+    @Override
+    void putFileObject(String bucketName, String objectName, String filename, String contentType) {
+        File file = new File(filename)
+        if (file.exists()) {
+            minioClient.putObject(bucketName, objectName, filename, contentType)
+            file.delete()
+        }
+    }
+
     void putObject(String bucketName, String objectName, byte[] data, String contentType) {
         ByteArrayInputStream bais = new ByteArrayInputStream(data)
         minioClient.putObject(bucketName, objectName, bais, bais.available(), contentType)
@@ -70,7 +79,8 @@ class DataProvider implements FileStoreProvider {
             minioClient.statObject(bucketName, objectName)
             return minioClient.presignedGetObject(bucketName, objectName)
         } catch(MinioException e) {
-            // logger.error(e)
+            logger.error("presignedGetObject fails...")
+            logger.error(e)
         }
     }
 }

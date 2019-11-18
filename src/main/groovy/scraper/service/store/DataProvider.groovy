@@ -58,6 +58,7 @@ class DataProvider implements FileStoreProvider {
     void putObject(String bucketName, String objectName, String data, String contentType) {
         ByteArrayInputStream bais = new ByteArrayInputStream(data.getBytes("UTF-8"))
         minioClient.putObject(bucketName, objectName, bais, bais.available(), contentType)
+        bais.close()
     }
 
     @Override
@@ -72,6 +73,7 @@ class DataProvider implements FileStoreProvider {
     void putObject(String bucketName, String objectName, byte[] data, String contentType) {
         ByteArrayInputStream bais = new ByteArrayInputStream(data)
         minioClient.putObject(bucketName, objectName, bais, bais.available(), contentType)
+        bais.close()
     }
 
     String presignedGetObject(String bucketName, String objectName) {

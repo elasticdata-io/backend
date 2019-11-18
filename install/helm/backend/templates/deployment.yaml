@@ -103,6 +103,8 @@ spec:
 
             - name: MINIO_URL
               value: {{ .Values.env.MINIO_URL }}
+            - name: MINIO_PUBLIC_URL
+              value: {{ .Values.env.MINIO_PUBLIC_URL }}
             - name: MINIO_ACCESS_KEY
               value: {{ .Values.env.MINIO_ACCESS_KEY }}
             - name: MINIO_SECRET_KEY

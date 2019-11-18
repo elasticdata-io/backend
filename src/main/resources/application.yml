@@ -71,7 +71,8 @@ spring:
         content:
           enabled: true
 minio:
-  url: ${MINIO_URL:https://storage.elasticdata.io}
+  url: ${MINIO_URL:http://minio:9000}
+  publicUrl: ${MINIO_PUBLIC_URL:https://storage.elasticdata.io}
   accessKey: ${MINIO_ACCESS_KEY:elasticdataio}
   secretKey: ${MINIO_SECRET_KEY:wJalrXUtnFEMI/9874c97c907209cpuvpw97bpb/asdasdasdasdasd}
 logging:

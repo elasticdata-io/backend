@@ -82,6 +82,7 @@ env:
 
   PROXY_SERVICE_URL: "http://proxy"
 
-  MINIO_URL: https://storage.elasticdata.io
+  MINIO_URL: http://minio:9000
+  MINIO_PUBLIC_URL: https://storage.elasticdata.io
   MINIO_ACCESS_KEY: elasticdataio
   MINIO_SECRET_KEY: wJalrXUtnFEMI/9874c97c907209cpuvpw97bpb/asdasdasdasdasd

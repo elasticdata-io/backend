@@ -31,7 +31,9 @@ class TaskRunnerSchedule {
     @Scheduled(cron='*/5 * * * * * ')
     void checkRunTask() {
         List<Task> tasks = taskService.findNeedRunTasks()
-        logger.info("find ${tasks.size()} need run tasks")
+        if (tasks.size()) {
+            logger.info("find ${tasks.size()} need run tasks")
+        }
         tasks.each {task->
             needRunTaskStatusScheduler.checkChangeTaskStatus(task)
         }
@@ -40,7 +42,9 @@ class TaskRunnerSchedule {
     @Scheduled(cron='*/5 * * * * * ')
     void checkStopTask() {
         List<Task> tasks = taskService.findNeedStopTasks()
-        logger.info("find ${tasks.size()} need stop tasks")
+        if (tasks.size()) {
+            logger.info("find ${tasks.size()} need stop tasks")
+        }
         tasks.each {task->
             stoppingTaskStatusScheduler.checkChangeTaskStatus(task)
         }
@@ -49,7 +53,9 @@ class TaskRunnerSchedule {
     @Scheduled(cron='*/5 * * * * * ')
     void checkWaitDepsTask() {
         List<Task> tasks = taskService.findWaitDepsTasks()
-        logger.info("find ${tasks.size()} wait deps tasks")
+        if (tasks.size()) {
+            logger.info("find ${tasks.size()} wait deps tasks")
+        }
         tasks.each {task->
             waitDepsTaskStatusScheduler.checkChangeTaskStatus(task)
         }

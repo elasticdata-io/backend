@@ -18,6 +18,9 @@ class DataProvider implements FileStoreProvider {
     @Value('${minio.url}')
     String url
 
+    @Value('${minio.publicUrl}')
+    String publicUrl
+
     @Value('${minio.accessKey}')
     String accessKey
 
@@ -65,7 +68,8 @@ class DataProvider implements FileStoreProvider {
     String presignedGetObject(String bucketName, String objectName) {
         try {
             minioClient.statObject(bucketName, objectName)
-            return minioClient.presignedGetObject(bucketName, objectName)
+            String internalUrl = minioClient.presignedGetObject(bucketName, objectName)
+            return internalUrl.replace(url, publicUrl)
         } catch(MinioException e) {
             // logger.error(e)
         }

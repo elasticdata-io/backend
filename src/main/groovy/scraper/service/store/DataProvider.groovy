@@ -42,15 +42,13 @@ class DataProvider implements FileStoreProvider {
         if(isExist) {
             System.out.println("Bucket already exists.")
         } else {
-            minioClient.makeBucket(bucketName)
-            /*
+            minioClient.makeBucket(bucketName, null, true)
             ObjectLockConfiguration config = new ObjectLockConfiguration(
                     RetentionMode.COMPLIANCE,
                     7,
                     DurationUnit.DAYS
             )
             minioClient.setDefaultRetention(bucketName, config)
-            */
         }
     }
 

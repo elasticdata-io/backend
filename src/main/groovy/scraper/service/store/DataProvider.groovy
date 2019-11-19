@@ -27,7 +27,7 @@ class DataProvider implements FileStoreProvider {
     @Value('${minio.secretKey}')
     String secretKey
 
-    getMinioClient() {
+    MinioClient getMinioClient() {
         return new MinioClient(url, accessKey, secretKey, true)
     }
 

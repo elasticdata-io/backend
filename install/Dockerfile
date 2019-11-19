@@ -1,4 +1,4 @@
-FROM gradle:5.6.4-jdk8 as build
+FROM gradle:4.10.3-jdk8 as build
 COPY --chown=gradle . /src
 WORKDIR /src
 RUN gradle build --stacktrace --continue

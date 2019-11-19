@@ -67,8 +67,8 @@ class DataProvider implements FileStoreProvider {
 
     void putObject(String bucketName, String objectName, String data, String contentType) {
         ByteArrayInputStream bais = new ByteArrayInputStream(data.getBytes("UTF-8"))
-        def size = Long.valueOf(bais.available())
-        HashMap headerMap = null
+        long size = bais.available() as long
+        HashMap headerMap = new HashMap()
         ServerSideEncryption sse = null
         minioClient.putObject(bucketName, objectName, bais, size, headerMap, sse, contentType)
         bais.close()

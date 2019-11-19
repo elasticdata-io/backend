@@ -68,7 +68,11 @@ class DataProvider implements FileStoreProvider {
         long size = bais.available() as long
         HashMap headerMap = new HashMap()
         ServerSideEncryption sse = null
-        minioClient.putObject(bucketName, objectName, bais, size, headerMap, sse, contentType)
+        try {
+            minioClient.putObject(bucketName, objectName, bais, size, headerMap, sse, contentType)
+        } catch(all) {
+            logger.error(all)
+        }
         bais.close()
     }
 

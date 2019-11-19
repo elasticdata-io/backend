@@ -70,8 +70,9 @@ class DataProvider implements FileStoreProvider {
         ServerSideEncryption sse = null
         try {
             minioClient.putObject(bucketName, objectName, bais, size, headerMap, sse, contentType)
-        } catch(all) {
-            logger.error(all)
+        } catch(Exception e) {
+            logger.error(e)
+            throw e
         }
         bais.close()
     }

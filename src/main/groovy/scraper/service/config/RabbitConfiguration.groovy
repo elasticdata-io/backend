@@ -64,7 +64,7 @@ class RabbitConfiguration {
         backOffPolicy.setBackOffPeriod(500)
         factory
             .setAdviceChain(RetryInterceptorBuilder.stateless()
-            .maxAttempts(1)
+            .maxAttempts(2)
             .backOffPolicy(backOffPolicy)
             .build())
         return factory

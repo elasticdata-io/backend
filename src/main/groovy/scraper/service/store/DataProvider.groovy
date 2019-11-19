@@ -1,12 +1,8 @@
 package scraper.service.store
 
 import io.minio.MinioClient
-import io.minio.ObjectStat
 import io.minio.ServerSideEncryption
 import io.minio.errors.MinioException
-import io.minio.messages.DurationUnit
-import io.minio.messages.ObjectLockConfiguration
-import io.minio.messages.RetentionMode
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Value
@@ -44,12 +40,13 @@ class DataProvider implements FileStoreProvider {
             System.out.println("Bucket already exists.")
         } else {
             minioClient.makeBucket(bucketName, null, true)
-//            ObjectLockConfiguration config = new ObjectLockConfiguration(
-//                    RetentionMode.COMPLIANCE,
-//                    7,
-//                    DurationUnit.DAYS
-//            )
-//            minioClient.setDefaultRetention(bucketName, config)
+            /**
+            ObjectLockConfiguration config = new ObjectLockConfiguration(
+                    RetentionMode.COMPLIANCE,
+                    7,
+                    DurationUnit.DAYS
+            )
+            minioClient.setDefaultRetention(bucketName, config)**/
         }
     }
 
@@ -90,13 +87,15 @@ class DataProvider implements FileStoreProvider {
 
     void putObject(String bucketName, String objectName, byte[] data, String contentType) {
         ByteArrayInputStream bais = new ByteArrayInputStream(data)
-        minioClient.putObject(bucketName, objectName, bais, bais.available(), contentType)
+        long size = bais.available() as long
+        HashMap headerMap = new HashMap()
+        ServerSideEncryption sse = null
+        minioClient.putObject(bucketName, objectName, bais, size, headerMap, sse, contentType)
         bais.close()
     }
 
     String presignedGetObject(String bucketName, String objectName) {
         try {
-            minioClient.statObject(bucketName, objectName)
             return minioClient.presignedGetObject(bucketName, objectName)
         } catch(MinioException e) {
             logger.error("presignedGetObject fails...")

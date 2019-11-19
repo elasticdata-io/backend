@@ -2,6 +2,7 @@ package scraper.service.store
 
 import io.minio.MinioClient
 import io.minio.ObjectStat
+import io.minio.ServerSideEncryption
 import io.minio.errors.MinioException
 import io.minio.messages.DurationUnit
 import io.minio.messages.ObjectLockConfiguration
@@ -66,7 +67,10 @@ class DataProvider implements FileStoreProvider {
 
     void putObject(String bucketName, String objectName, String data, String contentType) {
         ByteArrayInputStream bais = new ByteArrayInputStream(data.getBytes("UTF-8"))
-        minioClient.putObject(bucketName, objectName, bais, bais.available(), contentType)
+        def size = Long.valueOf(bais.available())
+        HashMap headerMap = null
+        ServerSideEncryption sse = null
+        minioClient.putObject(bucketName, objectName, bais, size, headerMap, sse, contentType)
         bais.close()
     }
 

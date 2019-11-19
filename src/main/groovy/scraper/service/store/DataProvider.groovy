@@ -75,7 +75,7 @@ class DataProvider implements FileStoreProvider {
         File file = new File(filename)
         if (file.exists()) {
             minioClient.putObject(bucketName, objectName, filename, contentType)
-            file.delete()
+            // file.delete()
         }
     }
 

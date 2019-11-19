@@ -53,7 +53,7 @@ spec:
                         container('docker') {
                             env.DOCKER_TAG = "${BRANCH_NAME}_${BUILD_NUMBER}"
                             stage('build application') {
-                                sh 'docker build -f install/Dockerfile -t localhost:32000/scraper-backend:${DOCKER_TAG} .'
+                                sh 'docker build --no-cache -f install/Dockerfile -t localhost:32000/scraper-backend:${DOCKER_TAG} .'
                             }
                             stage('publish application') {
                                 sh 'docker push localhost:32000/scraper-backend:${DOCKER_TAG}'

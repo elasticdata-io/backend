@@ -71,20 +71,6 @@ class DataProvider implements FileStoreProvider {
         bais.close()
     }
 
-    @Override
-    void putFileObject(String bucketName, String objectName, String filename, String contentType) {
-        // todo: get text from string
-        File file = new File(filename)
-        if (file.exists()) {
-
-            ByteArrayInputStream bais = new ByteArrayInputStream(file.getText().getBytes("UTF-8"))
-             minioClient.putObject(bucketName, objectName,
-                    bais, Long.valueOf(bais.available()), null, null,         contentType)
-            bais.close()
-            file.delete()
-        }
-    }
-
     void putObject(String bucketName, String objectName, byte[] data, String contentType) {
         ByteArrayInputStream bais = new ByteArrayInputStream(data)
         long size = bais.available() as long

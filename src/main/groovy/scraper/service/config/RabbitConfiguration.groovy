@@ -60,6 +60,7 @@ class RabbitConfiguration {
         factory.setConnectionFactory(connectionFactory)
         factory.setConcurrentConsumers(CONCURRENT_CONSUMERS)
         factory.setMaxConcurrentConsumers(MAX_CONCURRENT_CONSUMERS)
+        factory.setPrefetchCount(1)
         FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy()
         backOffPolicy.setBackOffPeriod(500)
         factory

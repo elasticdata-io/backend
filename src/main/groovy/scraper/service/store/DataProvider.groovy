@@ -27,14 +27,12 @@ class DataProvider implements FileStoreProvider {
     @Value('${minio.secretKey}')
     String secretKey
 
-    private MinioClient minioClient
-
-    @PostConstruct
-    init() {
-        minioClient = new MinioClient(url, accessKey, secretKey, true)
+    getMinioClient() {
+        return new MinioClient(url, accessKey, secretKey, true)
     }
 
     void createIfNotExistsBucket(String bucketName) {
+        MinioClient minioClient = getMinioClient()
         boolean isExist = minioClient.bucketExists(bucketName)
         if(isExist) {
             System.out.println("Bucket already exists.")
@@ -51,10 +49,12 @@ class DataProvider implements FileStoreProvider {
     }
 
     void setBucketLifeCycle(String bucketName, String lifeCycle) {
+        MinioClient minioClient = getMinioClient()
         minioClient.setBucketLifeCycle(bucketName, lifeCycle)
     }
 
     InputStream getObject(String bucketName, String objectName) {
+        MinioClient minioClient = getMinioClient()
         minioClient.getObject(bucketName, objectName)
     }
 
@@ -63,6 +63,7 @@ class DataProvider implements FileStoreProvider {
     }
 
     void putObject(String bucketName, String objectName, String data, String contentType) {
+        MinioClient minioClient = getMinioClient()
         ByteArrayInputStream bais = new ByteArrayInputStream(data.getBytes("UTF-8"))
         long size = bais.available() as long
         HashMap headerMap = new HashMap()
@@ -72,6 +73,7 @@ class DataProvider implements FileStoreProvider {
     }
 
     void putObject(String bucketName, String objectName, byte[] data, String contentType) {
+        MinioClient minioClient = getMinioClient()
         ByteArrayInputStream bais = new ByteArrayInputStream(data)
         long size = bais.available() as long
         HashMap headerMap = new HashMap()
@@ -81,6 +83,7 @@ class DataProvider implements FileStoreProvider {
     }
 
     String presignedGetObject(String bucketName, String objectName) {
+        MinioClient minioClient = getMinioClient()
         try {
             return minioClient.presignedGetObject(bucketName, objectName)
         } catch(MinioException e) {

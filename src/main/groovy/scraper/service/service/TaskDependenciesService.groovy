@@ -21,6 +21,9 @@ class TaskDependenciesService {
         if (taskDependencies && !taskDependencies.empty) {
             return false
         }
+        if (task.withoutDependencies) {
+            return false
+        }
         def pipeline = pipelineService.findById(task.pipelineId)
         def dependencies = pipeline.dependencies
         return dependencies && dependencies.empty == false

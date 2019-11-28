@@ -43,6 +43,7 @@ class Task {
     public String hookUrl
     public String docsUrl
 
+    public Boolean withoutDependencies
     public String parentTaskId
     public List<String> taskDependencies
 }

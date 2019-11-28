@@ -42,7 +42,12 @@ class PipelineRunnerService {
         if (dto && dto.hookUrl) {
             pipeline.hookUrl = dto.hookUrl
         }
-        Task task = taskService.createAndRun(pipeline)
+        Task task
+        if (dto && dto.withoutDependencies) {
+            task = taskService.createAndRunWithoutDependencies(pipeline)
+        } else {
+            task = taskService.createAndRun(pipeline)
+        }
         def pendingApiTaskDto = TaskMapper.toPendingApiTaskDto(task)
         return pendingApiTaskDto
     }

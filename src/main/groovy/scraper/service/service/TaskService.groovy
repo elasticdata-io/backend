@@ -104,6 +104,13 @@ class TaskService {
         return updateStatus(task.id, PipelineStatuses.PENDING)
     }
 
+    Task createAndRunWithoutDependencies(Pipeline pipeline) {
+        Task task = createWithoutRun(pipeline, new Task())
+        task.withoutDependencies = true
+        taskRepository.save(task)
+        return updateStatus(task.id, PipelineStatuses.PENDING)
+    }
+
     Task createWithoutRun(Pipeline pipeline, Task task) {
         task.pipelineId = pipeline.id
         task.startOnUtc = new Date()

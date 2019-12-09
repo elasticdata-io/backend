@@ -124,6 +124,7 @@ class PipelineDataController {
             pipeline.browser = SELENIUM_DEFAULT_BROWSER
             pipeline.isDebugMode = false
         }
+        pipelineService.validate(pipeline)
         pipelineRepository.save(pipeline)
         return PipelineMapper.toPipelineDto(pipeline)
     }

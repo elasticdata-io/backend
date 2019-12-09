@@ -55,8 +55,10 @@ class PipelineService {
         }
         def tasksTotal = pipeline.tasksTotal ?: 0
         pipeline.tasksTotal = tasksTotal + 1
+        pipeline.parseRowsCount = taskDto.docsCount
         update(pipeline)
     }
+
 
     void validate(Pipeline pipeline) {
         PipelineBuilder pipelineBuilder = new PipelineBuilder()

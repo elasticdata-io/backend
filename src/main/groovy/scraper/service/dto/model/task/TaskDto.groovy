@@ -12,6 +12,7 @@ class TaskDto {
     String failureReason
     String hookUrl
     String docsUrl
+    Number docsCount
 
     @Override String toString() {
         return JsonOutput.toJson([id: id, pipelineId: pipelineId, userId: userId, status: status])

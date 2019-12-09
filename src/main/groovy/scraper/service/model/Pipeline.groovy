@@ -66,7 +66,7 @@ class Pipeline {
     /**
      * Count of the last parsed data lines.
      */
-    Integer parseRowsCount
+    Number parseRowsCount
 
     /**
      * The interval at which the parser will start.

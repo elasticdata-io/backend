@@ -42,6 +42,7 @@ class Task {
     public String failureReason
     public String hookUrl
     public String docsUrl
+    public Number docsCount
 
     public Boolean withoutDependencies
     public String parentTaskId

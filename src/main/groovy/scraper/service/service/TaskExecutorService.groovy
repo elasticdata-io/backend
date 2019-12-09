@@ -179,8 +179,9 @@ class TaskExecutorService {
         List docs = []
         if (store) {
             FileStore fileStore = store as FileStore
-            task.docsUrl = fileStore.docsUrl
             docs = fileStore.getData()
+            task.docsUrl = fileStore.docsUrl
+            task.docsCount = docs.size()
         }
         task.endOnUtc = new Date()
 

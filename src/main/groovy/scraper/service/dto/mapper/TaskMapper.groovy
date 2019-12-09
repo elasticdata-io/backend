@@ -37,6 +37,7 @@ class TaskMapper {
                 status: task.status,
                 failureReason: task.failureReason,
                 hookUrl: task.hookUrl,
+                docsCount: task.docsCount,
                 docsUrl: task.docsUrl
         )
     }

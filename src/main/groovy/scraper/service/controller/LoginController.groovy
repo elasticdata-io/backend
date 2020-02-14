@@ -53,6 +53,8 @@ class LoginController {
             return new SimpleResponse(success: false, error: msg)
         }
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder()
+        String passwordEncoded = passwordEncoder.encode(password + user.salt)
+        println passwordEncoded
         if (!passwordEncoder.matches(password + user.salt, user.password)) {
             return new SimpleResponse(success: false, error: msg)
         }

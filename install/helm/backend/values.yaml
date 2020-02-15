@@ -86,3 +86,4 @@ env:
   MINIO_PUBLIC_URL: https://storage.elasticdata.io
   MINIO_ACCESS_KEY: elasticdataio
   MINIO_SECRET_KEY: wJalrXUtnFEMI/9874c97c907209cpuvpw97bpb/asdasdasdasdasd
+  APP_VERSION: "1.0.0"

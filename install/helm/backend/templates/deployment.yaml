@@ -110,6 +110,9 @@ spec:
             - name: MINIO_SECRET_KEY
               value: {{ .Values.env.MINIO_SECRET_KEY }}
 
+            - name: APP_VERSION
+              value: {{ .Values.env.APP_VERSION }}
+
           livenessProbe:
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds:  {{ .Values.livenessProbe.periodSeconds }}

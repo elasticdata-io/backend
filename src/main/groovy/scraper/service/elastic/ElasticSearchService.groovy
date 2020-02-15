@@ -79,8 +79,8 @@ class ElasticSearchService {
         return client.indices().exists(request, RequestOptions.DEFAULT)
     }
 
-    private String getDocumentIdHash(HashMap<String, String> doc) {
-        def all = ''
+    private String getDocumentIdHash(Map<String, String> doc) {
+        String all = ''
         doc.each{ key, value ->
             all += "${key}${value}"
         }

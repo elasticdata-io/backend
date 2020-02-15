@@ -29,6 +29,7 @@ class TokenFilter extends GenericFilterBean {
             '/api/actuator/health',
             '/api/liveness',
             '/api/test',
+            '/api/system',
     ]
 
     @Autowired

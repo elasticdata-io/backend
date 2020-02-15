@@ -87,3 +87,4 @@ env:
   MINIO_ACCESS_KEY: elasticdataio
   MINIO_SECRET_KEY: wJalrXUtnFEMI/9874c97c907209cpuvpw97bpb/asdasdasdasdasd
   APP_VERSION: "1.0.0"
+  APP_LAST_UPDATED: "2020-02-05 21:47:00"

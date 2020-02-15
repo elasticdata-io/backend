@@ -12,9 +12,16 @@ class SystemController {
     @Value('${app.version}')
     private String APP_VERSION
 
+    @Value('${app.last_updated}')
+    private String APP_LAST_UPDATED
 
     @GetMapping("/version")
     String getVersion() {
        return APP_VERSION
+    }
+
+    @GetMapping("/last-updated")
+    String getLastUpdated() {
+       return APP_LAST_UPDATED
     }
 }

@@ -1,5 +1,6 @@
 spring.main.allow-bean-definition-overriding: true
 app.version: ${APP_VERSION:"1.0.0"}
+app.last_updated: ${APP_LAST_UPDATED:"2020-02-05 21:47:00"}
 server:
   use-forward-headers: true
   port: ${SPRING_SERVER_PORT:8085}

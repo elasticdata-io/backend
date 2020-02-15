@@ -112,6 +112,8 @@ spec:
 
             - name: APP_VERSION
               value: {{ .Values.env.APP_VERSION }}
+            - name: APP_LAST_UPDATED
+              value: {{ .Values.env.APP_LAST_UPDATED }}
 
           livenessProbe:
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}

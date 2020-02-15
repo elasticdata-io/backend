@@ -76,7 +76,7 @@ spec:
                             }
                             stage('helm upgrade backend') {
                                 def now = new Date()
-                                def dateFormatted = now.format("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+                                def dateFormatted = now.format("yyyy-MM-dd'T'HH:mm:ss'Z'")
                                 sh "helm upgrade --install backend \
                                     -f install/helm/backend/values.yaml \
                                     -f install/helm/backend/${VALUES_FILE} \

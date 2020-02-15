@@ -1,4 +1,5 @@
 spring.main.allow-bean-definition-overriding: true
+app.version: ${APP_VERSION:"1.0.0"}
 server:
   use-forward-headers: true
   port: ${SPRING_SERVER_PORT:8085}

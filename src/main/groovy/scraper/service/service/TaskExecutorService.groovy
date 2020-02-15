@@ -179,7 +179,7 @@ class TaskExecutorService {
         List docs = []
         if (store) {
             FileStore fileStore = store as FileStore
-            docs = fileStore.getData()
+            docs = fileStore.getLines()
             task.docsUrl = fileStore.docsUrl
             task.docsCount = docs.size()
         }

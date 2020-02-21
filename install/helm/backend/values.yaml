@@ -57,6 +57,7 @@ readinessProbe:
   periodSeconds: 15
 
 env:
+  SPRING_LOG_LEVEL: INFO
   STATIC_RUN_DIRECTORY: /tmp/scraper-service
 
   GOOGLE_SIGNIN_CALLBACK_URL: http://app.elasticdata.io/#/enter/

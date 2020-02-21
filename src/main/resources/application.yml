@@ -83,11 +83,11 @@ logging:
     org:
       springframework:
         security:
-          oauth2: DEBUG
+          oauth2: ${SPRING_LOG_LEVEL:INFO}
         data:
           mongodb:
             core:
-              MongoTemplate: ERROR
+              MongoTemplate: ${SPRING_LOG_LEVEL:ERROR}
 jwt.secret: secret-key-jwt-123
 management:
   health:

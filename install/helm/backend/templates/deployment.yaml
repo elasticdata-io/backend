@@ -35,6 +35,9 @@ spec:
             - name: logs-storage
               mountPath: {{ .Values.env.STATIC_RUN_DIRECTORY }}
           env:
+            - name: SPRING_LOG_LEVEL
+              value: {{ .Values.env.SPRING_LOG_LEVEL }}
+
             - name: MONGODB_HOST
               value: mongodb.mongodb
             - name: MONGODB_PORT
@@ -45,6 +48,7 @@ spec:
               value: guest
             - name: MONGODB_AUTH_DB
               value: admin
+
             - name: RABBITMQ_HOST
               value: rabbitmq.rabbitmq
             - name: RABBITMQ_PORT
@@ -53,8 +57,10 @@ spec:
               value: user
             - name: RABBITMQ_PASSWORD
               value: password
+
             - name: PROXY_TOR
               value: rotation.elasticdata.io:30200
+
             - name: SPRING_SERVER_PORT
               value: {{ .Values.service.port | quote }}
             - name: GOOGLE_SIGNIN_CALLBACK_URL

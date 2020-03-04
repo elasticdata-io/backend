@@ -1,7 +1,6 @@
 #!groovy
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-
 def label = "frontend-${UUID.randomUUID().toString()}"
 podTemplate(label: label, yaml: """
 apiVersion: v1

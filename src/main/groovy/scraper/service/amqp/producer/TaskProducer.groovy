@@ -1,7 +1,7 @@
 package scraper.service.amqp.producer
 
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
+import org.apache.log4j.LogManager
+import org.apache.log4j.Logger
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -10,7 +10,8 @@ import scraper.service.amqp.RoutingConstants
 
 @Service
 class TaskProducer {
-    private Logger logger = LogManager.getRootLogger()
+
+    private static Logger logger = LogManager.getLogger(TaskProducer.class)
 
     @Value('${spring.rabbitmq.topicExchangeName}')
     private String topicExchangeName

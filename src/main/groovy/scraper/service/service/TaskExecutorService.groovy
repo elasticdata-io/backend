@@ -1,8 +1,8 @@
 package scraper.service.service
 
 import groovy.io.FileType
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
+import org.apache.log4j.LogManager
+import org.apache.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.beans.factory.support.DefaultListableBeanFactory
@@ -38,7 +38,7 @@ class TaskExecutorService {
 
     private Class DEFAULT_BROWSER = Chrome.class
     private DefaultListableBeanFactory beanFactory
-    private Logger logger = LogManager.getRootLogger()
+    private static Logger logger = LogManager.getLogger(TaskExecutorService.class)
 
     @Autowired
     private ApplicationContext applicationContext

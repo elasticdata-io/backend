@@ -92,7 +92,7 @@ class UserService {
         def statuses = [PipelineStatuses.RUNNING, PipelineStatuses.QUEUE]
         List<Task> tasks = taskService.findByStatusInAndUserId(statuses, userId)
         if (tasks.size() >= maxAvailableWorkers) {
-            logger.info("not has free worker for user: ${userId}")
+            logger.debug("not has free worker for user: ${userId}")
             return false
         }
         return true

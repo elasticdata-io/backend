@@ -1,5 +1,6 @@
 package scraper.service.controller
 
+import com.github.fge.jsonpatch.JsonPatch
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
@@ -55,5 +56,12 @@ class TaskController {
         Task task = taskService.findById(taskId)
         return fileDataRepository.getDataFileToList(task)
     }
+
+    @PatchMapping("{id}")
+    TaskDto runFromApi(@PathVariable String id,
+                       @RequestBody JsonPatch jsonPatch) {
+        return taskService.patch(id, jsonPatch)
+    }
+
 
 }

@@ -15,6 +15,7 @@ class Task {
 
     @Id
     public String id
+
     @Version
     Long version
 

@@ -1,5 +1,6 @@
 package scraper.service.service
 
+import com.github.fge.jsonpatch.JsonPatch
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,12 +37,23 @@ class TaskService {
     @Autowired
     private TaskWebsocketProducer taskWebsocketProducer
 
+    @Autowired
+    private PatchService patchService
+
+
     TaskDto getTask(String id) {
         Task task = findById(id)
         if (!task) {
             new Exception("task with id:${id} not found")
         }
         return TaskMapper.toTaskDto(task)
+    }
+
+    TaskDto patch(String id, JsonPatch patch) {
+        Task task = findById(id)
+        Task patchedTask = patchService.patch(patch, task, Task.class)
+        update(patchedTask)
+        return TaskMapper.toTaskDto(patchedTask)
     }
 
     Task findById(String id) {

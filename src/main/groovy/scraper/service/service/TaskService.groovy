@@ -44,7 +44,7 @@ class TaskService {
     TaskDto getTask(String id) {
         Task task = findById(id)
         if (!task) {
-            new Exception("task with id:${id} not found")
+            throw new Exception("task with id:${id} not found")
         }
         return TaskMapper.toTaskDto(task)
     }
@@ -52,7 +52,7 @@ class TaskService {
     TaskDto patch(String id, JsonPatch patch) {
         Task task = findById(id)
         if (!task) {
-            new Exception("task with id:${id} not found")
+            throw new Exception("task with id:${id} not found")
         }
         Task patchedTask = patchService.patch(patch, task, Task.class)
         update(patchedTask)

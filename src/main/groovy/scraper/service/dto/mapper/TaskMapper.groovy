@@ -53,7 +53,9 @@ class TaskMapper {
                 status: task.status,
                 failureReason: task.failureReason,
                 hookUrl: task.hookUrl,
-                docsUrl: task.docsUrl
+                docsUrl: task.docsUrl,
+                docsBytes: task.docsBytes,
+                docsCount: task.docsCount
         )
     }
 

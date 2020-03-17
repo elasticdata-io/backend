@@ -23,6 +23,7 @@ class TokenFilter extends GenericFilterBean {
             WS_URI,
             LOGIN_URI,
             '/api/pipeline/data',
+            '/api/pipeline/task/synchronize',
             '/api/pipeline-task/data',
             '/api/task',
             '/api/pipeline/run',

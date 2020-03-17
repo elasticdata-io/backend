@@ -76,14 +76,22 @@ class TaskService {
         return taskRepository.findByPipelineIdAndFailureReasonOrderByStartOnUtcDesc(pipelineId, error, top)
     }
 
-    Task findLastCompletedTask(String pipelineId) {
-        List<String> statuses = [PipelineStatuses.COMPLETED]
+    Task findLastTask(String pipelineId, List<String> statuses) {
         PageRequest page = new PageRequest(0, 1)
         List<Task> tasks = taskRepository.findByPipelineIdAndStatusInOrderByStartOnUtcDesc(pipelineId, statuses, page)
         if (!tasks || tasks.empty) {
             return null
         }
         return tasks.first()
+    }
+
+    Task findLastCompletedTask(String pipelineId) {
+        return findLastTask(pipelineId, [PipelineStatuses.COMPLETED])
+    }
+
+    Task findLastFinishedTask(String pipelineId) {
+        List<String> statuses = [PipelineStatuses.COMPLETED, PipelineStatuses.ERROR, PipelineStatuses.STOPPED]
+        return findLastTask(pipelineId, statuses)
     }
 
     List<Task> findByStatusInAndUserId(List<String> statuses, String userId) {

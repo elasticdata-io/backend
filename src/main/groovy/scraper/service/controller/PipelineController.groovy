@@ -11,18 +11,24 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import scraper.core.command.input.UserInput
+import scraper.service.dto.mapper.TaskMapper
 import scraper.service.dto.model.task.PendingApiTaskDto
 import scraper.service.dto.model.task.PendingTaskDto
 import scraper.service.dto.model.task.PipelineRunDto
+import scraper.service.model.Task
 import scraper.service.service.PipelineRunnerService
 import scraper.service.service.PipelineService
 import scraper.service.repository.PipelineRepository
+import scraper.service.service.TaskService
 
 @RestController
 @RequestMapping("/pipeline")
 class PipelineController {
 
     private Logger logger = LogManager.getRootLogger()
+
+    @Autowired
+    TaskService taskService
 
     @Autowired
     PipelineRepository pipelineRepository
@@ -75,4 +81,11 @@ class PipelineController {
 //            userInput.text = text
 //        }
     }
+
+    @PostMapping("/{id}/last-task/synchronize")
+    void syncWithLastTask(@PathVariable String id) {
+        Task task = taskService.findLastFinishedTask(id)
+        pipelineService.updateFromTask(TaskMapper.toPendingTaskDto(task))
+    }
+
 }

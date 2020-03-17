@@ -68,6 +68,8 @@ class Pipeline {
      */
     Number parseRowsCount
 
+    Number parseBytes
+
     /**
      * The interval at which the parser will start.
      */

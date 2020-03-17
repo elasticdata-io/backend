@@ -23,4 +23,5 @@ class PipelineDto {
     String userId
     String jsonCommands
     Number lastParseRowsCount
+    Number lastParseBytes
 }

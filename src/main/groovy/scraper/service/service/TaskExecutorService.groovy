@@ -202,6 +202,7 @@ class TaskExecutorService {
         if (docs) {
             uploadDataToElastic(docs as List<HashMap>, task)
         }
+        // todo : impl for rest API
         pipelineService.updateFromTask(TaskMapper.toPendingTaskDto(task))
         taskProducer.taskFinish(task.id)
     }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import scraper.service.amqp.RoutingConstants
 import scraper.service.model.Task
+import scraper.service.proxy.ProxyAssigner
 
 @Service
 class TaskProducer {
@@ -23,6 +24,9 @@ class TaskProducer {
 
     @Autowired
     private RabbitTemplate rabbitTemplate
+
+    @Autowired
+    ProxyAssigner proxyAssigner
 
     /**
      * @param taskId
@@ -40,7 +44,8 @@ class TaskProducer {
         HashMap map = new HashMap(
             taskId: task.id,
             json: task.commands,
-            userUuid: task.userId
+            userUuid: task.userId,
+            proxy: proxyAssigner.getProxy()
         )
         def message = new JsonBuilder(map).toString()
         rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.PIPELINE_TASK_RUN_NODE, message)

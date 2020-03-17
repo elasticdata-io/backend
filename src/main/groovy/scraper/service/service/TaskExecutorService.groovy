@@ -1,6 +1,7 @@
 package scraper.service.service
 
 import groovy.io.FileType
+import groovy.json.JsonOutput
 import org.apache.log4j.LogManager
 import org.apache.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
@@ -182,6 +183,7 @@ class TaskExecutorService {
             docs = fileStore.getLines()
             task.docsUrl = fileStore.docsUrl
             task.docsCount = docs.size()
+            task.docsBytes = JsonOutput.toJson(docs).getBytes().length
         }
         task.endOnUtc = new Date()
 

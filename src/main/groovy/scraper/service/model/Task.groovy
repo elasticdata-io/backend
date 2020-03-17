@@ -1,7 +1,6 @@
 package scraper.service.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.Version
 import org.springframework.data.mongodb.core.index.CompoundIndex
@@ -44,6 +43,7 @@ class Task {
     public String hookUrl
     public String docsUrl
     public Number docsCount
+    public Number docsBytes
 
     public Boolean withoutDependencies
     public String parentTaskId

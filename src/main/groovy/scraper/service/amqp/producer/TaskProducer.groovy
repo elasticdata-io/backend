@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import scraper.service.amqp.RoutingConstants
+import scraper.service.dto.RunTaskNodeDto
+import scraper.service.model.Task
 
 @Service
 class TaskProducer {
@@ -33,9 +35,13 @@ class TaskProducer {
     /**
      * @param taskId
      */
-    void taskRunNode(String taskId) {
-        logger.info("TaskProducer.taskRun taskId = ${taskId}")
-        rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.PIPELINE_TASK_RUN_NODE, taskId)
+    void taskRunNode(Task task) {
+        logger.info("TaskProducer.taskRunNode taskId = ${task.id}")
+        def dto = new RunTaskNodeDto(
+                taskId: task.id,
+                json: task.commands,
+                userUuid: task.userId)
+        rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.PIPELINE_TASK_RUN_NODE, dto)
     }
 
     /**

@@ -40,7 +40,7 @@ class NeedRunTaskStatusScheduler extends AbstractTaskStatusScheduler {
         changeStatus(task.id, PipelineStatuses.QUEUE)
         if (map.containsKey('version')) {
             logger.info('push to taskRunNode')
-            taskProducer.taskRunNode(task.id)
+            taskProducer.taskRunNode(task)
         } else {
             logger.info('push to taskRun')
             taskProducer.taskRun(task.id)

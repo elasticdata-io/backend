@@ -1,5 +1,6 @@
 package scraper.service.amqp.producer
 
+import groovy.json.JsonOutput
 import org.apache.log4j.LogManager
 import org.apache.log4j.Logger
 import org.springframework.amqp.rabbit.core.RabbitTemplate
@@ -41,7 +42,8 @@ class TaskProducer {
                 taskId: task.id,
                 json: task.commands,
                 userUuid: task.userId)
-        rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.PIPELINE_TASK_RUN_NODE, dto)
+        def message = JsonOutput.toJson(dto)
+        rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.PIPELINE_TASK_RUN_NODE, message)
     }
 
     /**

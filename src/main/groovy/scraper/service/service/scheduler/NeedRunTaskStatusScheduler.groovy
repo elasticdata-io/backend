@@ -1,5 +1,6 @@
 package scraper.service.service.scheduler
 
+import groovy.json.JsonSlurper
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,10 +31,20 @@ class NeedRunTaskStatusScheduler extends AbstractTaskStatusScheduler {
         if (task.status != PipelineStatuses.NEED_RUN) {
             return false
         }
-        if (userService.hasFreeWorker(task.userId)) {
-            changeStatus(task.id, PipelineStatuses.QUEUE)
-            taskProducer.taskRun(task.id)
-            return true
+        boolean workerBusy = !userService.hasFreeWorker(task.userId)
+        if (workerBusy) {
+            return false
         }
+        def jsonSlurper = new JsonSlurper()
+        HashMap map = jsonSlurper.parseText(task.commands) as HashMap<String, String>
+        changeStatus(task.id, PipelineStatuses.QUEUE)
+        if (map.hasProperty('version')) {
+            logger.info('push to taskRunNode')
+            taskProducer.taskRunNode(task.id)
+        } else {
+            logger.info('push to taskRun')
+            taskProducer.taskRun(task.id)
+        }
+        return true
     }
 }

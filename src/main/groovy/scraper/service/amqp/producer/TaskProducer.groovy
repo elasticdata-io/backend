@@ -45,7 +45,7 @@ class TaskProducer {
             taskId: task.id,
             json: task.commands,
             userUuid: task.userId,
-            proxy: proxyAssigner.getProxy()
+            proxies: [proxyAssigner.getProxy()]
         )
         def message = new JsonBuilder(map).toString()
         rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.PIPELINE_TASK_RUN_NODE, message)

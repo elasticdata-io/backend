@@ -33,6 +33,14 @@ class TaskProducer {
     /**
      * @param taskId
      */
+    void taskRunNode(String taskId) {
+        logger.info("TaskProducer.taskRun taskId = ${taskId}")
+        rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.PIPELINE_TASK_RUN_NODE, taskId)
+    }
+
+    /**
+     * @param taskId
+     */
     void taskStop(String taskId) {
         rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.PIPELINE_TASK_STOP, taskId)
     }

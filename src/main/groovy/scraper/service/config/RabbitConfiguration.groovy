@@ -103,6 +103,19 @@ class RabbitConfiguration {
     }
 
     @Bean
+    Queue pipelineTaskRunNodeQueue() {
+        return new Queue(queueConstants.PIPELINE_TASK_RUN_NODE)
+    }
+
+    @Bean
+    Binding bindPipelineTaskRunNode(final Queue pipelineTaskRunNodeQueue, final TopicExchange exchange) {
+        return BindingBuilder
+                .bind(pipelineTaskRunNodeQueue)
+                .to(exchange)
+                .with(routingConstants.PIPELINE_TASK_RUN_NODE)
+    }
+
+    @Bean
     Queue pipelineTaskStopQueue() {
         return new Queue(queueConstants.PIPELINE_TASK_STOP)
     }

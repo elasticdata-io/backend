@@ -12,6 +12,9 @@ class RoutingConstants {
     @Value('${spring.rabbitmq.routing.pipelineTaskRun}')
     String PIPELINE_TASK_RUN
 
+    @Value('${spring.rabbitmq.routing.pipelineTaskRunNode}')
+    String PIPELINE_TASK_RUN_NODE
+
     @Value('${spring.rabbitmq.routing.pipelineTaskStop}')
     String PIPELINE_TASK_STOP
 

@@ -72,6 +72,8 @@ spec:
 
             - name: RABBITMQ_QUEUE_PIPELINE_TASK_RUN
               value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_TASK_RUN }}
+            - name: RABBITMQ_QUEUE_PIPELINE_TASK_RUN_NODE
+              value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_TASK_RUN_NODE }}
             - name: RABBITMQ_QUEUE_PIPELINE_TASK_STOP
               value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_TASK_STOP }}
             - name: RABBITMQ_QUEUE_PIPELINE_TASK_FINISHED
@@ -90,6 +92,8 @@ spec:
               value: {{ .Values.env.RABBITMQ_ROUTING_PIPELINE_TASK_FINISHED }}
             - name: RABBITMQ_ROUTING_PIPELINE_TASK_RUN
               value: {{ .Values.env.RABBITMQ_ROUTING_PIPELINE_TASK_RUN }}
+            - name: RABBITMQ_ROUTING_PIPELINE_TASK_RUN_NODE
+              value: {{ .Values.env.RABBITMQ_ROUTING_PIPELINE_TASK_RUN_NODE }}
             - name: RABBITMQ_ROUTING_PIPELINE_TASK_STOP
               value: {{ .Values.env.RABBITMQ_ROUTING_PIPELINE_TASK_STOP }}
             - name: RABBITMQ_ROUTING_PIPELINE_FINISHED

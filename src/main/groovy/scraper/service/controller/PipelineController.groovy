@@ -82,10 +82,11 @@ class PipelineController {
 //        }
     }
 
-    @PostMapping("/{id}/last-task/synchronize")
-    void syncWithLastTask(@PathVariable String id) {
-        Task task = taskService.findLastFinishedTask(id)
-        pipelineService.updateFromTask(TaskMapper.toPendingTaskDto(task))
+    @PostMapping("/task/synchronize/{taskId}")
+    void syncWithLastTask(@PathVariable String taskId) {
+        Task task = taskService.findById(taskId)
+        Task lastTask = taskService.findLastFinishedTask(task.pipelineId)
+        pipelineService.updateFromTask(lastTask)
     }
 
 }

@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service
 import scraper.core.pipeline.PipelineBuilder
 import scraper.core.pipeline.data.storage.FileStoreProvider
 import scraper.service.dto.mapper.PipelineMapper
+import scraper.service.dto.mapper.TaskMapper
 import scraper.service.dto.model.task.PendingTaskDto
 import scraper.service.model.Pipeline
+import scraper.service.model.Task
 import scraper.service.repository.PipelineRepository
 import scraper.service.ws.PipelineWebsocketProducer
 
@@ -60,6 +62,10 @@ class PipelineService {
         update(pipeline)
     }
 
+    void updateFromTask(Task task) {
+        PendingTaskDto taskDto = TaskMapper.toPendingTaskDto(task)
+        updateFromTask(taskDto)
+    }
 
     void validate(Pipeline pipeline) {
         PipelineBuilder pipelineBuilder = new PipelineBuilder()

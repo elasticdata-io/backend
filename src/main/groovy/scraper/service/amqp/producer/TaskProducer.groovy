@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service
 import scraper.service.amqp.RoutingConstants
 import scraper.service.model.Task
 import scraper.service.proxy.ProxyAssigner
+import scraper.service.service.PipelineService
 
 @Service
 class TaskProducer {
@@ -28,6 +29,9 @@ class TaskProducer {
     @Autowired
     ProxyAssigner proxyAssigner
 
+    @Autowired
+    PipelineService pipelineService
+
     /**
      * @param taskId
      */
@@ -41,11 +45,12 @@ class TaskProducer {
      */
     void taskRunNode(Task task) {
         logger.info("TaskProducer.taskRunNode taskId = ${task.id}")
+        def pipeline = pipelineService.findById(task.pipelineId)
         HashMap map = new HashMap(
             taskId: task.id,
             json: task.commands,
             userUuid: task.userId,
-            proxies: [proxyAssigner.getProxy()]
+            proxies: pipeline.needProxy ? [proxyAssigner.getProxy()]: []
         )
         def message = new JsonBuilder(map).toString()
         rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.PIPELINE_TASK_RUN_NODE, message)

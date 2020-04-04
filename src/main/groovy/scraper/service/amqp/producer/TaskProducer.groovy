@@ -20,6 +20,9 @@ class TaskProducer {
     @Value('${spring.rabbitmq.topicExchangeName}')
     private String topicExchangeName
 
+    @Value('${spring.rabbitmq.exchange.pipeline.stop}')
+    String pipelineStopExchangeName
+
     @Autowired
     RoutingConstants routingConstants
 
@@ -60,7 +63,7 @@ class TaskProducer {
      * @param taskId
      */
     void taskStop(String taskId) {
-        rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.PIPELINE_TASK_STOP, taskId)
+        rabbitTemplate.convertAndSend(pipelineStopExchangeName, "", taskId)
     }
 
     /**

@@ -12,7 +12,7 @@ security:
 elasticsearch:
   host: ${ES_HOST_NAME:k8s}
   httpPort: ${ES_HTTP_PORT:32714}
-  enabled: ${ES_ENABLED:true}
+  enabled: ${ES_ENABLED:false}
 spring:
   security:
     oauth2:
@@ -54,6 +54,9 @@ spring:
     username: ${RABBITMQ_USER:user}
     password: ${RABBITMQ_PASSWORD:password}
     topicExchangeName: ${RABBITMQ_EXCHANGE_NAME:test-exchange}
+    exchange:
+      pipeline:
+        stop: ${RABBITMQ_EXCHANGE_PIPELINE_STOP:test-pipeline-stop-exchange}
     queue:
       pipelineTaskRun: ${RABBITMQ_QUEUE_PIPELINE_TASK_RUN:DEV_PIPELINE_TASK_RUN}
       pipelineTaskRunNode: ${RABBITMQ_QUEUE_PIPELINE_TASK_RUN_NODE:DEV_PIPELINE_TASK_RUN_NODE}

@@ -70,6 +70,11 @@ spec:
             - name: SELENIUM_DEFAULT_ADDRESS
               value: {{ .Values.env.SELENIUM_DEFAULT_ADDRESS }}
 
+            - name: RABBITMQ_EXCHANGE_NAME
+              value: {{ .Values.env.RABBITMQ_EXCHANGE_NAME }}
+            - name: RABBITMQ_EXCHANGE_PIPELINE_STOP
+              value: {{ .Values.env.RABBITMQ_EXCHANGE_PIPELINE_STOP }}
+
             - name: RABBITMQ_QUEUE_PIPELINE_TASK_RUN
               value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_TASK_RUN }}
             - name: RABBITMQ_QUEUE_PIPELINE_TASK_RUN_NODE

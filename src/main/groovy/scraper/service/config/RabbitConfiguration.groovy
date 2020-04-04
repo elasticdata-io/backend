@@ -3,6 +3,7 @@ package scraper.service.config
 
 import org.springframework.amqp.core.Binding
 import org.springframework.amqp.core.BindingBuilder
+import org.springframework.amqp.core.FanoutExchange
 import org.springframework.amqp.core.Queue
 import org.springframework.amqp.core.TopicExchange
 import org.springframework.amqp.rabbit.config.RetryInterceptorBuilder
@@ -38,6 +39,9 @@ class RabbitConfiguration {
 
     @Value('${spring.rabbitmq.topicExchangeName}')
     String topicExchangeName
+
+    @Value('${spring.rabbitmq.exchange.pipeline.stop}')
+    String pipelineStopExchangeName
 
     @Autowired
     QueueConstants queueConstants
@@ -77,6 +81,23 @@ class RabbitConfiguration {
     }
 
     @Bean
+    FanoutExchange pipelineStopExchange() {
+        return new FanoutExchange(pipelineStopExchangeName, false, true)
+    }
+
+    @Bean
+    Queue pipelineTaskStopQueue() {
+        return new Queue(queueConstants.PIPELINE_TASK_STOP)
+    }
+
+    @Bean
+    Binding bindPipelineTaskStop(final Queue pipelineTaskStopQueue, final FanoutExchange pipelineStopExchange) {
+        return BindingBuilder
+                .bind(pipelineTaskStopQueue)
+                .to(pipelineStopExchange)
+    }
+
+    @Bean
     Queue taskChangedQueue() {
         return new Queue(queueConstants.TASK_CHANGED)
     }
@@ -113,19 +134,6 @@ class RabbitConfiguration {
                 .bind(pipelineTaskRunNodeQueue)
                 .to(exchange)
                 .with(routingConstants.PIPELINE_TASK_RUN_NODE)
-    }
-
-    @Bean
-    Queue pipelineTaskStopQueue() {
-        return new Queue(queueConstants.PIPELINE_TASK_STOP)
-    }
-
-    @Bean
-    Binding bindPipelineTaskStop(final Queue pipelineTaskStopQueue, final TopicExchange exchange) {
-        return BindingBuilder
-                .bind(pipelineTaskStopQueue)
-                .to(exchange)
-                .with(routingConstants.PIPELINE_TASK_STOP)
     }
 
     @Bean

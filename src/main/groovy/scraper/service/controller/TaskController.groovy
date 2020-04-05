@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import scraper.service.dto.model.task.PendingTaskDto
 import scraper.service.dto.model.task.TaskDto
+import scraper.service.dto.model.task.TaskEditDto
 import scraper.service.model.Task
 import scraper.service.service.*
 import scraper.service.store.FileDataRepository
@@ -25,6 +26,15 @@ class TaskController {
 
     @Autowired
     TaskService taskService
+
+    /**
+     * @param taskId
+     * @return
+     */
+    @GetMapping("{taskId}")
+    TaskEditDto get(@PathVariable String taskId) {
+        return taskService.getTaskEditDto(taskId)
+    }
 
     /**
      * Stop task by id.

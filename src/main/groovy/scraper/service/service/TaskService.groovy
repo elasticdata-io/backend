@@ -40,13 +40,20 @@ class TaskService {
     @Autowired
     private PatchService patchService
 
-
     TaskDto getTask(String id) {
         Task task = findById(id)
         if (!task) {
             throw new Exception("task with id:${id} not found")
         }
         return TaskMapper.toTaskDto(task)
+    }
+
+    TaskDto getTaskEditDto(String id) {
+        Task task = findById(id)
+        if (!task) {
+            throw new Exception("task with id:${id} not found")
+        }
+        return TaskMapper.toTaskEditDto(task)
     }
 
     TaskDto patch(String id, JsonPatch patch) {

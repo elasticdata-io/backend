@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component
 import scraper.service.dto.model.task.PendingApiTaskDto
 import scraper.service.dto.model.task.PendingTaskDto
 import scraper.service.dto.model.task.TaskDto
+import scraper.service.dto.model.task.TaskEditDto
 import scraper.service.dto.model.user.UserDto
 import scraper.service.model.Task
 import scraper.service.model.User
@@ -59,4 +60,21 @@ class TaskMapper {
         )
     }
 
+
+    static TaskEditDto toTaskEditDto(Task task) {
+        return new TaskEditDto(
+                id: task.id,
+                pipelineId: task.pipelineId,
+                userId: task.userId,
+                startOnUtc: task.startOnUtc,
+                endOnUtc: task.endOnUtc,
+                status: task.status,
+                failureReason: task.failureReason,
+                hookUrl: task.hookUrl,
+                docsUrl: task.docsUrl,
+                docsBytes: task.docsBytes,
+                docsCount: task.docsCount,
+                commands: task.commands
+        )
+    }
 }

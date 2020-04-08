@@ -12,6 +12,7 @@ import scraper.service.amqp.producer.TaskProducer
 import scraper.service.constants.PipelineStatuses
 import scraper.service.dto.mapper.TaskMapper
 import scraper.service.dto.model.task.TaskDto
+import scraper.service.dto.model.task.TaskEditDto
 import scraper.service.model.Pipeline
 import scraper.service.model.Task
 import scraper.service.repository.TaskRepository
@@ -48,7 +49,7 @@ class TaskService {
         return TaskMapper.toTaskDto(task)
     }
 
-    TaskDto getTaskEditDto(String id) {
+    TaskEditDto getTaskEditDto(String id) {
         Task task = findById(id)
         if (!task) {
             throw new Exception("task with id:${id} not found")

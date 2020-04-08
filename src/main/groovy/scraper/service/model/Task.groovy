@@ -44,6 +44,7 @@ class Task {
     public String docsUrl
     public Number docsCount
     public Number docsBytes
+    public String commandsInformationLink
 
     public Boolean withoutDependencies
     public String parentTaskId

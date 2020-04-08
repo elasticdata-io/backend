@@ -74,7 +74,8 @@ class TaskMapper {
                 docsUrl: task.docsUrl,
                 docsBytes: task.docsBytes,
                 docsCount: task.docsCount,
-                commands: task.commands
+                commands: task.commands,
+                commandsInformationLink: task.commandsInformationLink,
         )
     }
 }

@@ -56,7 +56,8 @@ class TaskMapper {
                 hookUrl: task.hookUrl,
                 docsUrl: task.docsUrl,
                 docsBytes: task.docsBytes,
-                docsCount: task.docsCount
+                docsCount: task.docsCount,
+                commandsInformationLink: task.commandsInformationLink,
         )
     }
 

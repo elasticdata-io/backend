@@ -12,6 +12,7 @@ class TaskDto {
     String failureReason
     String hookUrl
     String docsUrl
+    String commandsInformationLink
     Number docsCount
     Number docsBytes
 

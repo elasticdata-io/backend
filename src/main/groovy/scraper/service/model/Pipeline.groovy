@@ -29,6 +29,11 @@ class Pipeline {
     public String jsonCommandsPath
 
     /**
+     * Version of pipeline syntax.
+     */
+    public String pipelineVersion
+
+    /**
      * Browser executor (chrome, phantom, etc.).
      */
     public String browser

@@ -36,6 +36,7 @@ class Task {
     public String userId
 
     public String commands
+    public String pipelineVersion
 
     @Indexed(name = "status_index", direction = IndexDirection.DESCENDING)
     public String status

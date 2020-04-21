@@ -148,6 +148,7 @@ class TaskService {
         task.userId = pipeline.user.id
         task.hookUrl = pipeline.hookUrl
         task.commands = pipeline.jsonCommands
+        task.pipelineVersion = pipeline.pipelineVersion
         taskRepository.save(task)
         update(task)
         return task

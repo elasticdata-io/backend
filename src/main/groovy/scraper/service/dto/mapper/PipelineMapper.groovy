@@ -51,6 +51,7 @@ class PipelineMapper {
                 jsonCommands: pipeline.jsonCommands,
                 lastParseRowsCount: pipeline.parseRowsCount,
                 lastParseBytes: pipeline.parseBytes,
+                pipelineVersion: pipeline.pipelineVersion,
         )
     }
 

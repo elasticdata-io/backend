@@ -113,6 +113,7 @@ class PipelineDataController {
         pipeline.key = pipelineDto.key
         pipeline.description = pipelineDto.description
         pipeline.jsonCommands = pipelineDto.jsonCommands
+        pipeline.pipelineVersion = pipelineDto.pipelineVersion
         pipeline.modifiedOn = new Date()
         pipeline.needProxy = pipelineDto.needProxy
         pipeline.dependencies = PipelineDependencyMapper.toPipelineDependencies(pipelineDto.dependencies)

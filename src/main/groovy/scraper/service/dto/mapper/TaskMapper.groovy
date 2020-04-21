@@ -58,6 +58,7 @@ class TaskMapper {
                 docsBytes: task.docsBytes,
                 docsCount: task.docsCount,
                 commandsInformationLink: task.commandsInformationLink,
+                pipelineVersion: task.pipelineVersion,
         )
     }
 

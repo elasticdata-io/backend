@@ -13,6 +13,7 @@ class TaskDto {
     String hookUrl
     String docsUrl
     String commandsInformationLink
+    String pipelineVersion
     Number docsCount
     Number docsBytes
 

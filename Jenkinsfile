@@ -79,7 +79,7 @@ spec:
                                 sh "helm upgrade --install backend \
                                     -f install/helm/backend/values.yaml \
                                     -f install/helm/backend/${VALUES_FILE} \
-                                    --version 1.0.${BUILD_NUMBER}\
+                                    --version 2.0.${BUILD_NUMBER}\
                                     --namespace scraper \
                                     --set image.tag=${DOCKER_TAG} \
                                     --set env.APP_VERSION=1.0.${BUILD_NUMBER} \
@@ -90,7 +90,7 @@ spec:
                                 sh "helm upgrade --install backend-logs \
                                     -f install/helm/backend-logs/values.yaml \
                                     -f install/helm/backend-logs/${VALUES_FILE} \
-                                    --version 1.0.${BUILD_NUMBER}\
+                                    --version 1.1.${BUILD_NUMBER}\
                                     --namespace scraper \
                                     install/helm/backend-logs"
                             }

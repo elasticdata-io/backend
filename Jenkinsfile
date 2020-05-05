@@ -82,7 +82,7 @@ spec:
                                     --version 2.0.${BUILD_NUMBER}\
                                     --namespace scraper \
                                     --set image.tag=${DOCKER_TAG} \
-                                    --set env.APP_VERSION=1.0.${BUILD_NUMBER} \
+                                    --set env.APP_VERSION=2.0.${BUILD_NUMBER} \
                                     --set env.APP_LAST_UPDATED=${dateFormatted} \
                                     install/helm/backend"
                             }

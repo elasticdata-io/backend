@@ -62,8 +62,12 @@ class TaskProducer {
     /**
      * @param taskId
      */
-    void taskStop(String taskId) {
+    void taskStopV2(String taskId) {
         rabbitTemplate.convertAndSend(pipelineStopExchangeName, "", taskId)
+    }
+
+    void taskStopV1(String taskId) {
+        rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.PIPELINE_TASK_STOP, taskId)
     }
 
     /**
@@ -81,3 +85,4 @@ class TaskProducer {
         rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.TASK_CHANGED, taskId)
     }
 }
+

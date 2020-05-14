@@ -30,7 +30,11 @@ class StoppingTaskStatusScheduler extends AbstractTaskStatusScheduler {
         if (task.status != PipelineStatuses.STOPPING) {
             return false
         }
-        taskProducer.taskStop(task.id)
+        if (!task.pipelineVersion) {
+            taskProducer.taskStopV1(task.id)
+            return
+        }
+        taskProducer.taskStopV2(task.id)
         return true
     }
 }

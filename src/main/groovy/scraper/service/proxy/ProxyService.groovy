@@ -14,9 +14,15 @@ class ProxyService {
     @Value('${proxy.service.url}')
     String proxyServiceUrl
 
+    @Value('${proxy.static.url}')
+    String proxyStaticUrl
+
     int CONNECT_TIMEOUT = 3 * 1000
     int READ_TIMEOUT = 3 * 1000
 
+    /**
+     * @deprecated
+     */
     ProxyModel getFastProxy() {
         def data = new URL(proxyServiceUrl + "/proxy/fast")
                 .getText(connectTimeout: CONNECT_TIMEOUT, readTimeout: READ_TIMEOUT)
@@ -31,6 +37,6 @@ class ProxyService {
     }
 
     String getStaticHttpProxy() {
-        return proxyServiceUrl
+        return proxyStaticUrl
     }
 }

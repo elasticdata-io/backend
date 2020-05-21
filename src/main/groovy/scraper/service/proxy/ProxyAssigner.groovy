@@ -15,7 +15,7 @@ class ProxyAssigner {
 
     String getProxy() {
         String url = proxyService.getStaticHttpProxy()
-        logger.info("proxy url: ${url}")
+        logger.info("proxy: ${url}")
         return url
         /*
         ProxyModel proxy = proxyService.getFastProxy()

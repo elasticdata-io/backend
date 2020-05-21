@@ -115,6 +115,8 @@ spec:
 
             - name: PROXY_SERVICE_URL
               value: {{ .Values.env.PROXY_SERVICE_URL }}
+            - name: PROXY_STATIC_URL
+              value: {{ .Values.env.PROXY_STATIC_URL }}
 
             - name: MINIO_URL
               value: {{ .Values.env.MINIO_URL }}

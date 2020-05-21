@@ -86,7 +86,8 @@ env:
   ES_HTTP_PORT: 9200
   ES_ENABLED: false
 
-  PROXY_SERVICE_URL: "http://scrapoxy"
+  PROXY_SERVICE_URL: "http://proxy"
+  PROXY_STATIC_URL: "scrapoxy:80"
 
   MINIO_URL: https://storage.elasticdata.io
   MINIO_PUBLIC_URL: https://storage.elasticdata.io

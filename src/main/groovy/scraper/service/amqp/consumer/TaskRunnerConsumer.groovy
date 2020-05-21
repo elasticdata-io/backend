@@ -23,13 +23,13 @@ class TaskRunnerConsumer {
         taskService.runFromQueue(taskId)
     }
 
-//    /**
-//     * @param taskId
-//     */
-//    @RabbitListener(queues = '#{queueConstants.PIPELINE_TASK_STOP}', containerFactory="defaultConnectionFactory")
-//    void stopPipelineTaskWorker(String taskId) {
-//        taskService.stopFromQueue(taskId)
-//    }
+    /**
+     * @param taskId
+     */
+    @RabbitListener(queues = '#{queueConstants.PIPELINE_TASK_STOP}', containerFactory="defaultConnectionFactory")
+    void stopPipelineTaskWorker(String taskId) {
+        taskService.stopFromQueue(taskId)
+    }
 
     /**
      * @param taskId

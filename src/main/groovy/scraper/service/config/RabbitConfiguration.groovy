@@ -91,10 +91,11 @@ class RabbitConfiguration {
     }
 
     @Bean
-    Binding bindPipelineTaskStop(final Queue pipelineTaskStopQueue, final FanoutExchange pipelineStopExchange) {
+    Binding bindPipelineTaskStop(final Queue pipelineTaskStopQueue, final TopicExchange exchange) {
         return BindingBuilder
                 .bind(pipelineTaskStopQueue)
-                .to(pipelineStopExchange)
+                .to(exchange)
+                .with(routingConstants.PIPELINE_TASK_STOP)
     }
 
     @Bean

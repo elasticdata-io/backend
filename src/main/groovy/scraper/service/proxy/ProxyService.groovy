@@ -29,4 +29,8 @@ class ProxyService {
         logger.info("proxy found, data: ${data}")
         return object as ProxyModel
     }
+
+    String getStaticHttpProxy() {
+        return proxyServiceUrl
+    }
 }

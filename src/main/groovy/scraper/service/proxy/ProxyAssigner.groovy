@@ -13,8 +13,11 @@ class ProxyAssigner {
     @Autowired
     ProxyService proxyService
 
-
     String getProxy() {
+        String url = proxyService.getStaticHttpProxy()
+        logger.info("proxy url: ${url}")
+        return url
+        /*
         ProxyModel proxy = proxyService.getFastProxy()
         String url
         if (proxy.type == 'socks5') {
@@ -24,5 +27,6 @@ class ProxyAssigner {
         }
         logger.info("proxy url: ${url}")
         return url
+        */
     }
 }

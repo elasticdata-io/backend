@@ -87,7 +87,7 @@ env:
   ES_ENABLED: false
 
   PROXY_SERVICE_URL: "http://proxy"
-  PROXY_STATIC_URL: "scrapoxy:80"
+  PROXY_STATIC_URL: "scrapoxy.scraper:80"
 
   MINIO_URL: https://storage.elasticdata.io
   MINIO_PUBLIC_URL: https://storage.elasticdata.io

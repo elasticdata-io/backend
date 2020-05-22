@@ -33,6 +33,10 @@ class PipelineService {
         return pipeline.present ? pipeline.get() : null
     }
 
+    List<Pipeline> findByIds(List<String> ids) {
+        return pipelineRepository.findByIdIn(ids)
+    }
+
     void save(Pipeline pipeline) {
         pipeline.modifiedOn = new Date()
         pipelineRepository.save(pipeline)

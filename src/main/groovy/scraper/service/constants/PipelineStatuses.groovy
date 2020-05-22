@@ -13,4 +13,15 @@ class PipelineStatuses {
     public static ERROR = 'error'
     public static STOPPING = 'stopping'
     public static STOPPED = 'stopped'
+
+    static List<String> getInProcessing() {
+        return [
+            NEED_DEPS,
+            NEED_RUN,
+            PENDING,
+            QUEUE,
+            RUNNING,
+            WAIT_DEPS,
+        ]
+    }
 }

@@ -89,10 +89,13 @@ class PipelineDataController {
         }
     }
 
-    @GetMapping('/list/{status}')
-    List<PipelineDto> listByStatus(@RequestHeader("token") String token, @PathVariable String status) {
+    @GetMapping('/list/in-processing')
+    List<PipelineDto> listInProcessing(@RequestHeader("token") String token) {
         String userId = tokenService.getUserId(token)
-        List<Pipeline> pipelines = pipelineRepository.findByStatusAndUserOrderByModifiedOnDesc(status, userId)
+        List<String> inProcessingStatuses = PipelineStatuses.getInProcessing()
+        List<Task> tasks = taskService.findByStatusInAndUserId(inProcessingStatuses, userId)
+        List<String> pipelineIds = tasks.collect { it.pipelineId }
+        List<Pipeline> pipelines = pipelineService.findByIds(pipelineIds)
         return pipelines.collect {pipeline ->
             return PipelineMapper.toPipelineDto(pipeline)
         }

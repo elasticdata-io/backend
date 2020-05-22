@@ -86,16 +86,28 @@ class RabbitConfiguration {
     }
 
     @Bean
-    Queue pipelineTaskStopQueue() {
-        return new Queue(queueConstants.PIPELINE_TASK_STOP)
+    Queue pipelineTaskStopV1Queue() {
+        return new Queue(queueConstants.PIPELINE_TASK_STOP_V1)
     }
 
     @Bean
-    Binding bindPipelineTaskStop(final Queue pipelineTaskStopQueue, final TopicExchange exchange) {
+    Queue pipelineTaskStopV2Queue() {
+        return new Queue(queueConstants.PIPELINE_TASK_STOP_V2)
+    }
+
+    @Bean
+    Binding bindPipelineTaskStopV1(final Queue pipelineTaskStopV1Queue, final TopicExchange exchange) {
         return BindingBuilder
-                .bind(pipelineTaskStopQueue)
+                .bind(pipelineTaskStopV1Queue)
                 .to(exchange)
                 .with(routingConstants.PIPELINE_TASK_STOP)
+    }
+
+    @Bean
+    Binding bindPipelineTaskStopV2(final Queue pipelineTaskStopV2Queue, final FanoutExchange pipelineStopExchange) {
+        return BindingBuilder
+                .bind(pipelineTaskStopV2Queue)
+                .to(pipelineStopExchange)
     }
 
     @Bean

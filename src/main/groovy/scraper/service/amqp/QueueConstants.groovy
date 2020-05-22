@@ -15,8 +15,11 @@ class QueueConstants {
     @Value('${spring.rabbitmq.queue.pipelineTaskRunNode}')
     String PIPELINE_TASK_RUN_NODE
 
-    @Value('${spring.rabbitmq.queue.pipelineTaskStop}')
-    String PIPELINE_TASK_STOP
+    @Value('${spring.rabbitmq.queue.pipelineTaskStopV1}')
+    String PIPELINE_TASK_STOP_V1
+
+    @Value('${spring.rabbitmq.queue.pipelineTaskStopV2}')
+    String PIPELINE_TASK_STOP_V2
 
     @Value('${spring.rabbitmq.queue.pipelineTaskFinished}')
     String PIPELINE_TASK_FINISHED

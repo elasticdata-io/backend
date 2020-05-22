@@ -26,7 +26,7 @@ class TaskRunnerConsumer {
     /**
      * @param taskId
      */
-    @RabbitListener(queues = '#{queueConstants.PIPELINE_TASK_STOP}', containerFactory="defaultConnectionFactory")
+    @RabbitListener(queues = '#{queueConstants.PIPELINE_TASK_STOP_V1}', containerFactory="defaultConnectionFactory")
     void stopPipelineTaskWorker(String taskId) {
         taskService.stopFromQueue(taskId)
     }

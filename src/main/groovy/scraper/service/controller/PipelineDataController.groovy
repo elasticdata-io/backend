@@ -89,6 +89,15 @@ class PipelineDataController {
         }
     }
 
+    @GetMapping('/list/{status}')
+    List<PipelineDto> listByStatus(@RequestHeader("token") String token, @PathVariable String status) {
+        String userId = tokenService.getUserId(token)
+        List<Pipeline> pipelines = pipelineRepository.findByStatusAndUserOrderByModifiedOnDesc(status, userId)
+        return pipelines.collect {pipeline ->
+            return PipelineMapper.toPipelineDto(pipeline)
+        }
+    }
+
     @GetMapping('/list-depends/{pipelineId}')
     List<PipelineDto> listDepends(@RequestHeader("token") String token, @PathVariable String pipelineId) {
         String userId = tokenService.getUserId(token)

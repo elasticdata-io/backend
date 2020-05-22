@@ -50,7 +50,7 @@ spec:
                     stage('application project') {
 
                         container('docker') {
-                            env.DOCKER_TAG = "${BRANCH_NAME}_${BUILD_NUMBER}"
+                            env.DOCKER_TAG = "${BRANCH_NAME}_02_${BUILD_NUMBER}"
                             stage('build application') {
                                 sh 'docker build -f install/Dockerfile -t localhost:32000/scraper-backend:${DOCKER_TAG} .'
                             }

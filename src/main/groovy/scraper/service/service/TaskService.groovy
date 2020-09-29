@@ -57,6 +57,14 @@ class TaskService {
         return TaskMapper.toTaskEditDto(task)
     }
 
+    Boolean isSuspended(String id) {
+        Task task = findById(id)
+        if (!task) {
+            throw new Exception("task with id:${id} not found")
+        }
+        return PipelineStatuses.isTaskSuspended(task.status)
+    }
+
     TaskDto patch(String id, JsonPatch patch) {
         Task task = findById(id)
         if (!task) {

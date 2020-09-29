@@ -24,4 +24,11 @@ class PipelineStatuses {
             WAIT_DEPS,
         ]
     }
+
+    static Boolean isTaskSuspended(String status) {
+        return COMPLETED == status
+                || ERROR == status
+                || STOPPING == status
+                || STOPPED == status
+    }
 }

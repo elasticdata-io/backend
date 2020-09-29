@@ -37,6 +37,15 @@ class TaskController {
     }
 
     /**
+     * @param taskId
+     * @return
+     */
+    @GetMapping("/suspended/{taskId}")
+    Boolean isSuspended(@PathVariable String taskId) {
+        return taskService.isSuspended(taskId)
+    }
+
+    /**
      * Stop task by id.
      * @param taskId
      */

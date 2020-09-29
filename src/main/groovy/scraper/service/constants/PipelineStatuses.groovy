@@ -26,9 +26,6 @@ class PipelineStatuses {
     }
 
     static Boolean isTaskSuspended(String status) {
-        return COMPLETED == status
-                || ERROR == status
-                || STOPPING == status
-                || STOPPED == status
+        return COMPLETED == status || ERROR == status || STOPPING == status || STOPPED == status
     }
 }

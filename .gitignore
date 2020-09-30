@@ -9,6 +9,7 @@ gradlew
 gradlew.bat
 bash
 scraper-core
+scraper-core/out
 scraper-service.iml
 scraper-service.ipr
 scraper-service.iws

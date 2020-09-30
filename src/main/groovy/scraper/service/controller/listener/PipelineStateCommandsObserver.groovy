@@ -33,7 +33,7 @@ class PipelineStateCommandsObserver implements Observer {
                 runTimeProperties: "${command.getHumanProperties()}",
                 userId: task.userId
         )
-        taskWebsocketProducer.commandExecute(data)
+        taskWebsocketProducer.startCommandExecute(data)
     }
 
     @Override

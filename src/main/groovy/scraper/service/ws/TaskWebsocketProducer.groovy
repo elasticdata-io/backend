@@ -23,7 +23,7 @@ class TaskWebsocketProducer {
         messagingTemplate.convertAndSend(channel, pipelineParsedLinesDto)
     }
 
-    void commandExecute(TaskCommandExecuteDto pipelineCommandExecuteDto) {
+    void startCommandExecute(TaskCommandExecuteDto pipelineCommandExecuteDto) {
         String channel = '/task/command/execute/' + pipelineCommandExecuteDto.userId
         messagingTemplate.convertAndSend(channel, pipelineCommandExecuteDto)
     }

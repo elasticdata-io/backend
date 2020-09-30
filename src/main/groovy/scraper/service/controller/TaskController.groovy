@@ -93,7 +93,7 @@ class TaskController {
      */
     @PostMapping("/notify/start-command-execute")
     void startCommandExecute(@RequestBody TaskCommandExecuteDto dto) {
-        taskWebsocketProducer.commandExecute(dto)
+        taskWebsocketProducer.startCommandExecute(dto)
     }
 
 }

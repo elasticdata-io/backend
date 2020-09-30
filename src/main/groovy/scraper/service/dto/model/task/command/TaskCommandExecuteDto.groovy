@@ -1,4 +1,4 @@
-package scraper.service.dto.model.pipeline
+package scraper.service.dto.model.task.command
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -6,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonInclude
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 class TaskCommandExecuteDto {
-    String commandExecutingProperties
-    String commandExecutingName
+    String runTimeProperties
+    String cmd
     String pipelineId
-    String pipelineTaskId
+    String taskId
     String userId
 }

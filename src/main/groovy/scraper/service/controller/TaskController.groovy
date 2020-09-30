@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.*
 import scraper.service.dto.model.task.PendingTaskDto
 import scraper.service.dto.model.task.TaskDto
 import scraper.service.dto.model.task.TaskEditDto
+import scraper.service.dto.model.task.command.TaskCommandExecuteDto
 import scraper.service.model.Task
 import scraper.service.service.*
 import scraper.service.store.FileDataRepository
+import scraper.service.ws.TaskWebsocketProducer
 
 @RestController
 @RequestMapping("/task")
@@ -26,6 +28,9 @@ class TaskController {
 
     @Autowired
     TaskService taskService
+
+    @Autowired
+    TaskWebsocketProducer taskWebsocketProducer
 
     /**
      * @param taskId
@@ -82,5 +87,13 @@ class TaskController {
         return taskService.patch(id, jsonPatch)
     }
 
+    /**
+     * Stop task by id.
+     * @param taskId
+     */
+    @PostMapping("/command/exec")
+    void commandExec(@RequestBody TaskCommandExecuteDto dto) {
+        taskWebsocketProducer.commandExecute(dto)
+    }
 
 }

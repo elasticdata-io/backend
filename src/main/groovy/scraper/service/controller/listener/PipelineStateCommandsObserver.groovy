@@ -3,7 +3,7 @@ package scraper.service.controller.listener
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import scraper.core.command.AbstractCommand
-import scraper.service.dto.model.pipeline.TaskCommandExecuteDto
+import scraper.service.dto.model.task.command.TaskCommandExecuteDto
 import scraper.service.model.Task
 import io.reactivex.Observer
 import scraper.service.ws.TaskWebsocketProducer
@@ -28,9 +28,9 @@ class PipelineStateCommandsObserver implements Observer {
         AbstractCommand command = (AbstractCommand) o
         def data = new TaskCommandExecuteDto(
                 pipelineId: task.pipelineId,
-                pipelineTaskId: task.id,
-                commandExecutingName: "${command.getClass().getSimpleName().toLowerCase()}",
-                commandExecutingProperties: "${command.getHumanProperties()}",
+                taskId: task.id,
+                cmd: "${command.getClass().getSimpleName().toLowerCase()}",
+                runTimeProperties: "${command.getHumanProperties()}",
                 userId: task.userId
         )
         taskWebsocketProducer.commandExecute(data)

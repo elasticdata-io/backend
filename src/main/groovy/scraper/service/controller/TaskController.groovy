@@ -91,8 +91,8 @@ class TaskController {
      * Stop task by id.
      * @param taskId
      */
-    @PostMapping("/command/exec")
-    void commandExec(@RequestBody TaskCommandExecuteDto dto) {
+    @PostMapping("/start-command-execute")
+    void startCommandExecute(@RequestBody TaskCommandExecuteDto dto) {
         taskWebsocketProducer.commandExecute(dto)
     }
 

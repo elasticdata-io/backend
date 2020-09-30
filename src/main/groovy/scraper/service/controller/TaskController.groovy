@@ -88,10 +88,10 @@ class TaskController {
     }
 
     /**
-     * Stop task by id.
+     * Notify start command Execute
      * @param taskId
      */
-    @PostMapping("/start-command-execute")
+    @PostMapping("/notify/start-command-execute")
     void startCommandExecute(@RequestBody TaskCommandExecuteDto dto) {
         taskWebsocketProducer.commandExecute(dto)
     }

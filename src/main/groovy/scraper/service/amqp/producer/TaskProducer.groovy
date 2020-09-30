@@ -53,6 +53,7 @@ class TaskProducer {
             taskId: task.id,
             json: task.commands,
             userUuid: task.userId,
+            pipelineId: task.pipelineId,
             proxies: pipeline.needProxy ? [proxyAssigner.getProxy()]: []
         )
         def message = new JsonBuilder(map).toString()

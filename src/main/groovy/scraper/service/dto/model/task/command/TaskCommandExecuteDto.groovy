@@ -11,4 +11,5 @@ class TaskCommandExecuteDto {
     String pipelineId
     String taskId
     String userId
+    String uuid
 }

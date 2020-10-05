@@ -4,6 +4,7 @@ import groovy.json.JsonSlurper
 import org.springframework.stereotype.Component
 import scraper.service.model.types.PipelineConfiguration
 import scraper.service.model.types.PipelineSettings
+import scraper.service.model.types.PipelineUserInteractionSettings
 import scraper.service.model.types.PipelineWindowSettings
 
 @Component
@@ -27,6 +28,11 @@ class PipelineConfigurationMapper {
                 width: window.get('width'),
                 lang: window.get('lang'),
             )
+        }
+        HashMap userInteractionMap = pipelineMap.get('userInteraction', new HashMap())
+        List<String> selectors = userInteractionMap.get('selectors', [])
+        if (selectors) {
+            pipelineSettings.userInteraction = new PipelineUserInteractionSettings(selectors: selectors)
         }
         pipelineConfiguration.settings = pipelineSettings
         return pipelineConfiguration

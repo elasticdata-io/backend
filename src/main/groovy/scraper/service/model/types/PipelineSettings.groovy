@@ -15,4 +15,9 @@ class PipelineSettings {
      * Browser proxies
      */
     String[] proxies
+
+    /**
+     * User interaction configuration
+     */
+    PipelineUserInteractionSettings userInteraction
 }

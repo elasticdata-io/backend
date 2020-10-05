@@ -2,10 +2,12 @@ package scraper.service.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.sun.org.apache.xpath.internal.operations.Bool
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
+import scraper.service.model.mapper.PipelineConfigurationMapper
+import scraper.service.model.types.PipelineConfiguration
+import scraper.service.model.types.PipelineSettings
 
 @Document(collection = "pipeline")
 class Pipeline {
@@ -26,12 +28,21 @@ class Pipeline {
     /**
      * Path oth the pipeline JSON file, relative of the resources.
      */
+    @Deprecated
     public String jsonCommandsPath
 
     /**
      * Version of pipeline syntax.
      */
     public String pipelineVersion
+
+    /**
+     * Settings of the pipeline configuration
+     * (commands, dataRules, settings: need proxies, window size, language, max working time).
+     */
+    PipelineConfiguration getPipelineConfiguration() {
+        return PipelineConfigurationMapper.toPipelineConfiguration(jsonCommands)
+    }
 
     /**
      * Browser executor (chrome, phantom, etc.).

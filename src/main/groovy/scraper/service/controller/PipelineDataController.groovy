@@ -1,5 +1,6 @@
 package scraper.service.controller
 
+import groovy.json.JsonSlurper
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value

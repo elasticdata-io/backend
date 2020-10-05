@@ -1,10 +1,10 @@
 package scraper.service.service
 
+
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import scraper.core.pipeline.PipelineBuilder
 import scraper.core.pipeline.data.storage.FileStoreProvider
 import scraper.service.dto.mapper.PipelineMapper
 import scraper.service.dto.mapper.TaskMapper
@@ -72,7 +72,8 @@ class PipelineService {
     }
 
     void validate(Pipeline pipeline) {
-        PipelineBuilder pipelineBuilder = new PipelineBuilder()
-        pipelineBuilder.validateJson(pipeline.jsonCommands)
+        // todo : check required props
+        def pipelineConfiguration = pipeline.pipelineConfiguration
+        println pipelineConfiguration
     }
 }

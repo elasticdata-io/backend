@@ -3,6 +3,7 @@ package scraper.service.constants
 class PipelineStatuses {
 
     public static NOT_RUNNING = 'not running'
+    public static NEED_USER_CONFIRMATION = 'need_user_confirmation'
     public static PENDING = 'pending'
     public static NEED_DEPS = 'need_other_pipeline'
     public static WAIT_DEPS = 'wait_other_pipeline'

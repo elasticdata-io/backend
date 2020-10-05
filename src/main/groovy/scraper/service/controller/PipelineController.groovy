@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import scraper.core.command.input.UserInput
-import scraper.service.dto.mapper.TaskMapper
 import scraper.service.dto.model.task.PendingApiTaskDto
 import scraper.service.dto.model.task.PendingTaskDto
 import scraper.service.dto.model.task.PipelineRunDto
@@ -69,11 +68,13 @@ class PipelineController {
         return pipelineRunnerService.stoppingFromClient(taskId)
     }
 
+    @Deprecated
     @RequestMapping("/user-input/list/{pipelineId}")
     List<UserInput> listUserInput(@PathVariable String pipelineId) {
         // return pipelineInputService.findUserInputs(pipelineId)
     }
 
+    @Deprecated
     @RequestMapping(value = "/user-input/set-text/{pipelineId}/{key}", method = RequestMethod.POST)
     void setTextToUserInput(@PathVariable String pipelineId, @PathVariable String key, @RequestParam String text) {
 //        UserInput userInput = pipelineInputService.findUserInput(pipelineId, key)

@@ -26,6 +26,12 @@ class Pipeline {
     public String jsonCommands
 
     /**
+     * Settings of the pipeline configuration
+     * (commands, dataRules, settings: need proxies, window size, language, max working time).
+     */
+    public PipelineConfiguration pipelineConfiguration
+
+    /**
      * Path oth the pipeline JSON file, relative of the resources.
      */
     @Deprecated
@@ -35,14 +41,6 @@ class Pipeline {
      * Version of pipeline syntax.
      */
     public String pipelineVersion
-
-    /**
-     * Settings of the pipeline configuration
-     * (commands, dataRules, settings: need proxies, window size, language, max working time).
-     */
-    PipelineConfiguration getPipelineConfiguration() {
-        return PipelineConfigurationMapper.toPipelineConfiguration(jsonCommands)
-    }
 
     /**
      * Browser executor (chrome, phantom, etc.).
@@ -137,5 +135,10 @@ class Pipeline {
     @DBRef
     @JsonIgnore
     public User user
+
+    void setJsonCommands(String jsonCommands) {
+        this.jsonCommands = jsonCommands
+        pipelineConfiguration = PipelineConfigurationMapper.toPipelineConfiguration(jsonCommands)
+    }
 
 }

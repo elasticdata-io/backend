@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndex
 import org.springframework.data.mongodb.core.index.IndexDirection
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
+import scraper.service.model.types.PipelineConfiguration
 
 @Document(collection = "task")
 @CompoundIndex(def = "{'userId':1, 'status':-1}", name = "user_id__status")
@@ -36,6 +37,7 @@ class Task {
     public String userId
 
     public String commands
+    public PipelineConfiguration pipelineConfiguration
     public String pipelineVersion
 
     @Indexed(name = "status_index", direction = IndexDirection.DESCENDING)

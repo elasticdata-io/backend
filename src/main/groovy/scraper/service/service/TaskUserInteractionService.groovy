@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import scraper.service.dto.model.task.EnableUserInteractionStateDto
+import scraper.service.dto.model.task.EnableUserInteractionModeDto
 import scraper.service.model.TaskUserInteraction
 import scraper.service.repository.TaskUserInteractionRepository
 
@@ -15,8 +15,9 @@ class TaskUserInteractionService {
     @Autowired
     TaskUserInteractionRepository taskUserInteractionRepository
 
-    TaskUserInteraction createOrUpdate(EnableUserInteractionStateDto dto) {
-        def taskUserInteractionInDb = taskUserInteractionRepository.findByTaskId(dto.taskId)
+    TaskUserInteraction createOrUpdate(EnableUserInteractionModeDto dto) {
+        def taskUserInteractionInDb = taskUserInteractionRepository
+                .findByTaskIdAndPageContext(dto.taskId, dto.pageContext)
         def taskUserInteraction = taskUserInteractionInDb.present
                 ? taskUserInteractionInDb.get()
                 : new TaskUserInteraction(

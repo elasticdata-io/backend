@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
-import scraper.service.dto.model.task.EnableUserInteractionStateDto
+import scraper.service.dto.model.task.EnableUserInteractionModeDto
 import scraper.service.service.TaskUserInteractionService
 import scraper.service.ws.TaskWebsocketProducer
 
@@ -21,11 +21,11 @@ class TaskUserInteractionController {
     TaskUserInteractionService taskUserInteractionService
 
     /**
-     * Stop task by id.
+     * Enable user interaction mode for task id.
      * @param taskId
      */
     @PostMapping("/enable")
-    void enable(@RequestBody EnableUserInteractionStateDto dto) {
+    void enable(@RequestBody EnableUserInteractionModeDto dto) {
         taskUserInteractionService.createOrUpdate(dto)
     }
 

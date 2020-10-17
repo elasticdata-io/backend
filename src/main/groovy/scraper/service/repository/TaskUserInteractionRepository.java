@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface TaskUserInteractionRepository extends MongoRepository<TaskUserInteraction, String> {
 	Optional<TaskUserInteraction> findById(String id);
-	Optional<TaskUserInteraction> findByTaskId(String id);
+	Optional<TaskUserInteraction> findByTaskIdAndPageContext(String id, String pageContext);
 }

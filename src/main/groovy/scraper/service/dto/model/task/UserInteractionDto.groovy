@@ -18,4 +18,5 @@ class UserInteractionDto {
     String pipelineStatus
     Date createdOnUtc
     Date modifiedOnUtc
+    Date endOnUtc
 }

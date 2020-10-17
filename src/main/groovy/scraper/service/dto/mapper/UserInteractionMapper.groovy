@@ -26,6 +26,7 @@ class UserInteractionMapper {
                 status: taskUserInteraction.status,
                 createdOnUtc: taskUserInteraction.createdOnUtc,
                 modifiedOnUtc: taskUserInteraction.modifiedOnUtc,
+                endOnUtc: taskUserInteraction.endOnUtc,
                 pipelineStatus: taskUserInteraction.pipelineStatus,
         )
     }

@@ -30,7 +30,7 @@ class PipelineStateCommandsObserver implements Observer {
                 pipelineId: task.pipelineId,
                 taskId: task.id,
                 cmd: "${command.getClass().getSimpleName().toLowerCase()}",
-                runTimeProperties: "${command.getHumanProperties()}",
+                designTimeConfig: "${command.getHumanProperties()}",
                 userId: task.userId
         )
         taskWebsocketProducer.startCommandExecute(data)

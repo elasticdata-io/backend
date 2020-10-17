@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 class TaskCommandExecuteDto {
-    String runTimeProperties
+    String designTimeConfig
     String cmd
     String pipelineId
     String taskId

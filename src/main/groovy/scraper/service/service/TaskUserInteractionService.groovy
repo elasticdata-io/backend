@@ -33,6 +33,8 @@ class TaskUserInteractionService {
         lastPageState.put('jpegScreenshotLink', dto.jpegScreenshotLink)
         lastPageState.put('pageElements', dto.pageElements)
         lastPageState.put('currentUrl', dto.currentUrl)
+        lastPageState.put('pageWidthPx', dto.pageWidthPx)
+        lastPageState.put('pageHeightPx', dto.pageHeightPx)
         taskUserInteraction.lastPageState = lastPageState
         taskUserInteraction.modifiedOnUtc = new Date()
         return taskUserInteractionRepository.save(taskUserInteraction)

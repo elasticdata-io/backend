@@ -19,4 +19,6 @@ class UserInteractionDto {
     Date createdOnUtc
     Date modifiedOnUtc
     Date endOnUtc
+    Number pageWidthPx
+    Number pageHeightPx
 }

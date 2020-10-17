@@ -4,7 +4,9 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import scraper.service.dto.mapper.UserInteractionMapper
 import scraper.service.dto.model.task.EnableUserInteractionModeDto
+import scraper.service.dto.model.task.UserInteractionDto
 import scraper.service.model.TaskUserInteraction
 import scraper.service.repository.TaskUserInteractionRepository
 
@@ -34,5 +36,10 @@ class TaskUserInteractionService {
         taskUserInteraction.lastPageState = lastPageState
         taskUserInteraction.modifiedOnUtc = new Date()
         return taskUserInteractionRepository.save(taskUserInteraction)
+    }
+
+    List<UserInteractionDto> list(String taskId) {
+        def list = taskUserInteractionRepository.findByTaskId(taskId)
+        return list.collect { UserInteractionMapper.toUserInteractionDto(it) }
     }
 }

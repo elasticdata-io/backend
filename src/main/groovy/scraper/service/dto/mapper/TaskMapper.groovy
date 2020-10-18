@@ -13,6 +13,7 @@ import scraper.service.model.User
 class TaskMapper {
 
     static PendingApiTaskDto toPendingApiTaskDto(Task task) {
+        def userInteraction = task.pipelineConfiguration?.settings?.userInteraction
         return new PendingApiTaskDto(
                 id: task.id,
                 pipelineId: task.pipelineId,
@@ -23,11 +24,13 @@ class TaskMapper {
                 status: task.status,
                 failureReason: task.failureReason,
                 hookUrl: task.hookUrl,
-                docsUrl: task.docsUrl
+                docsUrl: task.docsUrl,
+                hasUserInteraction: userInteraction != null,
         )
     }
 
     static PendingTaskDto toPendingTaskDto(Task task) {
+        def userInteraction = task.pipelineConfiguration?.settings?.userInteraction
         return new PendingTaskDto(
                 id: task.id,
                 pipelineId: task.pipelineId,
@@ -40,7 +43,8 @@ class TaskMapper {
                 hookUrl: task.hookUrl,
                 docsCount: task.docsCount,
                 docsBytes: task.docsBytes,
-                docsUrl: task.docsUrl
+                docsUrl: task.docsUrl,
+                hasUserInteraction: userInteraction != null,
         )
     }
 
@@ -66,6 +70,7 @@ class TaskMapper {
 
 
     static TaskEditDto toTaskEditDto(Task task) {
+        def userInteraction = task.pipelineConfiguration?.settings?.userInteraction
         return new TaskEditDto(
                 id: task.id,
                 pipelineId: task.pipelineId,
@@ -79,7 +84,8 @@ class TaskMapper {
                 docsBytes: task.docsBytes,
                 docsCount: task.docsCount,
                 commands: task.commands,
-                commandsInformationLink: task.commandsInformationLink
+                commandsInformationLink: task.commandsInformationLink,
+                hasUserInteraction: userInteraction != null,
         )
     }
 }

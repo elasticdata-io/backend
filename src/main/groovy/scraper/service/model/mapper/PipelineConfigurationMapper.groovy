@@ -29,10 +29,9 @@ class PipelineConfigurationMapper {
                 lang: window.get('lang'),
             )
         }
-        HashMap userInteractionMap = pipelineMap.get('userInteraction', new HashMap())
-        List<String> watchSelectors = userInteractionMap.get('watchSelectors', [])
+        HashMap userInteractionMap = settingsMap.get('userInteraction', new HashMap())
         List<HashMap> watchCommands = userInteractionMap.get('watchCommands', [])
-        if (watchSelectors) {
+        if (watchCommands) {
             pipelineSettings.userInteraction = new PipelineUserInteractionSettings(watchCommands: watchCommands)
         }
         pipelineConfiguration.settings = pipelineSettings

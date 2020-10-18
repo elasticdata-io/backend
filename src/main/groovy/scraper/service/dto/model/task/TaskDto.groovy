@@ -16,6 +16,7 @@ class TaskDto {
     String pipelineVersion
     Number docsCount
     Number docsBytes
+    Boolean hasUserInteraction
 
     @Override String toString() {
         return JsonOutput.toJson([id: id, pipelineId: pipelineId, userId: userId, status: status])

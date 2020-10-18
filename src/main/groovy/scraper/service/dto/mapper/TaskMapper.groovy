@@ -45,6 +45,7 @@ class TaskMapper {
     }
 
     static TaskDto toTaskDto(Task task) {
+        def userInteraction = task.pipelineConfiguration?.settings?.userInteraction
         return new TaskDto(
                 id: task.id,
                 pipelineId: task.pipelineId,
@@ -59,6 +60,7 @@ class TaskMapper {
                 docsCount: task.docsCount,
                 commandsInformationLink: task.commandsInformationLink,
                 pipelineVersion: task.pipelineVersion,
+                hasUserInteraction: userInteraction != null,
         )
     }
 
@@ -77,7 +79,7 @@ class TaskMapper {
                 docsBytes: task.docsBytes,
                 docsCount: task.docsCount,
                 commands: task.commands,
-                commandsInformationLink: task.commandsInformationLink,
+                commandsInformationLink: task.commandsInformationLink
         )
     }
 }

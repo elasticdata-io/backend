@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
 import scraper.service.model.mapper.PipelineConfigurationMapper
 import scraper.service.model.types.PipelineConfiguration
-import scraper.service.model.types.PipelineSettings
 
 @Document(collection = "pipeline")
 class Pipeline {

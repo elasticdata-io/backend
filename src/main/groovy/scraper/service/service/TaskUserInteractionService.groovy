@@ -9,6 +9,7 @@ import scraper.service.dto.model.task.EnableUserInteractionModeDto
 import scraper.service.dto.model.task.UserInteractionDto
 import scraper.service.model.TaskUserInteraction
 import scraper.service.repository.TaskUserInteractionRepository
+import scraper.service.ws.TaskWebsocketProducer
 
 @Service
 class TaskUserInteractionService {
@@ -16,6 +17,9 @@ class TaskUserInteractionService {
 
     @Autowired
     TaskUserInteractionRepository taskUserInteractionRepository
+
+    @Autowired
+    TaskWebsocketProducer taskWebsocketProducer
 
     TaskUserInteraction createOrUpdate(EnableUserInteractionModeDto dto) {
         def taskUserInteractionInDb = taskUserInteractionRepository
@@ -37,11 +41,19 @@ class TaskUserInteractionService {
         lastPageState.put('pageHeightPx', dto.pageHeightPx)
         taskUserInteraction.lastPageState = lastPageState
         taskUserInteraction.modifiedOnUtc = new Date()
-        return taskUserInteractionRepository.save(taskUserInteraction)
+        taskUserInteractionRepository.save(taskUserInteraction)
+        notifyChanged(taskUserInteraction)
+        return taskUserInteraction
     }
 
     List<UserInteractionDto> list(String taskId) {
         def list = taskUserInteractionRepository.findByTaskId(taskId)
         return list.collect { UserInteractionMapper.toUserInteractionDto(it) }
     }
+
+    private void notifyChanged(TaskUserInteraction taskUserInteraction) {
+        def interactionDto = UserInteractionMapper.toUserInteractionDto(taskUserInteraction)
+        taskWebsocketProducer.changeUserInteraction(interactionDto)
+    }
+
 }

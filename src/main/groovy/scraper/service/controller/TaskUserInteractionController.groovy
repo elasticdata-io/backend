@@ -35,6 +35,7 @@ class TaskUserInteractionController {
      */
     @PostMapping("/enable")
     void enable(@RequestBody EnableUserInteractionModeDto dto) {
+        println dto.taskId
         taskUserInteractionService.createOrUpdate(dto)
     }
 

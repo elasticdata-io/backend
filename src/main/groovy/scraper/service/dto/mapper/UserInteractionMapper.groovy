@@ -27,6 +27,7 @@ class UserInteractionMapper {
                 createdOnUtc: taskUserInteraction.createdOnUtc,
                 modifiedOnUtc: taskUserInteraction.modifiedOnUtc,
                 endOnUtc: taskUserInteraction.endOnUtc,
+                expiredOnUtc: taskUserInteraction.expiredOnUtc,
                 pipelineStatus: taskUserInteraction.pipelineStatus,
                 pageHeightPx: state.get('pageHeightPx') as Number,
                 pageWidthPx: state.get('pageWidthPx') as Number,

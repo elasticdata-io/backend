@@ -44,6 +44,9 @@ class TaskUserInteraction {
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     public Date endOnUtc
 
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    public Date expiredOnUtc
+
     @Indexed(name = "pipeline_status_index", direction = IndexDirection.DESCENDING)
     public String pipelineStatus
 

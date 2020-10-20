@@ -10,4 +10,5 @@ class EnableUserInteractionModeDto {
     String taskId
     String userId
     String pipelineId
+    Number timeoutSeconds
 }

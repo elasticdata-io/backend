@@ -41,6 +41,10 @@ class TaskUserInteractionService {
         lastPageState.put('pageHeightPx', dto.pageHeightPx)
         taskUserInteraction.lastPageState = lastPageState
         taskUserInteraction.modifiedOnUtc = new Date()
+        Calendar c = Calendar.getInstance()
+        c.setTime(new Date())
+        c.add(Calendar.SECOND, dto.timeoutSeconds as int)
+        taskUserInteraction.expiredOnUtc = c.time
         taskUserInteractionRepository.save(taskUserInteraction)
         notifyChanged(taskUserInteraction)
         return taskUserInteraction

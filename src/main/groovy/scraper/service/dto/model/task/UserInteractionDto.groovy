@@ -21,4 +21,5 @@ class UserInteractionDto {
     Date endOnUtc
     Number pageWidthPx
     Number pageHeightPx
+    Date expiredOnUtc
 }

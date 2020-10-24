@@ -74,7 +74,6 @@ dependencies {
 
     // elasticsearch client
     compile 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.4.0'
-    compile ('org.springframework.boot:spring-boot-starter-log4j2')
 }
 
 test {

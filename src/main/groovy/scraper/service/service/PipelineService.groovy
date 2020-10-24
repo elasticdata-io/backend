@@ -5,7 +5,6 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import scraper.core.pipeline.data.storage.FileStoreProvider
 import scraper.service.dto.mapper.PipelineMapper
 import scraper.service.dto.mapper.TaskMapper
 import scraper.service.dto.model.task.PendingTaskDto
@@ -21,9 +20,6 @@ class PipelineService {
 
     @Autowired
     private PipelineWebsocketProducer pipelineWebsocketProducer
-
-    @Autowired
-    private FileStoreProvider fileStoreProvider
 
     @Autowired
     private PipelineRepository pipelineRepository

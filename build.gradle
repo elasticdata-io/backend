@@ -86,8 +86,6 @@ dependencies {
     // elasticsearch client
     compile 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.4.0'
 
-    compile project(':scraper-core')
-    // git clone https://github.com/sergeytkachenko/scraper-core.git scraper-core
 }
 
 test {

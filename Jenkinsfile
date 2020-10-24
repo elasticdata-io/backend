@@ -38,14 +38,7 @@ spec:
         {
             node(label) {
                 stage('checkout') {
-
                     checkout scm
-
-                    dir('scraper-core') {
-                        checkout([$class: 'GitSCM',
-                            userRemoteConfigs: [[credentialsId: 'github-user-password', url: 'https://github.com/sergeytkachenko/scraper-core.git']]
-                        ])
-                    }
 
                     stage('application project') {
 

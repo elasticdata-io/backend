@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import scraper.core.command.input.UserInput
 import scraper.service.dto.model.task.PendingApiTaskDto
 import scraper.service.dto.model.task.PendingTaskDto
 import scraper.service.dto.model.task.PipelineRunDto
@@ -66,12 +65,6 @@ class PipelineController {
     PendingTaskDto stopPipeline(@PathVariable String taskId) {
         // todo: процес должен быть остановлен именно на той ноде где запущен воркер
         return pipelineRunnerService.stoppingFromClient(taskId)
-    }
-
-    @Deprecated
-    @RequestMapping("/user-input/list/{pipelineId}")
-    List<UserInput> listUserInput(@PathVariable String pipelineId) {
-        // return pipelineInputService.findUserInputs(pipelineId)
     }
 
     @Deprecated

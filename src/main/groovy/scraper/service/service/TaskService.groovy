@@ -16,9 +16,7 @@ import scraper.service.dto.model.task.TaskDto
 import scraper.service.dto.model.task.TaskEditDto
 import scraper.service.model.Pipeline
 import scraper.service.model.Task
-import scraper.service.model.TaskUserInteraction
 import scraper.service.repository.TaskRepository
-import scraper.service.repository.TaskUserInteractionRepository
 import scraper.service.service.scheduler.TaskStatusScheduler
 import scraper.service.ws.TaskWebsocketProducer
 
@@ -31,9 +29,6 @@ class TaskService {
 
     @Autowired
     TaskRepository taskRepository
-
-    @Autowired
-    TaskExecutorService taskExecutorService
 
     @Autowired
     List<TaskStatusScheduler> taskStatusSchedulers

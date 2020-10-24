@@ -74,6 +74,8 @@ spec:
               value: {{ .Values.env.RABBITMQ_EXCHANGE_NAME }}
             - name: RABBITMQ_EXCHANGE_PIPELINE_STOP
               value: {{ .Values.env.RABBITMQ_EXCHANGE_PIPELINE_STOP }}
+            - name: RABBITMQ_EXCHANGE_EXECUTE_CMD
+              value: {{ .Values.env.RABBITMQ_EXCHANGE_EXECUTE_CMD }}
 
             - name: RABBITMQ_QUEUE_PIPELINE_TASK_RUN
               value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_TASK_RUN }}
@@ -91,6 +93,8 @@ spec:
               value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_FINISHED }}
             - name: RABBITMQ_QUEUE_TASK_CHANGED
               value: {{ .Values.env.RABBITMQ_QUEUE_TASK_CHANGED }}
+            - name: RABBITMQ_QUEUE_EXECUTE_CMD
+              value: {{ .Values.env.RABBITMQ_QUEUE_EXECUTE_CMD }}
 
             - name: STATIC_RUN_DIRECTORY
               value: {{ .Values.env.STATIC_RUN_DIRECTORY }}
@@ -107,6 +111,8 @@ spec:
               value: {{ .Values.env.RABBITMQ_ROUTING_PIPELINE_FINISHED }}
             - name: RABBITMQ_ROUTING_TASK_CHANGED
               value: {{ .Values.env.RABBITMQ_ROUTING_TASK_CHANGED }}
+            - name: RABBITMQ_ROUTING_EXECUTE_CMD
+              value: {{ .Values.env.RABBITMQ_ROUTING_EXECUTE_CMD }}
 
             - name: ES_HOST_NAME
               value: {{ .Values.env.ES_HOST_NAME }}

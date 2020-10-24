@@ -173,6 +173,10 @@ class TaskService {
             return
         }
         // return taskExecutorService.run(task)
+        task.status = PipelineStatuses.ERROR
+        task.failureReason = 'DSL version 1.0 not supporting from 25.10.2020'
+        task.endOnUtc = new Date()
+        update(task)
     }
 
     Task stopFromQueue(String taskId) {

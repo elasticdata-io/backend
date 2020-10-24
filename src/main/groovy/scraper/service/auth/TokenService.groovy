@@ -4,8 +4,6 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.CompressionCodecs
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
@@ -21,8 +19,6 @@ import javax.xml.bind.DatatypeConverter
 
 @Service
 class TokenService {
-
-    private static final Logger logger = LoggerFactory.getLogger(TokenService.class)
 
     public static final String KEY = "sad234234asd12312k_!sdasd"
 
@@ -74,7 +70,7 @@ class TokenService {
                 .signWith(SignatureAlgorithm.HS512, KEY)
                 .setExpiration(calendar.getTime())
                 .compact()
-        logger.info("make new token {}", compactJws)
+        // logger.info("make new token {}", compactJws)
         return compactJws
     }
 
@@ -93,7 +89,7 @@ class TokenService {
                     .setSigningKey(DatatypeConverter.parseBase64Binary(KEY))
                     .parseClaimsJws(jwtToken).getBody()
         } catch (Exception e) {
-            logger.error('token resolveQueryProvider error', e)
+            // logger.error('token resolveQueryProvider error', e)
             return null
         }
         return claims

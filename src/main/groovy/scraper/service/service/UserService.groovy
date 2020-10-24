@@ -14,8 +14,6 @@ import scraper.service.repository.UserRepository
 @Service
 class UserService {
 
-    private static Logger logger = LoggerFactory.getLogger(UserService.class);
-
     @Autowired
     TokenService tokenService
 

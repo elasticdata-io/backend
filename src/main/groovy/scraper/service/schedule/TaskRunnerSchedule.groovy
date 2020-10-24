@@ -1,7 +1,5 @@
 package scraper.service.schedule
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -13,8 +11,6 @@ import scraper.service.service.scheduler.WaitDepsTaskStatusScheduler
 
 @Component
 class TaskRunnerSchedule {
-
-    private static final Logger logger = LoggerFactory.getLogger(TaskRunnerSchedule.class)
 
     @Autowired
     NeedRunTaskStatusScheduler needRunTaskStatusScheduler
@@ -32,7 +28,7 @@ class TaskRunnerSchedule {
     void checkRunTask() {
         List<Task> tasks = taskService.findNeedRunTasks()
         if (tasks.size()) {
-            logger.info("find ${tasks.size()} need run tasks")
+            // logger.info("find ${tasks.size()} need run tasks")
         }
         tasks.each {task->
             needRunTaskStatusScheduler.checkChangeTaskStatus(task)
@@ -43,7 +39,7 @@ class TaskRunnerSchedule {
     void checkStopTask() {
         List<Task> tasks = taskService.findNeedStopTasks()
         if (tasks.size()) {
-            logger.info("find ${tasks.size()} need stop tasks")
+            // logger.info("find ${tasks.size()} need stop tasks")
         }
         tasks.each {task->
             stoppingTaskStatusScheduler.checkChangeTaskStatus(task)
@@ -54,7 +50,7 @@ class TaskRunnerSchedule {
     void checkWaitDepsTask() {
         List<Task> tasks = taskService.findWaitDepsTasks()
         if (tasks.size()) {
-            logger.info("find ${tasks.size()} wait deps tasks")
+            // logger.info("find ${tasks.size()} wait deps tasks")
         }
         tasks.each {task->
             waitDepsTaskStatusScheduler.checkChangeTaskStatus(task)

@@ -1,7 +1,5 @@
 package scraper.service.schedule
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.amqp.core.AmqpTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -12,8 +10,6 @@ import groovy.time.TimeCategory
 
 @Component
 class PipelineSchedule {
-
-    private static final Logger logger = LoggerFactory.getLogger(PipelineSchedule.class)
 
     @Autowired
     AmqpTemplate rabbitTemplate
@@ -33,7 +29,6 @@ class PipelineSchedule {
             use( TimeCategory ) {
                 def needStartTime = lastCompletedOn + pipeline.runIntervalMin.minutes
                 if (now >= needStartTime) {
-                    logger.info("run pipeline from schedule: ${pipeline.id}, time: ${now}")
                     rabbitTemplate.convertAndSend("pipeline-run", pipeline.id)
                 }
             }

@@ -1,7 +1,5 @@
 package scraper.service.controller
 
-import org.apache.log4j.LogManager
-import org.apache.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.context.SecurityContextHolder
@@ -26,8 +24,6 @@ import javax.servlet.http.HttpSession
 @RestController
 @RequestMapping("/login")
 class LoginController {
-
-    private static Logger logger = LogManager.getLogger(LoginController.class)
 
     @Value('${security.googleSignInCallbackUrl}')
     private String googleSignInCallbackUrl

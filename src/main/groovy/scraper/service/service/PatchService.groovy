@@ -5,14 +5,10 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 
 import groovy.json.JsonBuilder
-import org.apache.log4j.LogManager
-import org.apache.log4j.Logger
 import org.springframework.stereotype.Service
 
 @Service
 class PatchService {
-
-    private static Logger logger = LogManager.getLogger(PatchService.class)
 
     public  <T> T patch(JsonPatch patch, T targetBean, Class<T> beanClass) {
         ObjectMapper mapper = new ObjectMapper()

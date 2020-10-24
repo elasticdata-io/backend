@@ -1,7 +1,7 @@
 package scraper.service.service
 
-import org.apache.log4j.LogManager
-import org.apache.log4j.Logger
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Service
@@ -14,7 +14,7 @@ import scraper.service.repository.UserRepository
 @Service
 class UserService {
 
-    private static Logger logger = LogManager.getLogger(UserService.class)
+    private static Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     TokenService tokenService

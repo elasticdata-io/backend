@@ -1,7 +1,5 @@
 package scraper.service.controller
 
-import org.apache.log4j.LogManager
-import org.apache.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
@@ -16,8 +14,6 @@ import scraper.service.service.UserService
 @RestController
 @RequestMapping("/users")
 class UsersController {
-
-    private static Logger logger = LogManager.getLogger(UsersController.class)
 
     @Autowired
     UserService userService

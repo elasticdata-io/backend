@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
+import scraper.service.amqp.dto.ExecuteCommandDto
 import scraper.service.dto.model.task.PendingTaskDto
 import scraper.service.dto.model.task.TaskDto
 import scraper.service.dto.model.task.TaskEditDto
@@ -88,11 +89,22 @@ class TaskController {
     }
 
     /**
+     * Execute command to worker
+     * @param dto
+     */
+    @PostMapping("/execute-command/v2")
+    ExecuteCommandDto executeCommand(@RequestBody ExecuteCommandDto dto) {
+        taskService.executeCommand(dto)
+        return dto
+    }
+
+
+    /**
      * Notify start command Execute
      * @param dto
      */
     @PostMapping("/notify/start-command-execute")
-    void startCommandExecute(@RequestBody TaskCommandExecuteDto dto) {
+    void notifyStartCommandExecute(@RequestBody TaskCommandExecuteDto dto) {
         taskWebsocketProducer.startCommandExecute(dto)
     }
 

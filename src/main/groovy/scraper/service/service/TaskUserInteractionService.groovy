@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import scraper.service.dto.mapper.UserInteractionMapper
-import scraper.service.dto.model.task.EnableUserInteractionModeDto
+import scraper.service.dto.model.task.UserInteractionStateDto
 import scraper.service.dto.model.task.UserInteractionDto
 import scraper.service.model.TaskUserInteraction
 import scraper.service.repository.TaskUserInteractionRepository
@@ -21,11 +21,10 @@ class TaskUserInteractionService {
     @Autowired
     TaskWebsocketProducer taskWebsocketProducer
 
-    TaskUserInteraction createOrUpdate(EnableUserInteractionModeDto dto) {
-        def taskUserInteractionInDb = taskUserInteractionRepository
-                .findByTaskIdAndPageContext(dto.taskId, dto.pageContext)
-        def taskUserInteraction = taskUserInteractionInDb.present
-                ? taskUserInteractionInDb.get()
+    TaskUserInteraction createOrUpdate(UserInteractionStateDto dto) {
+        def taskUserInteractionInDb = findByDto(dto)
+        def taskUserInteraction = taskUserInteractionInDb
+                ? taskUserInteractionInDb
                 : new TaskUserInteraction(
                     createdOnUtc: new Date(),
                     pipelineId: dto.pipelineId,
@@ -41,13 +40,22 @@ class TaskUserInteractionService {
         lastPageState.put('pageHeightPx', dto.pageHeightPx)
         taskUserInteraction.lastPageState = lastPageState
         taskUserInteraction.modifiedOnUtc = new Date()
-        Calendar c = Calendar.getInstance()
-        c.setTime(new Date())
-        c.add(Calendar.SECOND, dto.timeoutSeconds as int)
-        taskUserInteraction.expiredOnUtc = c.time
+        if (dto.timeoutSeconds) {
+            Calendar c = Calendar.getInstance()
+            c.setTime(new Date())
+            c.add(Calendar.SECOND, dto.timeoutSeconds as int)
+            taskUserInteraction.expiredOnUtc = c.time
+        }
         taskUserInteractionRepository.save(taskUserInteraction)
         notifyChanged(taskUserInteraction)
         return taskUserInteraction
+    }
+
+    TaskUserInteraction findById(String id) {
+        def option = taskUserInteractionRepository.findById(id)
+        if(option.present) {
+            return option.get()
+        }
     }
 
     List<UserInteractionDto> list(String taskId) {
@@ -58,6 +66,16 @@ class TaskUserInteractionService {
     private void notifyChanged(TaskUserInteraction taskUserInteraction) {
         def interactionDto = UserInteractionMapper.toUserInteractionDto(taskUserInteraction)
         taskWebsocketProducer.changeUserInteraction(interactionDto)
+    }
+
+    private TaskUserInteraction findByDto(UserInteractionStateDto dto) {
+        if (dto.interactionId) {
+            return findById(dto.interactionId)
+        }
+        def option = taskUserInteractionRepository.findByTaskIdAndPageContext(dto.taskId, dto.pageContext)
+        if(option.present) {
+            return option.get()
+        }
     }
 
 }

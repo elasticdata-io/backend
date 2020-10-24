@@ -29,4 +29,7 @@ class QueueConstants {
 
     @Value('${spring.rabbitmq.queue.pipelineFinished}')
     String PIPELINE_FINISHED
+
+    @Value('${spring.rabbitmq.queue.executeCommand}')
+    String EXECUTE_CMD
 }

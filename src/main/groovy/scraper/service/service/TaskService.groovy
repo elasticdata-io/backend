@@ -8,6 +8,7 @@ import org.springframework.dao.OptimisticLockingFailureException
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import scraper.service.amqp.dto.ExecuteCommandDto
 import scraper.service.amqp.producer.TaskProducer
 import scraper.service.constants.PipelineStatuses
 import scraper.service.dto.mapper.TaskMapper
@@ -15,7 +16,9 @@ import scraper.service.dto.model.task.TaskDto
 import scraper.service.dto.model.task.TaskEditDto
 import scraper.service.model.Pipeline
 import scraper.service.model.Task
+import scraper.service.model.TaskUserInteraction
 import scraper.service.repository.TaskRepository
+import scraper.service.repository.TaskUserInteractionRepository
 import scraper.service.service.scheduler.TaskStatusScheduler
 import scraper.service.ws.TaskWebsocketProducer
 
@@ -214,4 +217,7 @@ class TaskService {
         taskWebsocketProducer.change(taskDto)
     }
 
+    void executeCommand(ExecuteCommandDto executeCommandDto) {
+        taskProducer.executeCommand(executeCommandDto)
+    }
 }

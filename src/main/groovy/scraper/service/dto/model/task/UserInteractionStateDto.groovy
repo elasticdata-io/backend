@@ -1,6 +1,12 @@
 package scraper.service.dto.model.task
 
-class EnableUserInteractionModeDto {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonInclude
+
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+class UserInteractionStateDto {
+    String interactionId
     String jpegScreenshotLink
     Number pageWidthPx
     Number pageHeightPx

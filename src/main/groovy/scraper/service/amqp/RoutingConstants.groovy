@@ -23,4 +23,7 @@ class RoutingConstants {
 
     @Value('${spring.rabbitmq.routing.pipelineFinish}')
     String PIPELINE_FINISH
+
+    @Value('${spring.rabbitmq.routing.executeCommand}')
+    String EXECUTE_CMD
 }

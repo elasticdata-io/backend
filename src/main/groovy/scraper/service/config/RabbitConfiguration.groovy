@@ -43,6 +43,9 @@ class RabbitConfiguration {
     @Value('${spring.rabbitmq.exchange.pipeline.stop}')
     String pipelineStopExchangeName
 
+    @Value('${spring.rabbitmq.exchange.executeTaskCommand}')
+    String executeTaskCommandExchangeName
+
     @Autowired
     QueueConstants queueConstants
 
@@ -86,6 +89,11 @@ class RabbitConfiguration {
     }
 
     @Bean
+    FanoutExchange executeTaskCommandExchange() {
+        return new FanoutExchange(executeTaskCommandExchangeName, false, true)
+    }
+
+    @Bean
     Queue pipelineTaskStopV1Queue() {
         return new Queue(queueConstants.PIPELINE_TASK_STOP_V1)
     }
@@ -93,6 +101,11 @@ class RabbitConfiguration {
     @Bean
     Queue pipelineTaskStopV2Queue() {
         return new Queue(queueConstants.PIPELINE_TASK_STOP_V2)
+    }
+
+    @Bean
+    Queue executeCommandQueue() {
+        return new Queue(queueConstants.EXECUTE_CMD)
     }
 
     @Bean
@@ -108,6 +121,13 @@ class RabbitConfiguration {
         return BindingBuilder
                 .bind(pipelineTaskStopV2Queue)
                 .to(pipelineStopExchange)
+    }
+
+    @Bean
+    Binding bindExecuteCommand(final Queue executeCommandQueue, final FanoutExchange executeTaskCommandExchange) {
+        return BindingBuilder
+                .bind(executeCommandQueue)
+                .to(executeTaskCommandExchange)
     }
 
     @Bean

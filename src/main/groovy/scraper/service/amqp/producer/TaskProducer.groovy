@@ -1,27 +1,30 @@
 package scraper.service.amqp.producer
 
 import groovy.json.JsonBuilder
-import org.apache.log4j.LogManager
-import org.apache.log4j.Logger
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import scraper.service.amqp.RoutingConstants
+import scraper.service.amqp.dto.ExecuteCommandDto
 import scraper.service.model.Task
 import scraper.service.proxy.ProxyAssigner
 import scraper.service.service.PipelineService
 
 @Service
 class TaskProducer {
-
-    private static Logger logger = LogManager.getLogger(TaskProducer.class)
+    private Logger logger = LogManager.getRootLogger()
 
     @Value('${spring.rabbitmq.topicExchangeName}')
     private String topicExchangeName
 
     @Value('${spring.rabbitmq.exchange.pipeline.stop}')
     String pipelineStopExchangeName
+
+    @Value('${spring.rabbitmq.exchange.executeTaskCommand}')
+    String executeTaskCommandExchangeName
 
     @Autowired
     RoutingConstants routingConstants
@@ -85,6 +88,13 @@ class TaskProducer {
     void taskChanged(String taskId) {
         logger.info("TaskProducer.taskChanged taskId = ${taskId}")
         rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.TASK_CHANGED, taskId)
+    }
+
+    void executeCommand(ExecuteCommandDto dto) {
+        logger.info("TaskProducer.executeCmd")
+        def message = new JsonBuilder(dto).toString()
+        logger.info(message)
+        rabbitTemplate.convertAndSend(executeTaskCommandExchangeName, routingConstants.EXECUTE_CMD, message)
     }
 }
 

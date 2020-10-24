@@ -1,6 +1,8 @@
 package scraper.service.service
 
 import com.github.fge.jsonpatch.JsonPatch
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.OptimisticLockingFailureException
 import org.springframework.data.domain.PageRequest
@@ -20,6 +22,8 @@ import scraper.service.ws.TaskWebsocketProducer
 
 @Service
 class TaskService {
+
+    private static final Logger logger = LoggerFactory.getLogger(TaskService.class)
 
     @Autowired
     TaskProducer taskProducer
@@ -161,11 +165,11 @@ class TaskService {
     Task runFromQueue(String taskId) {
         Task task = findById(taskId)
         if (!task) {
-            // logger.error("task with id ${taskId} not found")
+            logger.error("task with id ${taskId} not found")
             return
         }
         if (task.status != PipelineStatuses.QUEUE) {
-            // logger.error("task ${task.id} not runnig, current status = ${task.status}")
+            logger.error("task ${task.id} not runnig, current status = ${task.status}")
             return
         }
         // return taskExecutorService.run(task)
@@ -174,26 +178,26 @@ class TaskService {
     Task stopFromQueue(String taskId) {
         Task task = findById(taskId)
         if (!task) {
-            //logger.error("task with id ${taskId} not found")
+            logger.error("task with id ${taskId} not found")
             return
         }
         // taskExecutorService.stop(task)
     }
 
     void update(Task task) {
-       // logger.info("TaskService.update taskId ${task.id}")
+        logger.info("TaskService.update taskId ${task.id}")
         try {
             taskRepository.save(task)
             taskProducer.taskChanged(task.id)
             notifyChangeTaskToClient(task)
         } catch(OptimisticLockingFailureException e) {
-            // logger.error("OptimisticLockingFailureException taskId = ${task.id}")
+            logger.error("OptimisticLockingFailureException taskId = ${task.id}")
         }
     }
 
     Task updateStatus(String taskId, String status) {
         // todo: update status with only status field
-        // logger.info("TaskService.updateStatus taskId ${taskId}, status = ${status}")
+        logger.info("TaskService.updateStatus taskId ${taskId}, status = ${status}")
         Task task = findById(taskId)
         task.status = status
         taskRepository.save(task)

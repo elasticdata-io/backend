@@ -1,7 +1,5 @@
 package scraper.service.service
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Service
@@ -90,7 +88,7 @@ class UserService {
         def statuses = [PipelineStatuses.RUNNING, PipelineStatuses.QUEUE]
         List<Task> tasks = taskService.findByStatusInAndUserId(statuses, userId)
         if (tasks.size() >= maxAvailableWorkers) {
-            logger.debug("not has free worker for user: ${userId}")
+            // logger.debug("not has free worker for user: ${userId}")
             return false
         }
         return true

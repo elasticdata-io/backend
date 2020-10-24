@@ -21,9 +21,9 @@ import scraper.service.amqp.RoutingConstants
 @Configuration
 class RabbitConfiguration {
 
-    final int CONCURRENT_CONSUMERS = 4
+    final int CONCURRENT_CONSUMERS = 1
 
-    final int MAX_CONCURRENT_CONSUMERS = 5
+    final int MAX_CONCURRENT_CONSUMERS = 2
 
     @Value('${spring.rabbitmq.host}')
     String host

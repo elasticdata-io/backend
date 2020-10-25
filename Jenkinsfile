@@ -67,6 +67,15 @@ spec:
                             stage('helm upgrade backend') {
                                 def now = new Date()
                                 def dateFormatted = now.format("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                                sh "helm template --dry-run --debug backend \
+                                    -f install/helm/backend/values.yaml \
+                                    -f install/helm/backend/${VALUES_FILE} \
+                                    --version 2.0.${BUILD_NUMBER}\
+                                    --namespace scraper \
+                                    --set image.tag=${DOCKER_TAG} \
+                                    --set APP_VERSION=2.0.${BUILD_NUMBER} \
+                                    --set APP_LAST_UPDATED=${dateFormatted} \
+                                    install/helm/backend"
                                 sh "helm upgrade --install backend \
                                     -f install/helm/backend/values.yaml \
                                     -f install/helm/backend/${VALUES_FILE} \

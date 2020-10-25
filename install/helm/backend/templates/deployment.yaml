@@ -27,10 +27,10 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-          {{- with .Values.env }}
           env:
-{{ toYaml . | indent 12  }}
-          {{ end }}
+{{- if .Values.env }}
+{{- toYaml .Values.env | indent 12 }}
+{{- end }}
             - name: MONGODB_HOST
               value: mongodb.mongodb
             - name: MONGODB_PORT

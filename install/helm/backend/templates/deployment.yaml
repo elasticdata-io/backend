@@ -51,6 +51,11 @@ spec:
             - name: RABBITMQ_PASSWORD
               value: password
 
+            - name: APP_VERSION
+              value: {{ .Values.APP_VERSION }}
+            - name: APP_VERSION
+              value: {{ .Values.APP_LAST_UPDATED }}
+
           livenessProbe:
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds:  {{ .Values.livenessProbe.periodSeconds }}

@@ -56,6 +56,9 @@ readinessProbe:
   initialDelaySeconds: 60
   periodSeconds: 15
 
+APP_VERSION: local
+APP_LAST_UPDATED: "2020-02-05T21:47:00"
+
 env:
   - name: SPRING_LOG_LEVEL
     value: INFO
@@ -93,7 +96,3 @@ env:
     value: elasticdataio
   - name: MINIO_SECRET_KEY
     value: wJalrXUtnFEMI/9874c97c907209cpuvpw97bpb/asdasdasdasdasd
-  - name: APP_VERSION
-    value: local
-  - name: APP_LAST_UPDATED
-    value: "2020-02-05T21:47:00"

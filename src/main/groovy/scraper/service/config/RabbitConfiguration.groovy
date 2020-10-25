@@ -124,10 +124,10 @@ class RabbitConfiguration {
     }
 
     @Bean
-    Binding bindExecuteCommand(final Queue executeCommandQueue, final FanoutExchange executeTaskCommandExchange) {
+    Binding bindExecuteCommand(final Queue executeCommandQueue, final FanoutExchange pipelineStopExchange) {
         return BindingBuilder
                 .bind(executeCommandQueue)
-                .to(executeTaskCommandExchange)
+                .to(pipelineStopExchange)
     }
 
     @Bean

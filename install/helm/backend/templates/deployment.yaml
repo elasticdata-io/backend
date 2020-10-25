@@ -19,10 +19,6 @@ spec:
         app.kubernetes.io/name: {{ include "backend.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      volumes:
-        - name: logs-storage
-          persistentVolumeClaim:
-            claimName: pvc-logs
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -31,9 +27,6 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-          volumeMounts:
-            - name: logs-storage
-              mountPath: {{ .Values.env.STATIC_RUN_DIRECTORY }}
           {{- with .Values.env }}
           env:
 {{ toYaml . | indent 12  }}

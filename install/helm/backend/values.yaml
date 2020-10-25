@@ -80,20 +80,20 @@ env:
   - name: ES_HOST_NAME
     value: elasticsearch-master.elasticsearch
   - name: ES_HTTP_PORT
-    value: "9200"
+    value: 9200
   - name: ES_ENABLED
-    value: "false"
+    value: false
   - name: PROXY_SERVICE_URL
-    value: "http://proxy"
+    value: http://proxy
   - name: MINIO_URL
-    value: "https://storage.elasticdata.io"
+    value: https://storage.elasticdata.io
   - name: MINIO_PUBLIC_URL
-    value: "https://storage.elasticdata.io"
+    value: https://storage.elasticdata.io
   - name: MINIO_ACCESS_KEY
     value: elasticdataio
   - name: MINIO_SECRET_KEY
     value: wJalrXUtnFEMI/9874c97c907209cpuvpw97bpb/asdasdasdasdasd
   - name: APP_VERSION
-    value: "local"
+    value: local
   - name: APP_LAST_UPDATED
-    value: "2020-02-05 21:47:00"
+    value: 2020-02-05 21:47:00

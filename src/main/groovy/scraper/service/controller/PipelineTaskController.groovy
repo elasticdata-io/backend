@@ -16,7 +16,6 @@ import scraper.service.model.Task
 import scraper.service.repository.PipelineRepository
 import scraper.service.auth.TokenService
 import scraper.service.service.TaskService
-import scraper.service.store.FileDataRepository
 
 @RestController
 @RequestMapping("/pipeline-task")
@@ -24,9 +23,6 @@ class PipelineTaskController {
 
     @Autowired
     PipelineRepository pipelineRepository
-
-    @Autowired
-    FileDataRepository fileDataRepository
 
     @Autowired
     TaskService taskService
@@ -44,7 +40,7 @@ class PipelineTaskController {
     List<TaskDto> list(@PathVariable String pipelineId, @PathVariable Number offset, @PathVariable Number count,
                        @RequestHeader("token") String token) {
         String userId = tokenService.getUserId(token)
-        Pageable top = new PageRequest(offset as int, count as int)
+        Pageable top = PageRequest.of(offset as int, count as int)
         List<Task> tasks = taskService.findByPipelineAndUserOrderByStartOnDesc(pipelineId, userId, top)
         ArrayList<TaskDto> dtoList = new ArrayList<>()
         tasks.each {task->
@@ -70,7 +66,7 @@ class PipelineTaskController {
     @RequestMapping("/data/{id}")
     List<HashMap> getData(@PathVariable String id) {
         Task task = taskService.findById(id)
-        return fileDataRepository.getDataFileToList(task)
+        // return fileDataRepository.getDataFileToList(task)
     }
 
     private boolean checkPermission(String taskId, String token) {

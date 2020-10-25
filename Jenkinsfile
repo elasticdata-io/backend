@@ -50,9 +50,7 @@ spec:
                             stage('publish application') {
                                 sh 'docker push localhost:32000/scraper-backend:${DOCKER_TAG}'
                             }
-                            stage('rm application') {
-
-                            }
+                            stage('rm application') {}
                         }
                         container('k8s-helm') {
                             stage('SET ENV') {
@@ -78,14 +76,6 @@ spec:
                                     --set env.APP_VERSION=2.0.${BUILD_NUMBER} \
                                     --set env.APP_LAST_UPDATED=${dateFormatted} \
                                     install/helm/backend"
-                            }
-                            stage('helm upgrade backend-logs') {
-                                sh "helm upgrade --install backend-logs \
-                                    -f install/helm/backend-logs/values.yaml \
-                                    -f install/helm/backend-logs/${VALUES_FILE} \
-                                    --version 1.1.${BUILD_NUMBER}\
-                                    --namespace scraper \
-                                    install/helm/backend-logs"
                             }
                         }
                     }

@@ -1,7 +1,5 @@
 package scraper.service.controller
 
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import scraper.service.dto.model.task.UserInteractionStateDto
@@ -12,8 +10,6 @@ import scraper.service.ws.TaskWebsocketProducer
 @RestController
 @RequestMapping("/task-user-interaction")
 class TaskUserInteractionController {
-
-    private Logger logger = LogManager.getRootLogger()
 
     @Autowired
     TaskWebsocketProducer taskWebsocketProducer

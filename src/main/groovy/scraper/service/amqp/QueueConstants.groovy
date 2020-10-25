@@ -6,30 +6,6 @@ import org.springframework.stereotype.Component
 @Component
 class QueueConstants {
 
-    @Value('${spring.rabbitmq.queue.taskChanged}')
-    String TASK_CHANGED
-
-    @Value('${spring.rabbitmq.queue.pipelineTaskRun}')
-    String PIPELINE_TASK_RUN
-
-    @Value('${spring.rabbitmq.queue.pipelineTaskRunNode}')
-    String PIPELINE_TASK_RUN_NODE
-
-    @Value('${spring.rabbitmq.queue.pipelineTaskStopV1}')
-    String PIPELINE_TASK_STOP_V1
-
-    @Value('${spring.rabbitmq.queue.pipelineTaskStopV2}')
-    String PIPELINE_TASK_STOP_V2
-
-    @Value('${spring.rabbitmq.queue.pipelineTaskFinished}')
-    String PIPELINE_TASK_FINISHED
-
-    @Value('${spring.rabbitmq.queue.pipelineRunHooks}')
-    String PIPELINE_RUN_HOOKS
-
-    @Value('${spring.rabbitmq.queue.pipelineFinished}')
-    String PIPELINE_FINISHED
-
-    @Value('${spring.rabbitmq.queue.executeCommand}')
-    String EXECUTE_CMD
+    @Value('${spring.rabbitmq.queue.runHooks}')
+    String RUN_HOOKS
 }

@@ -1,6 +1,5 @@
 package scraper.service.controller
 
-import groovy.json.JsonSlurper
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -28,7 +27,6 @@ import scraper.service.service.PipelineService
 import scraper.service.service.TaskService
 import scraper.service.service.UserService
 import scraper.service.service.converter.CsvDataConverter
-import scraper.service.store.FileDataRepository
 
 import javax.servlet.http.HttpServletResponse
 
@@ -62,9 +60,6 @@ class PipelineDataController {
 
     @Autowired
     CsvDataConverter csvConverter
-
-    @Autowired
-    FileDataRepository fileDataRepository
 
     @GetMapping('/{id}')
     PipelineDto get(@PathVariable String id) {
@@ -185,7 +180,7 @@ class PipelineDataController {
         if (!task) {
             return new ArrayList<HashMap>()
         }
-        return fileDataRepository.getDataFileToList(task)
+        // return fileDataRepository.getDataFileToList(task)
     }
 
     /**
@@ -195,17 +190,17 @@ class PipelineDataController {
      */
     @GetMapping("/data/csv/{pipelineId}")
     List<HashMap> getCsvData(@PathVariable String pipelineId, HttpServletResponse response) {
-        PageRequest page = new PageRequest(0, 1)
+        PageRequest page = PageRequest.of(0, 1)
         List<Task> tasks = taskService
                 .findByPipelineAndErrorOrderByStartOnDesc(pipelineId, null, page)
         if (tasks.size() == 0) {
             return
         }
-        List<HashMap> list = fileDataRepository.getDataFileToList(tasks.first()) as List<HashMap>
-        String responseData = csvConverter.toCsv(list)
-        response.setContentType("text/csv; charset=utf-8")
-        response.setHeader("Content-disposition", "attachment;filename=${pipelineId}.csv")
-        response.getWriter().print(responseData)
+//        List<HashMap> list = fileDataRepository.getDataFileToList(tasks.first()) as List<HashMap>
+//        String responseData = csvConverter.toCsv(list)
+//        response.setContentType("text/csv; charset=utf-8")
+//        response.setHeader("Content-disposition", "attachment;filename=${pipelineId}.csv")
+//        response.getWriter().print(responseData)
     }
 
     @GetMapping("uuid")

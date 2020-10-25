@@ -12,7 +12,6 @@ import scraper.service.dto.model.task.TaskEditDto
 import scraper.service.dto.model.task.command.TaskCommandExecuteDto
 import scraper.service.model.Task
 import scraper.service.service.*
-import scraper.service.store.FileDataRepository
 import scraper.service.ws.TaskWebsocketProducer
 
 @RestController
@@ -23,9 +22,6 @@ class TaskController {
 
     @Autowired
     PipelineRunnerService pipelineRunnerService
-
-    @Autowired
-    FileDataRepository fileDataRepository
 
     @Autowired
     TaskService taskService
@@ -79,7 +75,7 @@ class TaskController {
     @RequestMapping("/data/{taskId}")
     List<HashMap> getData(@PathVariable String taskId) {
         Task task = taskService.findById(taskId)
-        return fileDataRepository.getDataFileToList(task)
+        // return fileDataRepository.getDataFileToList(task)
     }
 
     @PatchMapping("{id}")

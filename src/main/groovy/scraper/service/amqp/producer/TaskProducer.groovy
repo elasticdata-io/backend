@@ -17,14 +17,11 @@ import scraper.service.service.PipelineService
 class TaskProducer {
     private Logger logger = LogManager.getRootLogger()
 
-    @Value('${spring.rabbitmq.topicExchangeName}')
-    private String topicExchangeName
+    @Value('${spring.rabbitmq.exchange.runTask}')
+    private String runTaskExchangeName
 
-    @Value('${spring.rabbitmq.exchange.pipeline.stop}')
-    String pipelineStopExchangeName
-
-    @Value('${spring.rabbitmq.exchange.executeTaskCommand}')
-    String executeTaskCommandExchangeName
+    @Value('${spring.rabbitmq.exchange.inboxFanout}')
+    String inboxFanoutExchangeName
 
     @Autowired
     RoutingConstants routingConstants
@@ -41,14 +38,6 @@ class TaskProducer {
     /**
      * @param taskId
      */
-    void taskRun(String taskId) {
-        logger.info("TaskProducer.taskRun taskId = ${taskId}")
-        rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.PIPELINE_TASK_RUN, taskId)
-    }
-
-    /**
-     * @param taskId
-     */
     void taskRunNode(Task task) {
         logger.info("TaskProducer.taskRunNode taskId = ${task.id}")
         def pipeline = pipelineService.findById(task.pipelineId)
@@ -61,40 +50,36 @@ class TaskProducer {
             pipelineSettings: pipeline.pipelineConfiguration?.settings
         )
         def message = new JsonBuilder(map).toString()
-        rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.PIPELINE_TASK_RUN_NODE, message)
+        String workingType = 'A'
+        String routingKey = "${routingConstants.TASK_RUN_ROUTING_KEY}.${workingType}"
+        rabbitTemplate.convertAndSend(runTaskExchangeName, routingKey, message)
     }
 
     /**
      * @param taskId
      */
     void taskStopV2(String taskId) {
-        rabbitTemplate.convertAndSend(pipelineStopExchangeName, "", taskId)
-    }
-
-    void taskStopV1(String taskId) {
-        rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.PIPELINE_TASK_STOP, taskId)
-    }
-
-    /**
-     * @param taskId
-     */
-    void taskFinish(String taskId) {
-        rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.PIPELINE_TASK_FINISH, taskId)
+        HashMap map = new HashMap(
+            data: taskId,
+            _type: 'stop_task'
+        )
+        String message = new JsonBuilder(map).toString()
+        rabbitTemplate.convertAndSend(inboxFanoutExchangeName, '', message)
     }
 
     /**
      * @param taskId
      */
-    void taskChanged(String taskId) {
-        logger.info("TaskProducer.taskChanged taskId = ${taskId}")
-        rabbitTemplate.convertAndSend(topicExchangeName, routingConstants.TASK_CHANGED, taskId)
-    }
+    void taskChanged(String taskId) {}
 
     void executeCommand(ExecuteCommandDto dto) {
-        logger.info("TaskProducer.executeCmd")
-        def message = new JsonBuilder(dto).toString()
-        logger.info(message)
-        rabbitTemplate.convertAndSend(executeTaskCommandExchangeName, routingConstants.EXECUTE_CMD, message)
+        String dtoSerialized = new JsonBuilder(dto).toString()
+        HashMap map = new HashMap(
+                data: dtoSerialized,
+                _type: 'execute_cmd'
+        )
+        String message = new JsonBuilder(map).toString()
+        rabbitTemplate.convertAndSend(inboxFanoutExchangeName, '', message)
     }
 }
 

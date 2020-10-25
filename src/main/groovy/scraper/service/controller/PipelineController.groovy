@@ -67,15 +67,6 @@ class PipelineController {
         return pipelineRunnerService.stoppingFromClient(taskId)
     }
 
-    @Deprecated
-    @RequestMapping(value = "/user-input/set-text/{pipelineId}/{key}", method = RequestMethod.POST)
-    void setTextToUserInput(@PathVariable String pipelineId, @PathVariable String key, @RequestParam String text) {
-//        UserInput userInput = pipelineInputService.findUserInput(pipelineId, key)
-//        if (userInput) {
-//            userInput.text = text
-//        }
-    }
-
     @PostMapping("/task/synchronize/{taskId}")
     void syncWithLastTask(@PathVariable String taskId) {
         Task task = taskService.findById(taskId)

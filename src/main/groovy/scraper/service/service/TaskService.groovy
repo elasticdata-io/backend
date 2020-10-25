@@ -92,7 +92,7 @@ class TaskService {
     }
 
     Task findLastTask(String pipelineId, List<String> statuses) {
-        PageRequest page = new PageRequest(0, 1)
+        PageRequest page = PageRequest.of(0, 1)
         List<Task> tasks = taskRepository.findByPipelineIdAndStatusInOrderByStartOnUtcDesc(pipelineId, statuses, page)
         if (!tasks || tasks.empty) {
             return null

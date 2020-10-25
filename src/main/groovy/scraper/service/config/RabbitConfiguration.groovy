@@ -1,6 +1,5 @@
 package scraper.service.config
 
-
 import org.springframework.amqp.core.Binding
 import org.springframework.amqp.core.BindingBuilder
 import org.springframework.amqp.core.FanoutExchange
@@ -37,14 +36,11 @@ class RabbitConfiguration {
     @Value('${spring.rabbitmq.port}')
     String port
 
-    @Value('${spring.rabbitmq.topicExchangeName}')
-    String topicExchangeName
+    @Value('${spring.rabbitmq.exchange.runTask}')
+    String runTaskExchangeName
 
-    @Value('${spring.rabbitmq.exchange.pipeline.stop}')
-    String pipelineStopExchangeName
-
-    @Value('${spring.rabbitmq.exchange.executeTaskCommand}')
-    String executeTaskCommandExchangeName
+    @Value('${spring.rabbitmq.exchange.inboxFanout}')
+    String inboxFanoutExchangeName
 
     @Autowired
     QueueConstants queueConstants
@@ -79,133 +75,13 @@ class RabbitConfiguration {
     }
 
     @Bean
-    TopicExchange exchange() {
-        return new TopicExchange(topicExchangeName, false, true)
+    FanoutExchange inboxFanoutExchange() {
+        return new FanoutExchange(inboxFanoutExchangeName, true, false)
     }
 
     @Bean
-    FanoutExchange pipelineStopExchange() {
-        return new FanoutExchange(pipelineStopExchangeName, false, true)
-    }
-
-    @Bean
-    FanoutExchange executeTaskCommandExchange() {
-        return new FanoutExchange(executeTaskCommandExchangeName, false, true)
-    }
-
-    @Bean
-    Queue pipelineTaskStopV1Queue() {
-        return new Queue(queueConstants.PIPELINE_TASK_STOP_V1)
-    }
-
-    @Bean
-    Queue pipelineTaskStopV2Queue() {
-        return new Queue(queueConstants.PIPELINE_TASK_STOP_V2)
-    }
-
-    @Bean
-    Queue executeCommandQueue() {
-        return new Queue(queueConstants.EXECUTE_CMD)
-    }
-
-    @Bean
-    Binding bindPipelineTaskStopV1(final Queue pipelineTaskStopV1Queue, final TopicExchange exchange) {
-        return BindingBuilder
-                .bind(pipelineTaskStopV1Queue)
-                .to(exchange)
-                .with(routingConstants.PIPELINE_TASK_STOP)
-    }
-
-    @Bean
-    Binding bindPipelineTaskStopV2(final Queue pipelineTaskStopV2Queue, final FanoutExchange pipelineStopExchange) {
-        return BindingBuilder
-                .bind(pipelineTaskStopV2Queue)
-                .to(pipelineStopExchange)
-    }
-
-    @Bean
-    Binding bindExecuteCommand(final Queue executeCommandQueue, final FanoutExchange pipelineStopExchange) {
-        return BindingBuilder
-                .bind(executeCommandQueue)
-                .to(pipelineStopExchange)
-    }
-
-    @Bean
-    Queue taskChangedQueue() {
-        return new Queue(queueConstants.TASK_CHANGED)
-    }
-
-    @Bean
-    Binding bindTaskChangedRun(final Queue taskChangedQueue, final TopicExchange exchange) {
-        return BindingBuilder
-                .bind(taskChangedQueue)
-                .to(exchange)
-                .with(routingConstants.TASK_CHANGED)
-    }
-
-    @Bean
-    Queue pipelineTaskRunQueue() {
-        return new Queue(queueConstants.PIPELINE_TASK_RUN)
-    }
-
-    @Bean
-    Binding bindPipelineTaskRun(final Queue pipelineTaskRunQueue, final TopicExchange exchange) {
-        return BindingBuilder
-                .bind(pipelineTaskRunQueue)
-                .to(exchange)
-                .with(routingConstants.PIPELINE_TASK_RUN)
-    }
-
-    @Bean
-    Queue pipelineTaskRunNodeQueue() {
-        return new Queue(queueConstants.PIPELINE_TASK_RUN_NODE)
-    }
-
-    @Bean
-    Binding bindPipelineTaskRunNode(final Queue pipelineTaskRunNodeQueue, final TopicExchange exchange) {
-        return BindingBuilder
-                .bind(pipelineTaskRunNodeQueue)
-                .to(exchange)
-                .with(routingConstants.PIPELINE_TASK_RUN_NODE)
-    }
-
-    @Bean
-    Queue pipelineTaskFinishedQueue() {
-        return new Queue(queueConstants.PIPELINE_TASK_FINISHED)
-    }
-
-    @Bean
-    Binding bindPipelineTaskFinished(final Queue pipelineTaskFinishedQueue, final TopicExchange exchange) {
-        return BindingBuilder
-                .bind(pipelineTaskFinishedQueue)
-                .to(exchange)
-                .with(routingConstants.PIPELINE_TASK_FINISH)
-    }
-
-    @Bean
-    Queue pipelineRunHooksQueue() {
-        return new Queue(queueConstants.PIPELINE_RUN_HOOKS)
-    }
-
-    @Bean
-    Binding bindPipelineRunHooks(final Queue pipelineRunHooksQueue, final TopicExchange exchange) {
-        return BindingBuilder
-                .bind(pipelineRunHooksQueue)
-                .to(exchange)
-                .with(routingConstants.PIPELINE_TASK_FINISH)
-    }
-
-    @Bean
-    Queue pipelineFinishedQueue() {
-        return new Queue(queueConstants.PIPELINE_FINISHED)
-    }
-
-    @Bean
-    Binding bindPipelineFinished(final Queue pipelineFinishedQueue, final TopicExchange exchange) {
-        return BindingBuilder
-                .bind(pipelineFinishedQueue)
-                .to(exchange)
-                .with(routingConstants.PIPELINE_FINISH)
+    TopicExchange runTaskExchange() {
+        return new TopicExchange(runTaskExchangeName, true, false)
     }
 
 }

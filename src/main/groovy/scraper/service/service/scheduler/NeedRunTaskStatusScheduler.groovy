@@ -43,7 +43,6 @@ class NeedRunTaskStatusScheduler extends AbstractTaskStatusScheduler {
             taskProducer.taskRunNode(task)
         } else {
             logger.info('push to taskRun')
-            taskProducer.taskRun(task.id)
         }
         return true
     }

@@ -1,14 +1,11 @@
 package scraper.service.amqp.consumer
 
 import groovy.json.JsonBuilder
-import groovy.json.JsonSlurper
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.ContentType
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClients
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -19,7 +16,6 @@ import scraper.service.model.Pipeline
 import scraper.service.model.Task
 import scraper.service.service.PipelineService
 import scraper.service.service.TaskService
-import scraper.service.store.FileDataRepository
 
 @Component
 class RunHooksConsumer {
@@ -30,8 +26,6 @@ class RunHooksConsumer {
     final String DOWNLOAD_LINK = '#DOWNLOAD_LINK#'
     final String TOTAL_RECORDS = '#TOTAL_RECORDS#'
 
-    private Logger logger = LogManager.getRootLogger()
-
     @Autowired
     QueueConstants queueConstants
 
@@ -41,16 +35,13 @@ class RunHooksConsumer {
     @Autowired
     PipelineService pipelineService
 
-    @Autowired
-    FileDataRepository fileDataRepository
-
-    @RabbitListener(queues = '#{queueConstants.PIPELINE_RUN_HOOKS}', containerFactory="defaultConnectionFactory")
+    // @RabbitListener(queues = '#{queueConstants.RUN_HOOKS}', containerFactory="defaultConnectionFactory")
     void worker(String taskId) {
         Task task = taskService.findById(taskId)
         Pipeline pipeline = pipelineService.findById(task.pipelineId)
         String url = task.hookUrl
         if (!url) {
-            logger.info("hook url not found, pipeline: ${pipeline.id}")
+            // logger.info("hook url not found, pipeline: ${pipeline.id}")
             return
         }
         //List list = task.docs as ArrayList
@@ -62,7 +53,7 @@ class RunHooksConsumer {
         //data = data.replaceAll(TOTAL_RECORDS, list.size() as String)
         //def jsonSlurper = new JsonSlurper()
         //def dataList = jsonSlurper.parseText(data)
-        logger.info("start hooks ${url}, pipeline: ${pipeline.id}")
+        // logger.info("start hooks ${url}, pipeline: ${pipeline.id}")
         CloseableHttpClient httpClient = HttpClients.createDefault()
         try {
             PendingApiTaskDto pendingApiTaskDto = TaskMapper.toPendingApiTaskDto(task)
@@ -76,9 +67,9 @@ class RunHooksConsumer {
             postMethod.setEntity(requestEntity)
             httpClient.execute(postMethod)
             httpClient.close()
-            logger.info("hook for url is ${url} successful")
+            // logger.info("hook for url is ${url} successful")
         } catch (e) {
-            logger.error(e)
+            // logger.error(e)
             httpClient.close()
         }
     }

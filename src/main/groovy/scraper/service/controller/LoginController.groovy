@@ -40,7 +40,7 @@ class LoginController {
     @Autowired
     private TokenService tokenService
 
-    @RequestMapping
+    @RequestMapping()
     SimpleResponse login(@RequestParam String login, @RequestParam String password, HttpServletRequest request)
             throws Exception {
         User user = userRepository.findByLogin(login)

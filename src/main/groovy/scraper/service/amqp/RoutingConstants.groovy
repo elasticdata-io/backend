@@ -6,24 +6,9 @@ import org.springframework.stereotype.Component
 @Component
 class RoutingConstants {
 
-    @Value('${spring.rabbitmq.routing.taskChanged}')
-    String TASK_CHANGED
+    @Value('${spring.rabbitmq.routing.taskRun}')
+    String TASK_RUN_ROUTING_KEY
 
-    @Value('${spring.rabbitmq.routing.pipelineTaskRun}')
-    String PIPELINE_TASK_RUN
-
-    @Value('${spring.rabbitmq.routing.pipelineTaskRunNode}')
-    String PIPELINE_TASK_RUN_NODE
-
-    @Value('${spring.rabbitmq.routing.pipelineTaskStop}')
-    String PIPELINE_TASK_STOP
-
-    @Value('${spring.rabbitmq.routing.pipelineTaskFinish}')
-    String PIPELINE_TASK_FINISH
-
-    @Value('${spring.rabbitmq.routing.pipelineFinish}')
-    String PIPELINE_FINISH
-
-    @Value('${spring.rabbitmq.routing.executeCommand}')
-    String EXECUTE_CMD
+    @Value('${spring.rabbitmq.routing.runHooks}')
+    String RUN_HOOKS_ROUTING_KEY
 }

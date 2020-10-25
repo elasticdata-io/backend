@@ -13,6 +13,7 @@ class PipelineStatuses {
     public static COMPLETED = 'completed'
     public static ERROR = 'error'
     public static STOPPING = 'stopping'
+    public static STOPPING_QUEUE = 'stopping_queue'
     public static STOPPED = 'stopped'
 
     static List<String> getInProcessing() {

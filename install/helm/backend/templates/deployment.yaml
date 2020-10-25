@@ -34,10 +34,10 @@ spec:
           volumeMounts:
             - name: logs-storage
               mountPath: {{ .Values.env.STATIC_RUN_DIRECTORY }}
+          {{- with .Values.env }}
           env:
-            - name: SPRING_LOG_LEVEL
-              value: {{ .Values.env.SPRING_LOG_LEVEL }}
-
+{{ toYaml . | indent 12  }}
+          {{ end }}
             - name: MONGODB_HOST
               value: mongodb.mongodb
             - name: MONGODB_PORT
@@ -57,88 +57,6 @@ spec:
               value: user
             - name: RABBITMQ_PASSWORD
               value: password
-
-            - name: PROXY_TOR
-              value: rotation.elasticdata.io:30200
-
-            - name: SPRING_SERVER_PORT
-              value: {{ .Values.service.port | quote }}
-            - name: GOOGLE_SIGNIN_CALLBACK_URL
-              value: {{ .Values.env.GOOGLE_SIGNIN_CALLBACK_URL }}
-            - name: FACEBOOK_SIGNIN_CALLBACK_URL
-              value: {{ .Values.env.FACEBOOK_SIGNIN_CALLBACK_URL }}
-            - name: SELENIUM_DEFAULT_ADDRESS
-              value: {{ .Values.env.SELENIUM_DEFAULT_ADDRESS }}
-
-            - name: RABBITMQ_EXCHANGE_NAME
-              value: {{ .Values.env.RABBITMQ_EXCHANGE_NAME }}
-            - name: RABBITMQ_EXCHANGE_PIPELINE_STOP
-              value: {{ .Values.env.RABBITMQ_EXCHANGE_PIPELINE_STOP }}
-            - name: RABBITMQ_EXCHANGE_EXECUTE_CMD
-              value: {{ .Values.env.RABBITMQ_EXCHANGE_EXECUTE_CMD }}
-
-            - name: RABBITMQ_QUEUE_PIPELINE_TASK_RUN
-              value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_TASK_RUN }}
-            - name: RABBITMQ_QUEUE_PIPELINE_TASK_RUN_NODE
-              value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_TASK_RUN_NODE }}
-            - name: RABBITMQ_QUEUE_PIPELINE_TASK_STOP_V1
-              value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_TASK_STOP_V1 }}
-            - name: RABBITMQ_QUEUE_PIPELINE_TASK_STOP_V2
-              value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_TASK_STOP_V2 }}
-            - name: RABBITMQ_QUEUE_PIPELINE_TASK_FINISHED
-              value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_TASK_FINISHED }}
-            - name: RABBITMQ_QUEUE_PIPELINE_RUN_HOOKS
-              value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_RUN_HOOKS }}
-            - name: RABBITMQ_QUEUE_PIPELINE_FINISHED
-              value: {{ .Values.env.RABBITMQ_QUEUE_PIPELINE_FINISHED }}
-            - name: RABBITMQ_QUEUE_TASK_CHANGED
-              value: {{ .Values.env.RABBITMQ_QUEUE_TASK_CHANGED }}
-            - name: RABBITMQ_QUEUE_EXECUTE_CMD
-              value: {{ .Values.env.RABBITMQ_QUEUE_EXECUTE_CMD }}
-
-            - name: STATIC_RUN_DIRECTORY
-              value: {{ .Values.env.STATIC_RUN_DIRECTORY }}
-
-            - name: RABBITMQ_ROUTING_PIPELINE_TASK_FINISHED
-              value: {{ .Values.env.RABBITMQ_ROUTING_PIPELINE_TASK_FINISHED }}
-            - name: RABBITMQ_ROUTING_PIPELINE_TASK_RUN
-              value: {{ .Values.env.RABBITMQ_ROUTING_PIPELINE_TASK_RUN }}
-            - name: RABBITMQ_ROUTING_PIPELINE_TASK_RUN_NODE
-              value: {{ .Values.env.RABBITMQ_ROUTING_PIPELINE_TASK_RUN_NODE }}
-            - name: RABBITMQ_ROUTING_PIPELINE_TASK_STOP
-              value: {{ .Values.env.RABBITMQ_ROUTING_PIPELINE_TASK_STOP }}
-            - name: RABBITMQ_ROUTING_PIPELINE_FINISHED
-              value: {{ .Values.env.RABBITMQ_ROUTING_PIPELINE_FINISHED }}
-            - name: RABBITMQ_ROUTING_TASK_CHANGED
-              value: {{ .Values.env.RABBITMQ_ROUTING_TASK_CHANGED }}
-            - name: RABBITMQ_ROUTING_EXECUTE_CMD
-              value: {{ .Values.env.RABBITMQ_ROUTING_EXECUTE_CMD }}
-
-            - name: ES_HOST_NAME
-              value: {{ .Values.env.ES_HOST_NAME }}
-            - name: ES_HTTP_PORT
-              value: {{ .Values.env.ES_HTTP_PORT | quote }}
-            - name: ES_ENABLED
-              value: {{ .Values.env.ES_ENABLED | quote }}
-
-            - name: PROXY_SERVICE_URL
-              value: {{ .Values.env.PROXY_SERVICE_URL }}
-            - name: PROXY_STATIC_URL
-              value: {{ .Values.env.PROXY_STATIC_URL }}
-
-            - name: MINIO_URL
-              value: {{ .Values.env.MINIO_URL }}
-            - name: MINIO_PUBLIC_URL
-              value: {{ .Values.env.MINIO_PUBLIC_URL }}
-            - name: MINIO_ACCESS_KEY
-              value: {{ .Values.env.MINIO_ACCESS_KEY }}
-            - name: MINIO_SECRET_KEY
-              value: {{ .Values.env.MINIO_SECRET_KEY }}
-
-            - name: APP_VERSION
-              value: {{ .Values.env.APP_VERSION }}
-            - name: APP_LAST_UPDATED
-              value: {{ .Values.env.APP_LAST_UPDATED }}
 
           livenessProbe:
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}

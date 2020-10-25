@@ -1,4 +1,38 @@
+
 env:
   - name: SPRING_LOG_LEVEL
     value: ERROR
+  - name: GOOGLE_SIGNIN_CALLBACK_URL
+    value: http://app.elasticdata.io/#/enter/
+  - name: FACEBOOK_SIGNIN_CALLBACK_URL
+    value: http://app.elasticdata.io/#/enter/
 
+  - name: RABBITMQ_QUEUE_RUN_HOOKS
+    value: PROD_RUN_HOOKS
+
+  - name: RABBITMQ_RUN_TASK_EXCHANGE_NAME
+    value: PROD_RUN_TASK
+  - name: RABBITMQ_INBOX_FANOUT_EXCHANGE_NAME
+    value: PROD_INBOX_FANOUT
+
+  - name: RABBITMQ_RUN_TASK_ROUTING_KEY
+    value: PROD_RUN_TASK
+  - name: RABBITMQ_ROUTING_TASK_RUN
+    value: PROD_RUN_HOOKS
+
+  - name: ES_HOST_NAME
+    value: elasticsearch-master.elasticsearch
+  - name: ES_HTTP_PORT
+    value: "9200"
+  - name: ES_ENABLED
+    value: "false"
+  - name: PROXY_SERVICE_URL
+    value: http://proxy
+  - name: MINIO_URL
+    value: https://storage.elasticdata.io
+  - name: MINIO_PUBLIC_URL
+    value: https://storage.elasticdata.io
+  - name: MINIO_ACCESS_KEY
+    value: elasticdataio
+  - name: MINIO_SECRET_KEY
+    value: wJalrXUtnFEMI/9874c97c907209cpuvpw97bpb/asdasdasdasdasd

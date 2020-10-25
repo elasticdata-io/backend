@@ -2,6 +2,8 @@
 env:
   - name: SPRING_LOG_LEVEL
     value: ERROR
+  - name: SPRING_SERVER_PORT
+    value: "8080"
   - name: GOOGLE_SIGNIN_CALLBACK_URL
     value: http://app.elasticdata.io/#/enter/
   - name: FACEBOOK_SIGNIN_CALLBACK_URL

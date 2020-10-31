@@ -80,10 +80,10 @@ class TaskUserInteractionService {
             interactionId: interaction.id,
         )
         taskUserInteractionProducer.disableInteraction(dto)
-//        interaction.status = 'disabled'
-//        interaction.modifiedOnUtc = new Date()
-//        taskUserInteractionRepository.save(interaction)
-//        notifyChanged(interaction)
+        interaction.status = 'disabled'
+        interaction.modifiedOnUtc = new Date()
+        taskUserInteractionRepository.save(interaction)
+        notifyChanged(interaction)
     }
 
     private void notifyChanged(TaskUserInteraction taskUserInteraction) {

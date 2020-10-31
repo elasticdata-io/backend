@@ -53,7 +53,7 @@ spec:
 
             - name: APP_VERSION
               value: {{ .Values.APP_VERSION }}
-            - name: APP_VERSION
+            - name: APP_LAST_UPDATED
               value: {{ .Values.APP_LAST_UPDATED }}
 
           livenessProbe:

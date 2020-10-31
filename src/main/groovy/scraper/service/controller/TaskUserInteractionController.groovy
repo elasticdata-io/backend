@@ -35,4 +35,13 @@ class TaskUserInteractionController {
         return taskUserInteractionService.list(taskId)
     }
 
+    /**
+     * Disable interaction mode.
+     * @param interactionId
+     */
+    @PostMapping('/disable/{interactionId}')
+    void disable(@PathVariable String interactionId) {
+        taskUserInteractionService.disable(interactionId)
+    }
+
 }

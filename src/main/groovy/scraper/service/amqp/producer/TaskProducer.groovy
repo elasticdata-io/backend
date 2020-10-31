@@ -1,8 +1,6 @@
 package scraper.service.amqp.producer
 
 import groovy.json.JsonBuilder
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -15,7 +13,6 @@ import scraper.service.service.PipelineService
 
 @Service
 class TaskProducer {
-    private Logger logger = LogManager.getRootLogger()
 
     @Value('${spring.rabbitmq.exchange.runTask}')
     private String runTaskExchangeName
@@ -39,7 +36,6 @@ class TaskProducer {
      * @param taskId
      */
     void taskRunNode(Task task) {
-        logger.info("TaskProducer.taskRunNode taskId = ${task.id}")
         def pipeline = pipelineService.findById(task.pipelineId)
         HashMap map = new HashMap(
             taskId: task.id,

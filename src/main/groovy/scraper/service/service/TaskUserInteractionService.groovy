@@ -4,6 +4,8 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import scraper.service.amqp.dto.DisableUserInteractionDto
+import scraper.service.amqp.producer.TaskUserInteractionProducer
 import scraper.service.dto.mapper.UserInteractionMapper
 import scraper.service.dto.model.task.UserInteractionStateDto
 import scraper.service.dto.model.task.UserInteractionDto
@@ -17,6 +19,9 @@ class TaskUserInteractionService {
 
     @Autowired
     TaskUserInteractionRepository taskUserInteractionRepository
+
+    @Autowired
+    TaskUserInteractionProducer taskUserInteractionProducer
 
     @Autowired
     TaskWebsocketProducer taskWebsocketProducer
@@ -61,6 +66,24 @@ class TaskUserInteractionService {
     List<UserInteractionDto> list(String taskId) {
         def list = taskUserInteractionRepository.findByTaskId(taskId)
         return list.collect { UserInteractionMapper.toUserInteractionDto(it) }
+    }
+
+    void disable(String interactionId) {
+        def optional = taskUserInteractionRepository.findById(interactionId)
+        if (!optional.present) {
+            throw new Exception("interaction with id:${interactionId} not found")
+        }
+        def interaction = optional.get()
+        def dto = new DisableUserInteractionDto(
+            taskId: interaction.taskId,
+            pageContext: interaction.pageContext,
+            interactionId: interaction.id,
+        )
+        taskUserInteractionProducer.disableInteraction(dto)
+//        interaction.status = 'disabled'
+//        interaction.modifiedOnUtc = new Date()
+//        taskUserInteractionRepository.save(interaction)
+//        notifyChanged(interaction)
     }
 
     private void notifyChanged(TaskUserInteraction taskUserInteraction) {

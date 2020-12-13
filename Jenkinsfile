@@ -37,6 +37,8 @@ spec:
 )
         {
             node(label) {
+                properties([disableConcurrentBuilds()])
+
                 stage('checkout') {
                     checkout scm
 

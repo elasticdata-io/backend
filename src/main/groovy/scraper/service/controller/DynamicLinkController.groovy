@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @RestController
-@RequestMapping("dynamic-link")
+@RequestMapping("link")
 class DynamicLinkController {
 
     @Autowired
@@ -29,6 +29,6 @@ class DynamicLinkController {
     void get(@PathVariable String alias, HttpServletResponse httpServletResponse) {
         String url = dynamicLinkService.getRedirectUrl(alias)
         httpServletResponse.setHeader('Location', url)
-        httpServletResponse.setStatus(302)
+        httpServletResponse.setStatus(301)
     }
 }

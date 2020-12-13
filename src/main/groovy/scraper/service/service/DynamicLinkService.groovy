@@ -34,7 +34,7 @@ class DynamicLinkService {
         )
         dynamicLinkRepository.save(dynamicLink)
         String baseUrl = "${request.getScheme()}://${request.getServerName()}:${request.getServerPort()}${contextPath}";
-        return "${baseUrl}/dynamic-link/to/${alias}"
+        return "${baseUrl}/link/to/${alias}"
     }
 
     String getRedirectUrl(String alias) {
@@ -43,8 +43,11 @@ class DynamicLinkService {
     }
 
     private static String generateAlias() {
-        byte[] array = new byte[14]
-        new Random().nextBytes(array)
-        return new String(array, Charset.forName("UTF-8"))
+        def generator = { String alphabet, int n ->
+            new Random().with {
+                (1..n).collect { alphabet[ nextInt( alphabet.length() ) ] }.join()
+            }
+        }
+        return generator( (('a'..'z')+('0'..'9')).join(), 12)
     }
 }

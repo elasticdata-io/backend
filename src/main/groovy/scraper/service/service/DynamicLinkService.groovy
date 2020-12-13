@@ -18,11 +18,11 @@ class DynamicLinkService {
     @Value('${server.servlet.context-path}')
     String contextPath
 
-    String create(DynamicLinkDto dto, HttpServletRequest request) {
+    String create(String absoluteUrl, HttpServletRequest request) {
         def alias = UUID.randomUUID().toString()
         DynamicLink dynamicLink = new DynamicLink(
             alias: alias,
-            absoluteUrl: dto.absoluteUrl,
+            absoluteUrl: absoluteUrl,
             createdOn: new Date(),
         )
         dynamicLinkRepository.save(dynamicLink)

@@ -22,7 +22,7 @@ class DynamicLinkController {
 
     @PostMapping('/create')
     String create(@RequestBody DynamicLinkDto dto, HttpServletRequest request) {
-        return dynamicLinkService.create(dto, request)
+        return dynamicLinkService.create(dto.absoluteUrl, request)
     }
 
     @GetMapping('/to/{alias}')

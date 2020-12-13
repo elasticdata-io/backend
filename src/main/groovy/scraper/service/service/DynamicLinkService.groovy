@@ -33,7 +33,9 @@ class DynamicLinkService {
             createdOn: new Date(),
         )
         dynamicLinkRepository.save(dynamicLink)
-        String baseUrl = "${request.getScheme()}://${request.getServerName()}:${request.getServerPort()}${contextPath}";
+        int port = request.getServerPort()
+        String portIn = port == 80 || port == 443 ? '' : ":${port}"
+        String baseUrl = "${request.getScheme()}://${request.getServerName()}${portIn}${contextPath}"
         return "${baseUrl}/link/to/${alias}"
     }
 

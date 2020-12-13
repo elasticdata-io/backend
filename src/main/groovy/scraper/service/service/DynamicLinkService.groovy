@@ -19,6 +19,9 @@ class DynamicLinkService {
     String contextPath
 
     String create(String absoluteUrl, HttpServletRequest request) {
+        if (!absoluteUrl) {
+            return absoluteUrl
+        }
         def alias = UUID.randomUUID().toString()
         DynamicLink dynamicLink = new DynamicLink(
             alias: alias,

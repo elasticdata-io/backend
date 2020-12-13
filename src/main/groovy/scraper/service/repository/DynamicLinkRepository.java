@@ -5,4 +5,5 @@ import scraper.service.model.DynamicLink;
 
 public interface DynamicLinkRepository extends MongoRepository<DynamicLink, String> {
     DynamicLink findByAlias(String alias);
+    DynamicLink findByAbsoluteUrl(String absoluteUrl);
 }

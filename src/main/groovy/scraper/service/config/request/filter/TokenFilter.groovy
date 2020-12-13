@@ -35,6 +35,7 @@ class TokenFilter extends GenericFilterBean {
             '/api/liveness',
             '/api/test',
             '/api/system',
+            '/api/dynamic-link',
     ]
 
     @Autowired

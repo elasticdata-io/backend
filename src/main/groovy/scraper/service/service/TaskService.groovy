@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import scraper.service.amqp.dto.ExecuteCommandDto
+import scraper.service.amqp.producer.HookProducer
 import scraper.service.amqp.producer.TaskProducer
 import scraper.service.constants.PipelineStatuses
 import scraper.service.dto.mapper.TaskMapper
@@ -27,6 +28,9 @@ class TaskService {
 
     @Autowired
     TaskProducer taskProducer
+
+    @Autowired
+    HookProducer hookProducer
 
     @Autowired
     TaskRepository taskRepository
@@ -162,30 +166,19 @@ class TaskService {
         return task
     }
 
-    Task runFromQueue(String taskId) {
-        Task task = findById(taskId)
+    void complete(TaskDto taskDto) {
+        Task task = findById(taskDto.id)
         if (!task) {
-            logger.error("task with id ${taskId} not found")
-            return
+            throw new Exception("task id: ${task.id} not found")
         }
-        if (task.status != PipelineStatuses.QUEUE) {
-            logger.error("task ${task.id} not runnig, current status = ${task.status}")
-            return
-        }
-        // return taskExecutorService.run(task)
-        task.status = PipelineStatuses.ERROR
-        task.failureReason = 'DSL version 1.0 not supporting from 25.10.2020'
+        task.docsUrl = taskDto.docsUrl
+        task.docsCount = taskDto.docsCount
+        task.docsBytes = taskDto.docsBytes
+        task.commandsInformationLink = taskDto.commandsInformationLink
         task.endOnUtc = new Date()
         update(task)
-    }
-
-    Task stopFromQueue(String taskId) {
-        Task task = findById(taskId)
-        if (!task) {
-            logger.error("task with id ${taskId} not found")
-            return
-        }
-        // taskExecutorService.stop(task)
+        updateStatus(taskDto.id, task.status)
+        hookProducer.runHook(taskDto.id)
     }
 
     void update(Task task) {
@@ -195,7 +188,7 @@ class TaskService {
             taskProducer.taskChanged(task.id)
             notifyChangeTaskToClient(task)
         } catch(OptimisticLockingFailureException e) {
-            logger.error("OptimisticLockingFailureException taskId = ${task.id}")
+            logger.error(e.toString())
         }
     }
 

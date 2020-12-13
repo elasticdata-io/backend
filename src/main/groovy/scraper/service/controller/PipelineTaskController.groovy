@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.messaging.simp.SimpMessagingTemplate
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
@@ -36,7 +37,7 @@ class PipelineTaskController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate
 
-    @RequestMapping("/list/{pipelineId}/{offset}/{count}")
+    @GetMapping("/list/{pipelineId}/{offset}/{count}")
     List<TaskDto> list(@PathVariable String pipelineId, @PathVariable Number offset, @PathVariable Number count,
                        @RequestHeader("token") String token) {
         String userId = tokenService.getUserId(token)
@@ -51,28 +52,4 @@ class PipelineTaskController {
         return dtoList
     }
 
-    @RequestMapping("/delete/{id}")
-    void delete(@PathVariable String id, @RequestHeader("token") String token) {
-        if (checkPermission(id, token)) {
-            taskService.deleteById(id)
-        }
-    }
-
-    /**
-     * @deprecated see TaskController->getData
-     * @param id
-     * @return
-     */
-    @RequestMapping("/data/{id}")
-    List<HashMap> getData(@PathVariable String id) {
-        Task task = taskService.findById(id)
-        // return fileDataRepository.getDataFileToList(task)
-    }
-
-    private boolean checkPermission(String taskId, String token) {
-        Task task = taskService.findById(taskId)
-        String userId = tokenService.getUserId(token)
-        Pipeline pipeline = pipelineRepository.findByIdAndUser(task.pipelineId, userId)
-        return pipeline != null
-    }
 }

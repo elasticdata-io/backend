@@ -68,20 +68,20 @@ class TaskController {
         return taskService.getTask(taskId)
     }
 
-    /**
-     * @param taskId
-     * @return
-     */
-    @RequestMapping("/data/{taskId}")
-    List<HashMap> getData(@PathVariable String taskId) {
-        Task task = taskService.findById(taskId)
-        // return fileDataRepository.getDataFileToList(task)
-    }
-
     @PatchMapping("{id}")
     TaskDto runFromApi(@PathVariable String id,
                        @RequestBody JsonPatch jsonPatch) {
         return taskService.patch(id, jsonPatch)
+    }
+
+    /**
+     * Completed task by id.
+     * Start after completed jobs.
+     * @param taskId
+     */
+    @PostMapping("/complete")
+    void complete(@RequestBody TaskDto taskDto) {
+        this.taskService.complete(taskDto)
     }
 
     /**

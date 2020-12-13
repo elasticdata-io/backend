@@ -3,6 +3,7 @@ package scraper.service.controller
 import io.jsonwebtoken.Claims
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -31,7 +32,7 @@ class UserDataController {
     @Autowired
     EmailValidator emailValidator
 
-    @RequestMapping('/')
+    @GetMapping('/')
     User get(@RequestHeader("token") String token) {
         Claims claims = tokenService.parseToken(token)
         if (!claims) {

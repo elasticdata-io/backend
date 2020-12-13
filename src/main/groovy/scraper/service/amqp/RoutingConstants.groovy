@@ -10,5 +10,5 @@ class RoutingConstants {
     String TASK_RUN_ROUTING_KEY
 
     @Value('${spring.rabbitmq.routing.runHooks}')
-    String RUN_HOOKS_ROUTING_KEY
+    String RUN_HOOK_ROUTING_KEY
 }

@@ -16,10 +16,14 @@ class TokenFilter extends GenericFilterBean {
 
     String TOKEN_HEADER_NAME = 'token'
 
+    String SWAGGER_API = '/api/v3/api-docs'
+    String SWAGGER_UI = '/api/swagger-ui'
     String LOGIN_URI = '/api/login'
     String WS_URI = '/api/ws'
 
     List<String> allowUrls = [
+            SWAGGER_API,
+            SWAGGER_UI,
             WS_URI,
             LOGIN_URI,
             '/api/pipeline/data',

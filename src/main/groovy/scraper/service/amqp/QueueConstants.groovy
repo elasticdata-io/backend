@@ -7,5 +7,5 @@ import org.springframework.stereotype.Component
 class QueueConstants {
 
     @Value('${spring.rabbitmq.queue.runHooks}')
-    String RUN_HOOKS
+    String RUN_HOOK
 }

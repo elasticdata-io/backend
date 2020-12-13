@@ -84,4 +84,16 @@ class RabbitConfiguration {
         return new TopicExchange(runTaskExchangeName, true, false)
     }
 
+    @Bean
+    Queue runHookQueue() {
+        return new Queue(queueConstants.RUN_HOOK)
+    }
+
+    @Bean
+    Binding bindRunHook(final Queue runHookQueue, final TopicExchange runTaskExchange) {
+        return BindingBuilder
+                .bind(runHookQueue)
+                .to(runTaskExchange)
+                .with(routingConstants.RUN_HOOK_ROUTING_KEY)
+    }
 }

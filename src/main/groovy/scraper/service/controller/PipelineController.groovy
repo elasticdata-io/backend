@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import scraper.service.dto.model.task.PendingApiTaskDto
 import scraper.service.dto.model.task.PendingTaskDto
@@ -54,17 +52,6 @@ class PipelineController {
     @PostMapping("/run-from-client/{id}")
     PendingTaskDto runFromClient(@PathVariable String id) {
         return pipelineRunnerService.pendingFromClient(id)
-    }
-
-    /**
-     * Stop task by id.
-     * @param taskId
-     * @deprecated @deprecated see TaskController->stop
-     */
-    @PostMapping("/stop/{taskId}")
-    PendingTaskDto stopPipeline(@PathVariable String taskId) {
-        // todo: процес должен быть остановлен именно на той ноде где запущен воркер
-        return pipelineRunnerService.stoppingFromClient(taskId)
     }
 
     @PostMapping("/task/synchronize/{taskId}")

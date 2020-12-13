@@ -13,8 +13,10 @@ import scraper.service.amqp.producer.HookProducer
 import scraper.service.amqp.producer.TaskProducer
 import scraper.service.constants.PipelineStatuses
 import scraper.service.dto.mapper.TaskMapper
+import scraper.service.dto.model.task.TaskCompleteDto
 import scraper.service.dto.model.task.TaskDto
 import scraper.service.dto.model.task.TaskEditDto
+import scraper.service.dto.model.task.TaskErrorDto
 import scraper.service.model.Pipeline
 import scraper.service.model.Task
 import scraper.service.repository.TaskRepository
@@ -166,19 +168,31 @@ class TaskService {
         return task
     }
 
-    void complete(TaskDto taskDto) {
+    Task complete(TaskCompleteDto taskDto) {
         Task task = findById(taskDto.id)
-        if (!task) {
-            throw new Exception("task id: ${task.id} not found")
-        }
         task.docsUrl = taskDto.docsUrl
         task.docsCount = taskDto.docsCount
         task.docsBytes = taskDto.docsBytes
         task.commandsInformationLink = taskDto.commandsInformationLink
         task.endOnUtc = new Date()
         update(task)
-        updateStatus(taskDto.id, task.status)
+        updateStatus(taskDto.id, PipelineStatuses.COMPLETED)
         hookProducer.runHook(taskDto.id)
+        return task
+    }
+
+    Task error(TaskErrorDto taskDto) {
+        Task task = findById(taskDto.id)
+        task.docsUrl = taskDto.docsUrl
+        task.docsCount = taskDto.docsCount
+        task.docsBytes = taskDto.docsBytes
+        task.commandsInformationLink = taskDto.commandsInformationLink
+        task.endOnUtc = new Date()
+        task.failureReason = taskDto.failureReason
+        update(task)
+        updateStatus(taskDto.id, PipelineStatuses.ERROR)
+        hookProducer.runHook(taskDto.id)
+        return task
     }
 
     void update(Task task) {

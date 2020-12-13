@@ -45,7 +45,8 @@ class RunHooksConsumer {
             )
             HttpPost postMethod = new HttpPost(url)
             postMethod.setEntity(requestEntity)
-            httpClient.execute(postMethod)
+            def response = httpClient.execute(postMethod)
+            logger.info(response.toString())
             httpClient.close()
         } catch (e) {
             httpClient.close()

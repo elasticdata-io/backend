@@ -6,11 +6,12 @@ import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import scraper.service.amqp.dto.ExecuteCommandDto
+import scraper.service.dto.model.task.TaskCompleteDto
 import scraper.service.dto.model.task.PendingTaskDto
 import scraper.service.dto.model.task.TaskDto
 import scraper.service.dto.model.task.TaskEditDto
+import scraper.service.dto.model.task.TaskErrorDto
 import scraper.service.dto.model.task.command.TaskCommandExecuteDto
-import scraper.service.model.Task
 import scraper.service.service.*
 import scraper.service.ws.TaskWebsocketProducer
 
@@ -25,6 +26,9 @@ class TaskController {
 
     @Autowired
     TaskService taskService
+
+    @Autowired
+    PipelineService pipelineService
 
     @Autowired
     TaskWebsocketProducer taskWebsocketProducer
@@ -80,8 +84,20 @@ class TaskController {
      * @param taskId
      */
     @PostMapping("/complete")
-    void complete(@RequestBody TaskDto taskDto) {
-        this.taskService.complete(taskDto)
+    void complete(@RequestBody TaskCompleteDto taskDto) {
+        def task = taskService.complete(taskDto)
+        pipelineService.updateFromTask(task)
+    }
+
+    /**
+     * Error task by id.
+     * Start after completed jobs.
+     * @param taskId
+     */
+    @PostMapping("/error")
+    void complete(@RequestBody TaskErrorDto taskDto) {
+        def task = taskService.error(taskDto)
+        pipelineService.updateFromTask(task)
     }
 
     /**

@@ -25,4 +25,5 @@ class PipelineDto {
     Number lastParseRowsCount
     Number lastParseBytes
     String pipelineVersion
+    String hookUrl
 }

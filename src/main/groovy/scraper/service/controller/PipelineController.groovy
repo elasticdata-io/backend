@@ -47,7 +47,7 @@ class PipelineController {
 
     /**
      * Runs pipeline process by pipeline pipelineId.
-     * @param idjp0
+     * @param id
      */
     @PostMapping("/run-from-client/{id}")
     PendingTaskDto runFromClient(@PathVariable String id) {

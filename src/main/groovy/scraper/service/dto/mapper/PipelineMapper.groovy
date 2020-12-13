@@ -26,6 +26,7 @@ class PipelineMapper {
             status: pipelineDto.status,
             dependencies: PipelineDependencyMapper.toPipelineDependencies(pipelineDto.dependencies),
             jsonCommands: pipelineDto.jsonCommands,
+            hookUrl: pipelineDto.hookUrl,
         )
     }
 
@@ -52,6 +53,7 @@ class PipelineMapper {
                 lastParseRowsCount: pipeline.parseRowsCount,
                 lastParseBytes: pipeline.parseBytes,
                 pipelineVersion: pipeline.pipelineVersion,
+                hookUrl: pipeline.hookUrl,
         )
     }
 

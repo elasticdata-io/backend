@@ -126,6 +126,7 @@ class PipelineDataController {
         pipeline.needProxy = pipelineDto.needProxy
         pipeline.dependencies = PipelineDependencyMapper.toPipelineDependencies(pipelineDto.dependencies)
         pipeline.modifiedOn = new Date()
+        pipeline.hookUrl = pipelineDto.hookUrl
         if (!pipelineInDb) {
             pipeline.status = PipelineStatuses.NOT_RUNNING
             pipeline.createdOn = new Date()

@@ -94,8 +94,7 @@ management:
         include: health,prometheus
 
 proxy.tor: ${PROXY_TOR:rotating-proxy:5566}
-proxy.service.url: ${PROXY_SERVICE_URL:http://k8s:30880}
-proxy.static.url: ${PROXY_STATIC_URL:k8s:30880}
+proxy.static.url: ${PROXY_STATIC_URL:k8s:30220}
 
 selenium.default.address: ${SELENIUM_DEFAULT_ADDRESS:http://k8s:32213/wd/hub}
 selenium.default.browser: ${SELENIUM_DEFAULT_BROWSER:chrome}

@@ -39,4 +39,4 @@ env:
   - name: MINIO_SECRET_KEY
     value: wJalrXUtnFEMI/9874c97c907209cpuvpw97bpb/asdasdasdasdasd
   - name: PROXY_STATIC_URL
-    value: scrapoxy
+    value: proxy

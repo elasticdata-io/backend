@@ -48,9 +48,11 @@ affinity: {}
 livenessProbe:
   initialDelaySeconds: 120
   periodSeconds: 10
+  failureThreshold: 5
 readinessProbe:
   initialDelaySeconds: 120
   periodSeconds: 15
+  failureThreshold: 5
 
 APP_VERSION: local
 APP_LAST_UPDATED: "2020-02-05T21:47:00"

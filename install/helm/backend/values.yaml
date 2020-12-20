@@ -33,11 +33,11 @@ pv:
 
 resources:
   limits:
-    cpu: 500m
-    memory: 2048Mi
-  requests:
     cpu: 300m
     memory: 2048Mi
+  requests:
+    cpu: 200m
+    memory: 1024Mi
 
 nodeSelector: {}
 

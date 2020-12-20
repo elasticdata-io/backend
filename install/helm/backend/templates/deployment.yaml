@@ -59,12 +59,14 @@ spec:
           livenessProbe:
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds:  {{ .Values.livenessProbe.periodSeconds }}
+            failureThreshold:  {{ .Values.livenessProbe.failureThreshold }}
             httpGet:
               path: /api/liveness
               port: http
           readinessProbe:
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
             httpGet:
               path: /api/actuator/health
               port: http

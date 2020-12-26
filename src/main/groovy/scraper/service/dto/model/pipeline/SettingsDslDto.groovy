@@ -7,26 +7,21 @@ import com.fasterxml.jackson.annotation.JsonInclude
 @JsonIgnoreProperties(ignoreUnknown = true)
 class SettingsDslDto {
     /**
-     * Max working pipeline in seconds
-     */
-    Number maxWorkingMinutes = 1440
-
-    /**
      * Browser window configuration
      */
     BrowserWindowDslDto window = new BrowserWindowDslDto()
-
+    Boolean needProxyRotation = false
     /**
      * Browser proxies
      */
     String[] proxies = []
-
+    NetworkDslDto network = new NetworkDslDto()
     /**
      * User interaction configuration
      */
     UserInteractionDsl userInteraction = new UserInteractionDsl()
-
-    Boolean needProxyRotation = false
-
-    NetworkDslDto network = new NetworkDslDto()
+    /**
+     * Max working pipeline in seconds
+     */
+    Number maxWorkingMinutes = 1440
 }

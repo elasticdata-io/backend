@@ -129,6 +129,7 @@ class Pipeline {
 
     void setDsl(PipelineDsl dsl) {
         this.jsonCommands = JsonOutput.toJson(dsl)
+        this.dsl = dsl
     }
 
 }

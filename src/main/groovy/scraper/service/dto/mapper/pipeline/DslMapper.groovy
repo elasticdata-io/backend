@@ -3,29 +3,35 @@ package scraper.service.dto.mapper.pipeline
 import scraper.service.dto.model.pipeline.BrowserWindowDslDto
 import scraper.service.dto.model.pipeline.DataRuleDslDto
 import scraper.service.dto.model.pipeline.DslDto
+import scraper.service.dto.model.pipeline.NetworkDslDto
 import scraper.service.dto.model.pipeline.SettingsDslDto
+import scraper.service.dto.model.pipeline.SkipResourcesDslDto
 import scraper.service.dto.model.pipeline.UserInteractionDsl
+import scraper.service.model.types.NetworkDsl
 import scraper.service.model.types.PipelineDsl
 import scraper.service.model.types.SettingsDsl
+import scraper.service.model.types.SkipResourcesDsl
 import scraper.service.model.types.UserInteractionDslSettings
 import scraper.service.model.types.BrowserWindowDsl
 
-class PipelineDslMapper {
+class DslMapper {
 
-    static PipelineDsl toPipelineDsl(DslDto pipelineDslDto) {
-        if (!pipelineDslDto) {
+    static PipelineDsl toDslEntity(DslDto dslDto) {
+        if (!dslDto) {
             return null
         }
-        def settings = pipelineDslDto.settings
+        def settings = dslDto.settings
         def dsl = new PipelineDsl()
-        dsl.commands = pipelineDslDto.commands
-        dsl.dataRules = pipelineDslDto.dataRules
-        dsl.version = pipelineDslDto.version
+        dsl.commands = dslDto.commands
+        dsl.dataRules = dslDto.dataRules
+        dsl.version = dslDto.version
         def settingsDsl = new SettingsDsl()
-        settingsDsl.proxies = settings?.proxies
-        settingsDsl.maxWorkingMinutes = settings?.maxWorkingMinutes
-                ? settings.maxWorkingMinutes
-                : 24  * 60
+        if (settings?.proxies) {
+            settingsDsl.proxies = settings.proxies
+        }
+        if (settings?.maxWorkingMinutes) {
+            settingsDsl.maxWorkingMinutes = settings.maxWorkingMinutes ?: 24  * 60
+        }
         def window = settings?.window
         if (window) {
             settingsDsl.window = new BrowserWindowDsl(
@@ -39,7 +45,17 @@ class PipelineDslMapper {
                 watchCommands: settings?.userInteraction?.watchCommands
             )
         }
-        settingsDsl.needProxyRotation = pipelineDslDto?.settings?.needProxyRotation
+        if (settings?.network?.skipResources) {
+            settingsDsl.network = new NetworkDsl(
+                skipResources: new SkipResourcesDsl(
+                    stylesheet: settings.network.skipResources?.stylesheet,
+                    image: settings.network.skipResources?.image,
+                )
+            )
+        }
+        if (dslDto?.settings?.needProxyRotation) {
+            settingsDsl.needProxyRotation = dslDto.settings.needProxyRotation
+        }
         dsl.settings = settingsDsl
         return dsl
     }
@@ -54,8 +70,12 @@ class PipelineDslMapper {
         dto.dataRules = pipelineDsl.dataRules as List<DataRuleDslDto>
         dto.version = pipelineDsl.version
         def settingsDto = new SettingsDslDto()
-        settingsDto.proxies = settings?.proxies
-        settingsDto.maxWorkingMinutes = settings?.maxWorkingMinutes
+        if (settings?.proxies) {
+            settingsDto.proxies = settings.proxies
+        }
+        if (settings?.maxWorkingMinutes) {
+            settingsDto.maxWorkingMinutes = settings.maxWorkingMinutes
+        }
         if (settings?.window) {
             settingsDto.window = new BrowserWindowDslDto(
                 lang: settings?.window?.lang,
@@ -68,8 +88,20 @@ class PipelineDslMapper {
                 watchCommands: settings.userInteraction.watchCommands,
             )
         }
-        settingsDto.needProxyRotation = settings?.needProxyRotation
-        dto.settings = settingsDto
+        if (settings?.network?.skipResources) {
+            settingsDto.network = new NetworkDslDto(
+                skipResources: new SkipResourcesDslDto(
+                    stylesheet: settings.network.skipResources?.stylesheet,
+                    image: settings.network.skipResources?.image,
+                )
+            )
+        }
+        if (settings?.needProxyRotation) {
+            settingsDto.needProxyRotation = settings.needProxyRotation
+        }
+        if (settingsDto) {
+            dto.settings = settingsDto
+        }
         return dto
     }
 }

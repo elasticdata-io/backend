@@ -26,7 +26,7 @@ class PipelineMapper {
             status: pipelineDto.status,
             dependencies: PipelineDependencyMapper.toPipelineDependencies(pipelineDto.dependencies),
             jsonCommands: pipelineDto.jsonCommands,
-            dsl: PipelineDslMapper.toPipelineDsl(pipelineDto.dsl),
+            dsl: DslMapper.toDslEntity(pipelineDto.dsl),
             hookUrl: pipelineDto.hookUrl,
         )
     }
@@ -51,7 +51,7 @@ class PipelineMapper {
                 dependencies: PipelineDependencyMapper.toPipelineDependenciesDto(pipeline.dependencies),
                 userId: pipeline.user.id,
                 jsonCommands: pipeline.jsonCommands,
-                dsl: PipelineDslMapper.toPipelineDslDto(pipeline.dsl),
+                dsl: DslMapper.toPipelineDslDto(pipeline.dsl),
                 lastParseRowsCount: pipeline.parseRowsCount,
                 lastParseBytes: pipeline.parseBytes,
                 pipelineVersion: pipeline.pipelineVersion,

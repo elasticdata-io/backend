@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-class PipelineDependencyDto {
-    String pipelineId
-    String dataFreshnessInterval
+class SkipResourcesDslDto {
+    Boolean stylesheet = false
+    Boolean image = false
 }

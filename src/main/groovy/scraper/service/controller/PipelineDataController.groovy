@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import scraper.service.constants.PipelineStatuses
 import scraper.service.dto.mapper.pipeline.PipelineDependencyMapper
-import scraper.service.dto.mapper.pipeline.PipelineDslMapper
+import scraper.service.dto.mapper.pipeline.DslMapper
 import scraper.service.dto.mapper.pipeline.PipelineMapper
 import scraper.service.dto.model.pipeline.PipelineDto
 import scraper.service.model.Pipeline
@@ -122,7 +122,7 @@ class PipelineDataController {
         pipeline.needProxy = pipelineDto.needProxy
         pipeline.dependencies = PipelineDependencyMapper.toPipelineDependencies(pipelineDto.dependencies)
         pipeline.hookUrl = pipelineDto.hookUrl
-        pipeline.dsl = PipelineDslMapper.toPipelineDsl(pipelineDto.dsl)
+        pipeline.dsl = DslMapper.toDslEntity(pipelineDto.dsl)
         if (!pipelineInDb) {
             pipeline.status = PipelineStatuses.NOT_RUNNING
             pipeline.user = user

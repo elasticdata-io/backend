@@ -50,6 +50,7 @@ class DslMapper {
                 skipResources: new SkipResourcesDsl(
                     stylesheet: settings.network.skipResources?.stylesheet,
                     image: settings.network.skipResources?.image,
+                    font: settings.network.skipResources?.font,
                 )
             )
         }
@@ -93,6 +94,7 @@ class DslMapper {
                 skipResources: new SkipResourcesDslDto(
                     stylesheet: settings.network.skipResources?.stylesheet,
                     image: settings.network.skipResources?.image,
+                    font: settings.network.skipResources?.font,
                 )
             )
         }

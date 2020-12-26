@@ -8,4 +8,5 @@ import com.fasterxml.jackson.annotation.JsonInclude
 class SkipResourcesDslDto {
     Boolean stylesheet = false
     Boolean image = false
+    Boolean font = false
 }

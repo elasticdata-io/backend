@@ -23,5 +23,5 @@ class SettingsDslDto {
     /**
      * Max working pipeline in seconds
      */
-    Number maxWorkingMinutes = 1440
+    Number maxWorkingMinutes = 60
 }

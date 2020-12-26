@@ -6,6 +6,8 @@ class TaskDto {
     String id
     String pipelineId
     String userId
+    Date createdOnUtc
+    Date modifiedOnUtc
     Date startOnUtc
     Date endOnUtc
     String status

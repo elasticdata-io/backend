@@ -1,5 +1,5 @@
 package scraper.service.model.types
 
-class PipelineUserInteractionSettings {
+class UserInteractionDslSettings {
     List<HashMap> watchCommands
 }

@@ -1,4 +1,4 @@
-package scraper.service.dto.mapper
+package scraper.service.dto.mapper.pipeline
 
 import org.springframework.stereotype.Component
 import scraper.service.dto.model.pipeline.PipelineDependencyDto

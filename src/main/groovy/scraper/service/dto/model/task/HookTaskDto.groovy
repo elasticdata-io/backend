@@ -4,6 +4,8 @@ class HookTaskDto {
     String taskId
     String pipelineId
     String userId
+    Date createdOnUtc
+    Date modifiedOnUtc
     Date startOnUtc
     Date endOnUtc
     String status

@@ -2,7 +2,6 @@ package scraper.service.dto.model.pipeline
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
-import scraper.service.model.PipelineDependency
 
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -12,6 +11,10 @@ class PipelineDto {
     String description
     Boolean isTakeScreenshot
     Boolean isDebugMode
+    /**
+     * @deprecated use dsl.settings.needProxyRotation
+     */
+    @Deprecated
     Boolean needProxy
     Number tasksTotal
     Date createdOn
@@ -22,6 +25,7 @@ class PipelineDto {
     List<PipelineDependencyDto> dependencies
     String userId
     String jsonCommands
+    DslDto dsl
     Number lastParseRowsCount
     Number lastParseBytes
     String pipelineVersion

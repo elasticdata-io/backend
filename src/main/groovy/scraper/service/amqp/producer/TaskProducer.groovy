@@ -1,6 +1,7 @@
 package scraper.service.amqp.producer
 
 import groovy.json.JsonBuilder
+import groovy.json.JsonOutput
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -39,11 +40,11 @@ class TaskProducer {
         def pipeline = pipelineService.findById(task.pipelineId)
         HashMap map = new HashMap(
             taskId: task.id,
-            json: task.commands,
+            json: JsonOutput.toJson(task.dsl),
             userUuid: task.userId,
             pipelineId: task.pipelineId,
-            proxies: pipeline.needProxy ? [proxyAssigner.getProxy()]: [],
-            pipelineSettings: pipeline.pipelineConfiguration?.settings
+            proxies: [proxyAssigner.getProxy()],
+            pipelineSettings: pipeline.dsl?.settings
         )
         def message = new JsonBuilder(map).toString()
         String workingType = 'A'

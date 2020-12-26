@@ -5,7 +5,7 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import scraper.service.dto.mapper.PipelineMapper
+import scraper.service.dto.mapper.pipeline.PipelineMapper
 import scraper.service.dto.mapper.TaskMapper
 import scraper.service.dto.model.task.PendingTaskDto
 import scraper.service.model.Pipeline
@@ -34,7 +34,6 @@ class PipelineService {
     }
 
     void save(Pipeline pipeline) {
-        pipeline.modifiedOn = new Date()
         pipelineRepository.save(pipeline)
     }
 
@@ -69,7 +68,7 @@ class PipelineService {
 
     void validate(Pipeline pipeline) {
         // todo : check required props
-        def pipelineConfiguration = pipeline.pipelineConfiguration
+        def pipelineConfiguration = pipeline.dsl
         println pipelineConfiguration
     }
 }

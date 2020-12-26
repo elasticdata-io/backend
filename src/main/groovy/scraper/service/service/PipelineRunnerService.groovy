@@ -14,6 +14,7 @@ import scraper.service.dto.model.task.PendingTaskDto
 import scraper.service.dto.model.task.PipelineRunDto
 import scraper.service.model.Pipeline
 import scraper.service.model.Task
+import scraper.service.model.mapper.PipelineDslMapper
 
 @Service
 class PipelineRunnerService {
@@ -38,6 +39,7 @@ class PipelineRunnerService {
             final JsonPatch patch = new JsonPatch(dto.jsonCommandsPatch)
             JsonNode originPatched = patch.apply(origin)
             pipeline.jsonCommands = originPatched.toString()
+            pipeline.dsl = PipelineDslMapper.toPipelineDsl(pipeline.jsonCommands)
         }
         if (dto && dto.hookUrl) {
             pipeline.hookUrl = dto.hookUrl

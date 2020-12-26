@@ -24,6 +24,8 @@ class PendingTaskStatusScheduler extends AbstractTaskStatusScheduler {
         }
         Boolean needDeps = taskDependenciesService.checkNeedDependencies(task)
         String newStatus = needDeps ? PipelineStatuses.NEED_DEPS : PipelineStatuses.NEED_RUN
+        task.startOnUtc = new Date()
+        this.taskService.update(task)
         changeStatus(task.id, newStatus)
         return true
     }

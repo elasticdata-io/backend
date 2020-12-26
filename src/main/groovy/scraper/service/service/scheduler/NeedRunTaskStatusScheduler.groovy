@@ -35,10 +35,8 @@ class NeedRunTaskStatusScheduler extends AbstractTaskStatusScheduler {
         if (workerBusy) {
             return false
         }
-        def jsonSlurper = new JsonSlurper()
-        HashMap map = jsonSlurper.parseText(task.commands) as HashMap<String, String>
         changeStatus(task.id, PipelineStatuses.QUEUE)
-        if (map.containsKey('version')) {
+        if (task.dsl?.version) {
             logger.info('push to taskRunNode')
             taskProducer.taskRunNode(task)
         } else {

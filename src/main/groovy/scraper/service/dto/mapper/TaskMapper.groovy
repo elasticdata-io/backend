@@ -1,5 +1,6 @@
 package scraper.service.dto.mapper
 
+import groovy.json.JsonOutput
 import org.springframework.stereotype.Component
 import scraper.service.dto.model.task.HookTaskDto
 import scraper.service.dto.model.task.PendingApiTaskDto
@@ -16,27 +17,31 @@ class TaskMapper {
                 taskId: task.id,
                 pipelineId: task.pipelineId,
                 userId: task.userId,
+                createdOnUtc: task.createdOnUtc,
+                modifiedOnUtc: task.modifiedOnUtc,
                 startOnUtc: task.startOnUtc,
                 endOnUtc: task.endOnUtc,
                 status: task.status,
                 failureReason: task.failureReason,
                 hookUrl: task.hookUrl,
                 docsUrl: task.docsUrl,
-                pipelineVersion: task.pipelineVersion,
+                pipelineVersion: task.dsl?.version,
                 docsCount: task.docsCount,
                 docsBytes: task.docsBytes,
         )
     }
 
     static PendingApiTaskDto toPendingApiTaskDto(Task task) {
-        def userInteraction = task.pipelineConfiguration?.settings?.userInteraction
+        def userInteraction = task.dsl?.settings?.userInteraction
         return new PendingApiTaskDto(
                 id: task.id,
                 pipelineId: task.pipelineId,
                 userId: task.userId,
+                createdOnUtc: task.createdOnUtc,
+                modifiedOnUtc: task.modifiedOnUtc,
                 startOnUtc: task.startOnUtc,
                 endOnUtc: task.endOnUtc,
-                commands: task.commands,
+                commands: JsonOutput.toJson(task.dsl),
                 status: task.status,
                 failureReason: task.failureReason,
                 hookUrl: task.hookUrl,
@@ -46,14 +51,16 @@ class TaskMapper {
     }
 
     static PendingTaskDto toPendingTaskDto(Task task) {
-        def userInteraction = task.pipelineConfiguration?.settings?.userInteraction
+        def userInteraction = task.dsl?.settings?.userInteraction
         return new PendingTaskDto(
                 id: task.id,
                 pipelineId: task.pipelineId,
                 userId: task.userId,
+                createdOnUtc: task.createdOnUtc,
+                modifiedOnUtc: task.modifiedOnUtc,
                 startOnUtc: task.startOnUtc,
                 endOnUtc: task.endOnUtc,
-                commands: task.commands,
+                commands: JsonOutput.toJson(task.dsl),
                 status: task.status,
                 failureReason: task.failureReason,
                 hookUrl: task.hookUrl,
@@ -65,11 +72,13 @@ class TaskMapper {
     }
 
     static TaskDto toTaskDto(Task task) {
-        def userInteraction = task.pipelineConfiguration?.settings?.userInteraction
+        def userInteraction = task.dsl?.settings?.userInteraction
         return new TaskDto(
                 id: task.id,
                 pipelineId: task.pipelineId,
                 userId: task.userId,
+                createdOnUtc: task.createdOnUtc,
+                modifiedOnUtc: task.modifiedOnUtc,
                 startOnUtc: task.startOnUtc,
                 endOnUtc: task.endOnUtc,
                 status: task.status,
@@ -79,17 +88,19 @@ class TaskMapper {
                 docsBytes: task.docsBytes,
                 docsCount: task.docsCount,
                 commandsInformationLink: task.commandsInformationLink,
-                pipelineVersion: task.pipelineVersion,
+                pipelineVersion: task.dsl?.version,
                 hasUserInteraction: userInteraction != null,
         )
     }
 
     static TaskEditDto toTaskEditDto(Task task) {
-        def userInteraction = task.pipelineConfiguration?.settings?.userInteraction
+        def userInteraction = task.dsl?.settings?.userInteraction
         return new TaskEditDto(
                 id: task.id,
                 pipelineId: task.pipelineId,
                 userId: task.userId,
+                createdOnUtc: task.createdOnUtc,
+                modifiedOnUtc: task.modifiedOnUtc,
                 startOnUtc: task.startOnUtc,
                 endOnUtc: task.endOnUtc,
                 status: task.status,
@@ -98,7 +109,7 @@ class TaskMapper {
                 docsUrl: task.docsUrl,
                 docsBytes: task.docsBytes,
                 docsCount: task.docsCount,
-                commands: task.commands,
+                commands: JsonOutput.toJson(task.dsl),
                 commandsInformationLink: task.commandsInformationLink,
                 hasUserInteraction: userInteraction != null,
         )

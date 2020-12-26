@@ -2,11 +2,13 @@ package scraper.service.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
+import groovy.json.JsonOutput
+import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
+import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
-import scraper.service.model.mapper.PipelineConfigurationMapper
-import scraper.service.model.types.PipelineConfiguration
+import scraper.service.model.types.PipelineDsl
 
 @Document(collection = "pipeline")
 class Pipeline {
@@ -21,35 +23,21 @@ class Pipeline {
 
     /**
      * JSON of the pipeline process.
+     * @deprecated use dsl prop
      */
+    @Deprecated
     public String jsonCommands
 
     /**
-     * Settings of the pipeline configuration
+     * Settings of the pipeline configuration (Settings DSL)
      * (commands, dataRules, settings: need proxies, window size, language, max working time).
      */
-    public PipelineConfiguration pipelineConfiguration
-
-    /**
-     * Path oth the pipeline JSON file, relative of the resources.
-     */
-    @Deprecated
-    public String jsonCommandsPath
+    public PipelineDsl dsl
 
     /**
      * Version of pipeline syntax.
      */
     public String pipelineVersion
-
-    /**
-     * Browser executor (chrome, phantom, etc.).
-     */
-    public String browser
-
-    /**
-     * Browser ip or domain address.
-     */
-    public String browserAddress
 
     /**
      * Description of the pipeline.
@@ -68,7 +56,9 @@ class Pipeline {
 
     /**
      * Need proxy rotation for pipeline
+     * @deprecated use dsl.settings.needProxyRotation
      */
+    @Deprecated
     public Boolean needProxy
 
     /**
@@ -92,12 +82,14 @@ class Pipeline {
      * Created on date time.
      */
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @CreatedDate
     public Date createdOn
 
     /**
      * Modified on date time.
      */
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @LastModifiedDate
     public Date modifiedOn
 
     /**
@@ -135,9 +127,8 @@ class Pipeline {
     @JsonIgnore
     public User user
 
-    void setJsonCommands(String jsonCommands) {
-        this.jsonCommands = jsonCommands
-        pipelineConfiguration = PipelineConfigurationMapper.toPipelineConfiguration(jsonCommands)
+    void setDsl(PipelineDsl dsl) {
+        this.jsonCommands = JsonOutput.toJson(dsl)
     }
 
 }

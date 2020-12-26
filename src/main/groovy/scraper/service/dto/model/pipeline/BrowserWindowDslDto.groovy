@@ -1,9 +1,8 @@
-package scraper.service.model.types
+package scraper.service.dto.model.pipeline
 
-class PipelineWindowSettings {
+class BrowserWindowDslDto {
     Number width
     Number height
-
     /**
      * Browser language
      */

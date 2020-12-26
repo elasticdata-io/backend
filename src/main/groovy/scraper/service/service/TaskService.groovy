@@ -19,6 +19,7 @@ import scraper.service.dto.model.task.TaskEditDto
 import scraper.service.dto.model.task.TaskErrorDto
 import scraper.service.model.Pipeline
 import scraper.service.model.Task
+import scraper.service.model.mapper.PipelineDslMapper
 import scraper.service.repository.TaskRepository
 import scraper.service.service.scheduler.TaskStatusScheduler
 import scraper.service.ws.TaskWebsocketProducer
@@ -157,12 +158,9 @@ class TaskService {
 
     Task createWithoutRun(Pipeline pipeline, Task task) {
         task.pipelineId = pipeline.id
-        task.startOnUtc = new Date()
         task.userId = pipeline.user.id
         task.hookUrl = pipeline.hookUrl
-        task.commands = pipeline.jsonCommands
-        task.pipelineVersion = pipeline.pipelineVersion
-        task.pipelineConfiguration = pipeline.pipelineConfiguration
+        task.dsl = pipeline.dsl ?: PipelineDslMapper.toPipelineDsl(pipeline.jsonCommands)
         taskRepository.save(task)
         update(task)
         return task

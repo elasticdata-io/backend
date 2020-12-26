@@ -1,4 +1,4 @@
-package scraper.service.dto.mapper
+package scraper.service.dto.mapper.pipeline
 
 import org.springframework.stereotype.Component
 import scraper.service.dto.model.pipeline.PipelineDto
@@ -26,6 +26,7 @@ class PipelineMapper {
             status: pipelineDto.status,
             dependencies: PipelineDependencyMapper.toPipelineDependencies(pipelineDto.dependencies),
             jsonCommands: pipelineDto.jsonCommands,
+            dsl: PipelineDslMapper.toPipelineDsl(pipelineDto.dsl),
             hookUrl: pipelineDto.hookUrl,
         )
     }
@@ -50,6 +51,7 @@ class PipelineMapper {
                 dependencies: PipelineDependencyMapper.toPipelineDependenciesDto(pipeline.dependencies),
                 userId: pipeline.user.id,
                 jsonCommands: pipeline.jsonCommands,
+                dsl: PipelineDslMapper.toPipelineDslDto(pipeline.dsl),
                 lastParseRowsCount: pipeline.parseRowsCount,
                 lastParseBytes: pipeline.parseBytes,
                 pipelineVersion: pipeline.pipelineVersion,

@@ -2,7 +2,6 @@ package scraper.service.controller
 
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -13,8 +12,9 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import scraper.service.constants.PipelineStatuses
-import scraper.service.dto.mapper.PipelineDependencyMapper
-import scraper.service.dto.mapper.PipelineMapper
+import scraper.service.dto.mapper.pipeline.PipelineDependencyMapper
+import scraper.service.dto.mapper.pipeline.PipelineDslMapper
+import scraper.service.dto.mapper.pipeline.PipelineMapper
 import scraper.service.dto.model.pipeline.PipelineDto
 import scraper.service.model.Pipeline
 import scraper.service.model.Task
@@ -33,9 +33,6 @@ import javax.servlet.http.HttpServletResponse
 @RestController
 @RequestMapping("/pipeline")
 class PipelineDataController {
-
-    @Value('${selenium.default.browser}')
-    String SELENIUM_DEFAULT_BROWSER
 
     @Autowired
     UserTokenRepository userTokenRepository
@@ -122,16 +119,13 @@ class PipelineDataController {
         pipeline.description = pipelineDto.description
         pipeline.jsonCommands = pipelineDto.jsonCommands
         pipeline.pipelineVersion = pipelineDto.pipelineVersion
-        pipeline.modifiedOn = new Date()
         pipeline.needProxy = pipelineDto.needProxy
         pipeline.dependencies = PipelineDependencyMapper.toPipelineDependencies(pipelineDto.dependencies)
-        pipeline.modifiedOn = new Date()
         pipeline.hookUrl = pipelineDto.hookUrl
+        pipeline.dsl = PipelineDslMapper.toPipelineDsl(pipelineDto.dsl)
         if (!pipelineInDb) {
             pipeline.status = PipelineStatuses.NOT_RUNNING
-            pipeline.createdOn = new Date()
             pipeline.user = user
-            pipeline.browser = SELENIUM_DEFAULT_BROWSER
             pipeline.isDebugMode = false
         }
         pipelineService.validate(pipeline)
@@ -157,8 +151,6 @@ class PipelineDataController {
         clonePipeline.tasksTotal = 0
         clonePipeline.parseRowsCount = 0
         clonePipeline.runIntervalMin = 0
-        clonePipeline.createdOn = new Date()
-        clonePipeline.modifiedOn = new Date()
         clonePipeline.lastStartedOn = null
         clonePipeline.lastCompletedOn = null
         clonePipeline.status = PipelineStatuses.NOT_RUNNING

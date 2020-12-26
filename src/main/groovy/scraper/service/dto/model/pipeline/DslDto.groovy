@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonInclude
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 class DslDto {
-    String version = 'v2'
+    String version = '2.0'
     SettingsDslDto settings = new SettingsDslDto()
-    List<DataRuleDslDto> dataRules = []
+    List<Object> dataRules = []
     List<HashMap> commands = []
 }

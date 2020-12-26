@@ -68,7 +68,7 @@ class DslMapper {
         def settings = pipelineDsl?.settings
         def dto = new DslDto()
         dto.commands = pipelineDsl.commands as List<HashMap>
-        dto.dataRules = pipelineDsl.dataRules as List<DataRuleDslDto>
+        dto.dataRules = pipelineDsl.dataRules as List<Object>
         dto.version = pipelineDsl.version
         def settingsDto = new SettingsDslDto()
         if (settings?.proxies) {

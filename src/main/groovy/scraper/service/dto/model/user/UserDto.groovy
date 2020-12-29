@@ -13,4 +13,5 @@ class UserDto {
     String lastName
     String picture
     Boolean isAdmin
+    Boolean hasTelegram
 }

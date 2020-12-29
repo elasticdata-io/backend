@@ -8,27 +8,17 @@ public class User {
 
 	@Id
 	public String id;
-
 	public String login;
-
 	public String email;
-
 	public String firstName;
-
 	public String secondName;
-
 	public String lastName;
-
 	public String password;
-
 	public String salt;
-
 	public String picture;
-
 	public String googleUserId;
 	public String facebookUserId;
-
+	public String telegramChatId;
 	public Boolean isActive;
-
 	public Boolean isAdmin;
 }

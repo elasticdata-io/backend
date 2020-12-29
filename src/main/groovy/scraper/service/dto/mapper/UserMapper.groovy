@@ -9,13 +9,14 @@ class UserMapper {
 
     static UserDto toUserDto(User user) {
         return new UserDto(
-                id: user.id,
-                email: user.email,
-                login: user.login,
-                lastName: user.lastName,
-                firstName: user.firstName,
-                picture: user.picture,
-                isAdmin: user.isAdmin
+            id: user.id,
+            email: user.email,
+            login: user.login,
+            lastName: user.lastName,
+            firstName: user.firstName,
+            picture: user.picture,
+            isAdmin: user.isAdmin,
+            hasTelegram: user.telegramChatId
         )
     }
 

@@ -57,7 +57,7 @@ class TelegramBot extends AbilityBot {
                         return
                     }
                     def user = telegramIncomingHookService.rememberUser(userId, chatId as String)
-                    def message = """Welcome! *${user.firstName} ${user.secondName}* are started!
+                    def message = """*${user.firstName} ${user.secondName}* you are welcome!
                                     |/commands - list all available commands""".stripMargin()
                     silent.sendMd(message, ctx.chatId())
                 })

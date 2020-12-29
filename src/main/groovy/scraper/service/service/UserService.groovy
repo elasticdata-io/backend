@@ -26,6 +26,10 @@ class UserService {
         return user.present ? user.get() : null
     }
 
+    User findByTelegramId(String id) {
+        return userRepository.findByTelegramChatId(id)
+    }
+
     User findByToken(String token) {
         String userId = tokenService.getUserId(token)
         return findById(userId)

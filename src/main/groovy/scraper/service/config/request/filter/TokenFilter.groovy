@@ -20,14 +20,12 @@ class TokenFilter extends GenericFilterBean {
     String SWAGGER_UI = '/api/swagger-ui'
     String LOGIN_URI = '/api/login'
     String WS_URI = '/api/ws'
-    String TELEGRAM_BOT_WEBHOOK = '/api/telegram/botwebhook'
 
     List<String> allowUrls = [
             SWAGGER_API,
             SWAGGER_UI,
             WS_URI,
             LOGIN_URI,
-            TELEGRAM_BOT_WEBHOOK,
             '/api/pipeline/data',
             '/api/pipeline/task/synchronize',
             '/api/pipeline-task/data',

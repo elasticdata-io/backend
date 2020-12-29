@@ -1,10 +1,10 @@
 package scraper.service.service
 
-
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import scraper.service.constants.PipelineStatuses
 import scraper.service.dto.mapper.pipeline.PipelineMapper
 import scraper.service.dto.mapper.TaskMapper
 import scraper.service.dto.model.task.PendingTaskDto
@@ -17,6 +17,9 @@ import scraper.service.ws.PipelineWebsocketProducer
 class PipelineService {
 
     private Logger logger = LogManager.getRootLogger()
+
+    @Autowired
+    private TaskService taskService
 
     @Autowired
     private PipelineWebsocketProducer pipelineWebsocketProducer
@@ -70,5 +73,16 @@ class PipelineService {
         // todo : check required props
         def pipelineConfiguration = pipeline.dsl
         println pipelineConfiguration
+    }
+
+    List<Pipeline> findInProcessing(String userId) {
+        List<String> inProcessingStatuses = PipelineStatuses.getInProcessing()
+        List<Task> tasks = taskService.findByStatusInAndUserId(inProcessingStatuses, userId)
+        List<String> pipelineIds = tasks.collect { it.pipelineId }
+        return findByIds(pipelineIds)
+    }
+
+    List<Pipeline> findAll(String userId) {
+        return  pipelineRepository.findByUserOrderByModifiedOnDesc(userId)
     }
 }

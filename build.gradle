@@ -79,6 +79,9 @@ dependencies {
 
     // elasticsearch client
     compile 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.4.0'
+
+    // telegram api
+    compile group: 'org.telegram', name: 'telegrambots-abilities', version: '5.0.1'
 }
 
 test {

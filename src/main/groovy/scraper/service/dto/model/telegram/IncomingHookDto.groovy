@@ -1,7 +1,11 @@
 package scraper.service.dto.model.telegram
 
+class IncomingHookChat {
+    String id
+}
+
 class IncomingHookMessage {
-    HashMap chat
+    IncomingHookChat chat
     String text
 }
 

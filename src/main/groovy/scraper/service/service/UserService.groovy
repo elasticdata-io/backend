@@ -93,4 +93,8 @@ class UserService {
         }
         return true
     }
+
+    void save(User user) {
+        userRepository.save(user)
+    }
 }

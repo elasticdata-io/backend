@@ -1,6 +1,7 @@
 package scraper.service.service.bot
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.TelegramBotsApi
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException
@@ -10,11 +11,17 @@ import javax.annotation.PostConstruct
 @Component
 class BotsLoader {
 
+    @Value("telegram.bot.enabled")
+    Boolean enabled
+
     @Autowired
     TelegramBot telegramBot
 
     @PostConstruct
     void init() {
+        if (!enabled) {
+            return
+        }
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class)
             botsApi.registerBot(telegramBot)

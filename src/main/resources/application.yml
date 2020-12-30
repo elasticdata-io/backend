@@ -93,3 +93,4 @@ management:
       exposure:
         include: health,prometheus
 proxy.static.url: ${PROXY_STATIC_URL:k8s:30220}
+telegram.bot.enabled: false

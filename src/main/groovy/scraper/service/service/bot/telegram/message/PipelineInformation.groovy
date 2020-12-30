@@ -12,7 +12,7 @@ class PipelineInformation extends AbstractMessage {
     SendMessage getMessage(Pipeline pipeline, Task task) {
         def text = readMarkdown('en/pipeline-information.md')
         def engine = new SimpleTemplateEngine()
-        String docsUrl = task.docsUrl
+        String docsUrl = task?.docsUrl
         String link = "https://app.elasticdata.io/#/pipeline/edit/${pipeline.id}"
         def template = engine
                 .createTemplate(text)

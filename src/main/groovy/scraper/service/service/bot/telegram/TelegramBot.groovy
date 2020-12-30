@@ -5,20 +5,35 @@ import org.springframework.stereotype.Component
 import org.telegram.abilitybots.api.bot.AbilityBot
 import org.telegram.abilitybots.api.objects.Ability
 import org.telegram.abilitybots.api.objects.Locality
+import org.telegram.abilitybots.api.objects.MessageContext
 import org.telegram.abilitybots.api.objects.Privacy
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException
 import scraper.service.service.PipelineService
-import scraper.service.service.TelegramIncomingHookService
+import scraper.service.service.TaskService
 import scraper.service.service.UserService
+import scraper.service.service.bot.telegram.message.Menu
+import scraper.service.service.bot.telegram.message.PipelineInformation
+import scraper.service.service.bot.telegram.message.WelcomeAnonymous
+import scraper.service.service.bot.telegram.message.WelcomeUser
+import scraper.service.service.bot.telegram.message.WelcomeUserDto
 
 @Component
 class TelegramBot extends AbilityBot {
 
     @Autowired
-    TelegramIncomingHookService telegramIncomingHookService
+    Menu menu
+
+    @Autowired
+    PipelineInformation pipelineInformation
+
+    @Autowired
+    WelcomeUser welcomeUser
+
+    @Autowired
+    WelcomeAnonymous welcomeAnonymous
+
+    @Autowired
+    TaskService taskService
 
     @Autowired
     PipelineService pipelineService
@@ -40,6 +55,25 @@ class TelegramBot extends AbilityBot {
         return true
     }
 
+    Ability menu() {
+        return Ability
+                .builder()
+                .name("menu")
+                .info("menu")
+                .locality(Locality.ALL)
+                .privacy(Privacy.PUBLIC)
+                .action({ ctx ->
+                    doMenu(ctx)
+                })
+                .build()
+    }
+
+    private void doMenu(MessageContext ctx) {
+        SendMessage message = menu.mainMenu('Well, today I have this menu:')
+        message.setChatId(ctx.chatId() as String)
+        silent.execute(message)
+    }
+
     Ability start() {
         return Ability
                 .builder()
@@ -48,24 +82,22 @@ class TelegramBot extends AbilityBot {
                 .locality(Locality.ALL)
                 .privacy(Privacy.PUBLIC)
                 .action({ ctx ->
-                    long chatId = ctx.chatId()
-                    def arguments = ctx.arguments()
-                    if (arguments.length < 2) {
-                        sendCustomKeyboard(ctx.chatId() as String)
-                        // silent.send('args userId is empty, todo please login in site...', ctx.chatId())
-                        return
-                    }
-                    String userId = arguments[1]
-                    if (!userId) {
-                        silent.send('args userId is empty, todo please login in site...', ctx.chatId())
-                        return
-                    }
-                    def user = telegramIncomingHookService.rememberUser(userId, chatId as String)
-                    def message = """*${user.firstName} ${user.secondName}* you are welcome!
-                                    |/commands - list all available commands""".stripMargin()
-                    silent.sendMd(message, ctx.chatId())
+                    doStart(ctx)
                 })
                 .build()
+    }
+
+    private void doStart(MessageContext ctx) {
+        def user = welcomeUser.rememberUser(ctx)
+        SendMessage message = welcomeAnonymous.getMessage()
+        if (user) {
+            message = welcomeUser.getMessage(new WelcomeUserDto(
+                    firstName: user.firstName ?: 'Guest',
+                    lastName: user.secondName ?: ''
+            ))
+        }
+        message.setChatId(ctx.chatId() as String)
+        silent.execute(message)
     }
 
     Ability pipelineInfo() {
@@ -87,16 +119,10 @@ class TelegramBot extends AbilityBot {
                         return
                     }
                     def pipeline = pipelineService.findById(pipelineId)
-                    String link = "https://app.elasticdata.io/#/pipeline/edit/${pipelineId}"
-                    def message = """Title: *${pipeline.key}*
-                                    |Pipeline version: *${pipeline.pipelineVersion}*
-                                    |Status: *${pipeline.status}*
-                                    |Tasks total: *${pipeline.tasksTotal}*
-                                    |Open in browser: [elasticdata.io](${link})
-                                    |Last started on UTC: *${pipeline.lastStartedOn}*)
-                                    |Last completed on UTC: *${pipeline.lastCompletedOn}*)
-                                    |HookUrl: *${pipeline.hookUrl}*""".stripMargin()
-                    silent.sendMd(message, ctx.chatId())
+                    def task = taskService.findLastCompletedTask(pipelineId)
+                    def message = pipelineInformation.getMessage(pipeline, task)
+                    message.setChatId(chatId as String)
+                    silent.execute(message)
                 })
                 .build()
     }
@@ -109,50 +135,42 @@ class TelegramBot extends AbilityBot {
                 .locality(Locality.ALL)
                 .privacy(Privacy.PUBLIC)
                 .action({ ctx ->
-                    long chatId = ctx.chatId()
-                    def user = userService.findByTelegramId(ctx.chatId() as String)
-                    def pipelines = pipelineService.findAll(user.id)
-                    def list = pipelines
-                            .collect{"${it.key} /pipeline_info${it.id}"}
-                            .join('\n')
-                    SendMessage sendMessage = new SendMessage()
-                    sendMessage.setChatId(chatId as String)
-                    sendMessage.setText(list)
-                    silent.execute(sendMessage)
+                    doPipelines(ctx)
                 })
                 .build()
     }
 
-    void sendCustomKeyboard(String chatId) {
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        message.setText("Custom message text");
-
-        // Create ReplyKeyboardMarkup object
-        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-        // Create the keyboard (list of keyboard rows)
-        List<KeyboardRow> keyboard = new ArrayList<>();
-        // Create a keyboard row
-        KeyboardRow row = new KeyboardRow();
-        // Set each button, you can also use KeyboardButton objects if you need something else than text
-        row.add("Row 1 Button 1");
-        row.add("Row 1 Button 2");
-        row.add("Row 1 Button 3");
-        // Add the first row to the keyboard
-        keyboard.add(row);
-        // Create another keyboard row
-        row = new KeyboardRow();
-        // Set each button for the second line
-        row.add("Row 2 Button 1");
-        row.add("Row 2 Button 2");
-        row.add("Row 2 Button 3");
-        // Add the second row to the keyboard
-        keyboard.add(row);
-        // Set the keyboard to the markup
-        keyboardMarkup.setKeyboard(keyboard);
-        // Add it to the message
-        message.setReplyMarkup(keyboardMarkup);
-        execute(message)
+    private void doPipelines(MessageContext ctx) {
+        long chatId = ctx.chatId()
+        def user = userService.findByTelegramId(ctx.chatId() as String)
+        def pipelines = pipelineService.findAll(user.id)
+        def list = pipelines
+                .collect { "${it.key} /pipeline_info${it.id}" }
+                .join('\n')
+        SendMessage sendMessage = new SendMessage()
+        sendMessage.setChatId(chatId as String)
+        sendMessage.setText(list)
+        silent.execute(sendMessage)
     }
 
+    Ability all() {
+        return Ability.builder()
+                .name(DEFAULT)
+                .privacy(Privacy.PUBLIC)
+                .locality(Locality.ALL)
+                .input(0)
+                .action({ctx ->
+                    def update = ctx.update()
+                    def command = update.callbackQuery
+                        ? update.callbackQuery.data
+                        : update.message.text
+                    if (command == '/pipelines') {
+                        return doPipelines(ctx)
+                    }
+                    if (command == 'menu') {
+                        return doMenu(ctx)
+                    }
+                })
+                .build()
+    }
 }

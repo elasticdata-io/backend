@@ -1,4 +1,4 @@
-package scraper.service.service.bot
+package scraper.service.service.bot.telegram
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -11,7 +11,7 @@ import javax.annotation.PostConstruct
 @Component
 class BotsLoader {
 
-    @Value("telegram.bot.enabled")
+    @Value('${bot.telegram.enabled}')
     Boolean enabled
 
     @Autowired

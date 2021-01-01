@@ -1,28 +1,31 @@
 package scraper.service.scheduler
 
 import org.springframework.stereotype.Component
+import scraper.constants.PipelineStatuses
+import scraper.model.Task
+import scraper.service.TaskService
 
 @Component
 class WaitDepsTaskStatusScheduler extends AbstractTaskStatusScheduler {
 
-    WaitDepsTaskStatusScheduler(scraper.service.TaskService taskService) {
+    WaitDepsTaskStatusScheduler(TaskService taskService) {
         this.taskService = taskService
     }
 
     @Override
-    Boolean checkChangeTaskStatus(scraper.model.Task task) {
-        if (task.status != scraper.constants.PipelineStatuses.WAIT_DEPS) {
+    Boolean checkChangeTaskStatus(Task task) {
+        if (task.status != PipelineStatuses.WAIT_DEPS) {
             return false
         }
-        List<scraper.model.Task> taskDependencies = taskService.findByIds(task.taskDependencies)
+        List<Task> taskDependencies = taskService.findByIds(task.taskDependencies)
         if (taskDependencies.empty) {
             return false
         }
         Boolean depsIsFinished = taskDependencies.every {t ->
-            t.status == scraper.constants.PipelineStatuses.COMPLETED || t.status == scraper.constants.PipelineStatuses.ERROR || t.status == scraper.constants.PipelineStatuses.STOPPED
+            t.status == PipelineStatuses.COMPLETED || t.status == PipelineStatuses.ERROR || t.status == scraper.constants.PipelineStatuses.STOPPED
         }
         if (depsIsFinished) {
-            changeStatus(task.id, scraper.constants.PipelineStatuses.NEED_RUN)
+            changeStatus(task.id, PipelineStatuses.NEED_RUN)
             return true
         }
     }

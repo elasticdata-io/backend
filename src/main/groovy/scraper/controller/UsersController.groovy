@@ -8,16 +8,18 @@ import org.springframework.web.bind.annotation.RestController
 import scraper.dto.mapper.UserMapper
 import scraper.dto.model.user.UserDto
 import scraper.model.User
+import scraper.repository.UserRepository
+import scraper.service.UserService
 
 @RestController
 @RequestMapping("/users")
 class UsersController {
 
     @Autowired
-    scraper.service.UserService userService
+    UserService userService
 
     @Autowired
-    scraper.repository.UserRepository userRepository
+    UserRepository userRepository
 
     @GetMapping
     List<UserDto> list(@RequestHeader("token") String token) {

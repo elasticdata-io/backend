@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import scraper.dto.mapper.TaskMapper
 import scraper.dto.model.task.TaskDto
+import scraper.model.Task
 import scraper.repository.PipelineRepository
 import scraper.auth.TokenService
+import scraper.service.TaskService
 
 @RestController
 @RequestMapping("/pipeline-task")
@@ -23,7 +25,7 @@ class PipelineTaskController {
     PipelineRepository pipelineRepository
 
     @Autowired
-    scraper.service.TaskService taskService
+    TaskService taskService
 
     @Autowired
     TokenService tokenService
@@ -39,7 +41,7 @@ class PipelineTaskController {
                        @RequestHeader("token") String token) {
         String userId = tokenService.getUserId(token)
         Pageable top = PageRequest.of(offset as int, count as int)
-        List<scraper.model.Task> tasks = taskService.findByPipelineAndUserOrderByStartOnDesc(pipelineId, userId, top)
+        List<Task> tasks = taskService.findByPipelineAndUserOrderByStartOnDesc(pipelineId, userId, top)
         ArrayList<TaskDto> dtoList = new ArrayList<>()
         tasks.each {task->
             String error = task.failureReason

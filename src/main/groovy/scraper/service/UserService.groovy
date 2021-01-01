@@ -5,6 +5,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Service
 import scraper.auth.TokenService
 import scraper.constants.PipelineStatuses
+import scraper.model.Task
 import scraper.model.User
 import scraper.repository.UserRepository
 
@@ -89,7 +90,7 @@ class UserService {
 
     Boolean hasFreeWorker(String userId) {
         def statuses = [PipelineStatuses.RUNNING, PipelineStatuses.QUEUE]
-        List<scraper.model.Task> tasks = taskService.findByStatusInAndUserId(statuses, userId)
+        List<Task> tasks = taskService.findByStatusInAndUserId(statuses, userId)
         if (tasks.size() >= maxAvailableWorkers) {
             // logger.debug("not has free worker for user: ${userId}")
             return false

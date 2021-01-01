@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 import scraper.auth.TokenService
 import scraper.dto.mapper.UserMapper
 import scraper.dto.model.user.UserDto
+import scraper.service.UserService
 
 import javax.servlet.http.HttpServletRequest
 
@@ -17,7 +18,7 @@ import javax.servlet.http.HttpServletRequest
 class UserController {
 
     @Autowired
-    private scraper.service.UserService userService
+    private UserService userService
 
     @Autowired
     private TokenService tokenService

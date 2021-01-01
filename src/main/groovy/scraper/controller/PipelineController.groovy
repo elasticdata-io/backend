@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.RestController
 import scraper.dto.model.task.PendingApiTaskDto
 import scraper.dto.model.task.PendingTaskDto
 import scraper.dto.model.task.PipelineRunDto
+import scraper.model.Task
+import scraper.service.PipelineRunnerService
 import scraper.service.PipelineService
 import scraper.repository.PipelineRepository
+import scraper.service.TaskService
 
 @RestController
 @RequestMapping("/pipeline")
@@ -21,7 +24,7 @@ class PipelineController {
     private Logger logger = LogManager.getRootLogger()
 
     @Autowired
-    scraper.service.TaskService taskService
+    TaskService taskService
 
     @Autowired
     PipelineRepository pipelineRepository
@@ -30,7 +33,7 @@ class PipelineController {
     PipelineService pipelineService
 
     @Autowired
-    scraper.service.PipelineRunnerService pipelineRunnerService
+    PipelineRunnerService pipelineRunnerService
 
     /**
      * Runs pipeline process by pipeline pipelineId.
@@ -53,8 +56,8 @@ class PipelineController {
 
     @PostMapping("/task/synchronize/{taskId}")
     void syncWithLastTask(@PathVariable String taskId) {
-        scraper.model.Task task = taskService.findById(taskId)
-        scraper.model.Task lastTask = taskService.findLastFinishedTask(task.pipelineId)
+        Task task = taskService.findById(taskId)
+        Task lastTask = taskService.findLastFinishedTask(task.pipelineId)
         pipelineService.updateFromTask(lastTask)
     }
 

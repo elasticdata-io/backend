@@ -7,6 +7,10 @@ import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+import scraper.model.User
+import scraper.model.UserToken
+import scraper.repository.UserRepository
+import scraper.repository.UserTokenRepository
 
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
@@ -19,10 +23,10 @@ class TokenService {
     public static final String KEY = "sad234234asd12312k_!sdasd"
 
     @Autowired
-    private scraper.repository.UserRepository userRepository
+    private UserRepository userRepository
 
     @Autowired
-    private scraper.repository.UserTokenRepository userTokenRepository
+    private UserTokenRepository userTokenRepository
 
     /**
      * Gets token sting.
@@ -32,7 +36,7 @@ class TokenService {
      * @throws Exception
      */
     String makeToken(String login, String password) throws Exception {
-        scraper.model.User user = userRepository.findByLogin(login)
+        User user = userRepository.findByLogin(login)
         if (user == null || user.isActive == null || !user.isActive) {
             return null
         }
@@ -51,7 +55,7 @@ class TokenService {
      * @throws Exception
      */
     String makeToken(String login) throws Exception {
-        scraper.model.User user = userRepository.findByLogin(login)
+        User user = userRepository.findByLogin(login)
         if (user == null || user.isActive == null || !user.isActive) {
             return null
         }
@@ -124,8 +128,8 @@ class TokenService {
     void saveUserToken(String token, HttpServletRequest request) {
         Claims claims = parseToken(token)
         String login = claims.getSubject()
-        scraper.model.User user = userRepository.findByLogin(login)
-        scraper.model.UserToken userToken = new scraper.model.UserToken(
+        User user = userRepository.findByLogin(login)
+        UserToken userToken = new UserToken(
                 token: token,
                 user: user,
                 ip: request.getHeader('X-FORWARDED-FOR') ?: request.getRemoteAddr(),
@@ -148,7 +152,7 @@ class TokenService {
         if (isExpired) {
             return false
         }
-        scraper.model.UserToken userToken = userTokenRepository.findByToken(token)
+        UserToken userToken = userTokenRepository.findByToken(token)
         return userToken != null
     }
 }

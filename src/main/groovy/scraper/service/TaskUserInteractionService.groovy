@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import scraper.amqp.dto.DisableUserInteractionDto
+import scraper.amqp.producer.TaskUserInteractionProducer
 import scraper.dto.mapper.UserInteractionMapper
 import scraper.dto.model.task.UserInteractionStateDto
 import scraper.dto.model.task.UserInteractionDto
@@ -20,7 +21,7 @@ class TaskUserInteractionService {
     TaskUserInteractionRepository taskUserInteractionRepository
 
     @Autowired
-    scraper.amqp.producer.TaskUserInteractionProducer taskUserInteractionProducer
+    TaskUserInteractionProducer taskUserInteractionProducer
 
     @Autowired
     TaskWebsocketProducer taskWebsocketProducer

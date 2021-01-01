@@ -2,14 +2,18 @@ package scraper.dto.mapper
 
 import groovy.json.JsonOutput
 import org.springframework.stereotype.Component
+import scraper.dto.model.task.HookTaskDto
 import scraper.dto.model.task.PendingApiTaskDto
+import scraper.dto.model.task.PendingTaskDto
+import scraper.dto.model.task.TaskDto
 import scraper.dto.model.task.TaskEditDto
+import scraper.model.Task
 
 @Component
 class TaskMapper {
 
-    static scraper.dto.model.task.HookTaskDto toHookTaskDto(scraper.model.Task task) {
-        return new scraper.dto.model.task.HookTaskDto(
+    static HookTaskDto toHookTaskDto(Task task) {
+        return new HookTaskDto(
                 taskId: task.id,
                 pipelineId: task.pipelineId,
                 userId: task.userId,
@@ -27,7 +31,7 @@ class TaskMapper {
         )
     }
 
-    static PendingApiTaskDto toPendingApiTaskDto(scraper.model.Task task) {
+    static PendingApiTaskDto toPendingApiTaskDto(Task task) {
         def userInteraction = task.dsl?.settings?.userInteraction
         return new PendingApiTaskDto(
                 id: task.id,
@@ -46,9 +50,9 @@ class TaskMapper {
         )
     }
 
-    static scraper.dto.model.task.PendingTaskDto toPendingTaskDto(scraper.model.Task task) {
+    static PendingTaskDto toPendingTaskDto(Task task) {
         def userInteraction = task.dsl?.settings?.userInteraction
-        return new scraper.dto.model.task.PendingTaskDto(
+        return new PendingTaskDto(
                 id: task.id,
                 pipelineId: task.pipelineId,
                 userId: task.userId,
@@ -67,9 +71,9 @@ class TaskMapper {
         )
     }
 
-    static scraper.dto.model.task.TaskDto toTaskDto(scraper.model.Task task) {
+    static TaskDto toTaskDto(Task task) {
         def userInteraction = task.dsl?.settings?.userInteraction
-        return new scraper.dto.model.task.TaskDto(
+        return new TaskDto(
                 id: task.id,
                 pipelineId: task.pipelineId,
                 userId: task.userId,
@@ -89,7 +93,7 @@ class TaskMapper {
         )
     }
 
-    static TaskEditDto toTaskEditDto(scraper.model.Task task) {
+    static TaskEditDto toTaskEditDto(Task task) {
         def userInteraction = task.dsl?.settings?.userInteraction
         return new TaskEditDto(
                 id: task.id,

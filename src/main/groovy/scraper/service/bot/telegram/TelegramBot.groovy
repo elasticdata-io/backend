@@ -13,6 +13,7 @@ import scraper.service.TaskService
 import scraper.service.UserService
 import scraper.service.bot.telegram.message.Menu
 import scraper.service.bot.telegram.message.PipelineInformation
+import scraper.service.bot.telegram.message.WelcomeAnonymous
 import scraper.service.bot.telegram.message.WelcomeUser
 import scraper.service.bot.telegram.message.WelcomeUserDto
 
@@ -29,7 +30,7 @@ class TelegramBot extends AbilityBot {
     WelcomeUser welcomeUser
 
     @Autowired
-    scraper.service.bot.telegram.message.WelcomeAnonymous welcomeAnonymous
+    WelcomeAnonymous welcomeAnonymous
 
     @Autowired
     TaskService taskService

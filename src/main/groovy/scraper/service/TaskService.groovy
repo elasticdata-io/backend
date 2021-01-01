@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import scraper.amqp.dto.ExecuteCommandDto
 import scraper.amqp.producer.HookProducer
+import scraper.amqp.producer.TaskProducer
 import scraper.constants.PipelineStatuses
 import scraper.dto.mapper.TaskMapper
 import scraper.dto.model.task.TaskCompleteDto
@@ -29,7 +30,7 @@ class TaskService {
     private static final Logger logger = LoggerFactory.getLogger(TaskService.class)
 
     @Autowired
-    scraper.amqp.producer.TaskProducer taskProducer
+    TaskProducer taskProducer
 
     @Autowired
     HookProducer hookProducer

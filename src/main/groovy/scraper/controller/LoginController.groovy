@@ -15,6 +15,7 @@ import scraper.model.User
 import scraper.repository.UserRepository
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import scraper.auth.TokenService
+import scraper.service.UserService
 
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
@@ -31,7 +32,7 @@ class LoginController {
     private String facebookSignInCallbackUrl
 
     @Autowired
-    private scraper.service.UserService userService
+    private UserService userService
 
     @Autowired
     private UserRepository userRepository

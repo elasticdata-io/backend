@@ -7,19 +7,25 @@ import scraper.dto.model.pipeline.NetworkDslDto
 import scraper.dto.model.pipeline.SettingsDslDto
 import scraper.dto.model.pipeline.SkipResourcesDslDto
 import scraper.dto.model.pipeline.UserInteractionDsl
+import scraper.model.types.BrowserWindowDsl
+import scraper.model.types.NetworkDsl
+import scraper.model.types.PipelineDsl
+import scraper.model.types.SettingsDsl
+import scraper.model.types.SkipResourcesDsl
+import scraper.model.types.UserInteractionDslSettings
 
 class DslMapper {
 
-    static scraper.model.types.PipelineDsl toDslEntity(DslDto dslDto) {
+    static PipelineDsl toDslEntity(DslDto dslDto) {
         if (!dslDto) {
             return null
         }
         def settings = dslDto.settings
-        def dsl = new scraper.model.types.PipelineDsl()
+        def dsl = new PipelineDsl()
         dsl.commands = dslDto.commands
         dsl.dataRules = dslDto.dataRules
         dsl.version = dslDto.version
-        def settingsDsl = new scraper.model.types.SettingsDsl()
+        def settingsDsl = new SettingsDsl()
         if (settings?.proxies) {
             settingsDsl.proxies = settings.proxies
         }
@@ -28,20 +34,20 @@ class DslMapper {
         }
         def window = settings?.window
         if (window) {
-            settingsDsl.window = new scraper.model.types.BrowserWindowDsl(
+            settingsDsl.window = new BrowserWindowDsl(
                 height: window?.height,
                 width: window?.width,
                 lang: window?.lang,
             )
         }
         if (settings?.userInteraction?.watchCommands) {
-            settingsDsl.userInteraction = new scraper.model.types.UserInteractionDslSettings(
+            settingsDsl.userInteraction = new UserInteractionDslSettings(
                 watchCommands: settings?.userInteraction?.watchCommands
             )
         }
         if (settings?.network?.skipResources) {
-            settingsDsl.network = new scraper.model.types.NetworkDsl(
-                skipResources: new scraper.model.types.SkipResourcesDsl(
+            settingsDsl.network = new NetworkDsl(
+                skipResources: new SkipResourcesDsl(
                     stylesheet: settings.network.skipResources?.stylesheet,
                     image: settings.network.skipResources?.image,
                     font: settings.network.skipResources?.font,
@@ -55,7 +61,7 @@ class DslMapper {
         return dsl
     }
 
-    static DslDto toPipelineDslDto(scraper.model.types.PipelineDsl pipelineDsl) {
+    static DslDto toPipelineDslDto(PipelineDsl pipelineDsl) {
         if (!pipelineDsl) {
             return null
         }

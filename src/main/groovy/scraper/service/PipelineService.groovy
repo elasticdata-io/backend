@@ -9,6 +9,7 @@ import scraper.dto.mapper.pipeline.PipelineMapper
 import scraper.dto.mapper.TaskMapper
 import scraper.dto.model.task.PendingTaskDto
 import scraper.model.Pipeline
+import scraper.model.Task
 import scraper.repository.PipelineRepository
 import scraper.ws.PipelineWebsocketProducer
 
@@ -63,7 +64,7 @@ class PipelineService {
         update(pipeline)
     }
 
-    void updateFromTask(scraper.model.Task task) {
+    void updateFromTask(Task task) {
         PendingTaskDto taskDto = TaskMapper.toPendingTaskDto(task)
         updateFromTask(taskDto)
     }
@@ -76,7 +77,7 @@ class PipelineService {
 
     List<Pipeline> findInProcessing(String userId) {
         List<String> inProcessingStatuses = PipelineStatuses.getInProcessing()
-        List<scraper.model.Task> tasks = taskService.findByStatusInAndUserId(inProcessingStatuses, userId)
+        List<Task> tasks = taskService.findByStatusInAndUserId(inProcessingStatuses, userId)
         List<String> pipelineIds = tasks.collect { it.pipelineId }
         return findByIds(pipelineIds)
     }

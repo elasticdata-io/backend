@@ -2,15 +2,16 @@ package scraper.dto.mapper.pipeline
 
 import org.springframework.stereotype.Component
 import scraper.dto.model.pipeline.PipelineDto
+import scraper.model.Pipeline
 
 @Component
 class PipelineMapper {
 
-    static scraper.model.Pipeline toPipeline(PipelineDto pipelineDto) {
+    static Pipeline toPipeline(PipelineDto pipelineDto) {
         if (!pipelineDto) {
             return null
         }
-        return new scraper.model.Pipeline(
+        return new Pipeline(
             id: pipelineDto.id,
             key: pipelineDto.key,
             description: pipelineDto.description,
@@ -30,7 +31,7 @@ class PipelineMapper {
         )
     }
 
-    static PipelineDto toPipelineDto(scraper.model.Pipeline pipeline) {
+    static PipelineDto toPipelineDto(Pipeline pipeline) {
         if (!pipeline) {
             return null
         }

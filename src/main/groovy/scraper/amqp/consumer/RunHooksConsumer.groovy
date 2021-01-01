@@ -11,21 +11,25 @@ import org.apache.logging.log4j.Logger
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import scraper.amqp.QueueConstants
 import scraper.dto.mapper.TaskMapper
+import scraper.dto.model.task.HookTaskDto
+import scraper.model.Task
+import scraper.service.TaskService
 
 @Component
 class RunHooksConsumer {
     private Logger logger = LogManager.getRootLogger()
 
     @Autowired
-    scraper.amqp.QueueConstants queueConstants
+    QueueConstants queueConstants
 
     @Autowired
-    scraper.service.TaskService taskService
+    TaskService taskService
 
     @RabbitListener(queues = '#{queueConstants.RUN_HOOK}', containerFactory="defaultConnectionFactory")
     void worker(String taskId) {
-        scraper.model.Task task = taskService.findById(taskId)
+        Task task = taskService.findById(taskId)
         String url = task.hookUrl
         if (!url) {
             logger.info("hook url not found, taskId: ${taskId}")
@@ -33,7 +37,7 @@ class RunHooksConsumer {
         }
         CloseableHttpClient httpClient = HttpClients.createDefault()
         try {
-            scraper.dto.model.task.HookTaskDto hookTaskDto = TaskMapper.toHookTaskDto(task)
+            HookTaskDto hookTaskDto = TaskMapper.toHookTaskDto(task)
             String json = new JsonBuilder(hookTaskDto).toPrettyString()
             StringEntity requestEntity = new StringEntity(
                 json,

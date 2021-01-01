@@ -11,13 +11,21 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import scraper.constants.PipelineStatuses
 import scraper.dto.mapper.pipeline.PipelineDependencyMapper
 import scraper.dto.mapper.pipeline.DslMapper
 import scraper.dto.mapper.pipeline.PipelineMapper
 import scraper.dto.model.pipeline.PipelineDto
 import scraper.model.Pipeline
+import scraper.model.Task
 import scraper.model.User
 import scraper.auth.TokenService
+import scraper.repository.PipelineRepository
+import scraper.repository.UserRepository
+import scraper.repository.UserTokenRepository
+import scraper.service.PipelineService
+import scraper.service.TaskService
+import scraper.service.UserService
 import scraper.service.converter.CsvDataConverter
 
 import javax.servlet.http.HttpServletResponse
@@ -27,22 +35,22 @@ import javax.servlet.http.HttpServletResponse
 class PipelineDataController {
 
     @Autowired
-    scraper.repository.UserTokenRepository userTokenRepository
+    UserTokenRepository userTokenRepository
 
     @Autowired
-    scraper.repository.UserRepository userRepository
+    UserRepository userRepository
 
     @Autowired
-    scraper.repository.PipelineRepository pipelineRepository
+    PipelineRepository pipelineRepository
 
     @Autowired
-    scraper.service.PipelineService pipelineService
+    PipelineService pipelineService
 
     @Autowired
-    scraper.service.TaskService taskService
+    TaskService taskService
 
     @Autowired
-    scraper.service.UserService userService
+    UserService userService
 
     @Autowired
     TokenService tokenService
@@ -77,8 +85,8 @@ class PipelineDataController {
     @GetMapping('/list/in-processing')
     List<PipelineDto> listInProcessing(@RequestHeader("token") String token) {
         String userId = tokenService.getUserId(token)
-        List<String> inProcessingStatuses = scraper.constants.PipelineStatuses.getInProcessing()
-        List<scraper.model.Task> tasks = taskService.findByStatusInAndUserId(inProcessingStatuses, userId)
+        List<String> inProcessingStatuses = PipelineStatuses.getInProcessing()
+        List<Task> tasks = taskService.findByStatusInAndUserId(inProcessingStatuses, userId)
         List<String> pipelineIds = tasks.collect { it.pipelineId }
         List<Pipeline> pipelines = pipelineService.findByIds(pipelineIds)
         return pipelines.collect {pipeline ->
@@ -116,7 +124,7 @@ class PipelineDataController {
         pipeline.hookUrl = pipelineDto.hookUrl
         pipeline.dsl = DslMapper.toDslEntity(pipelineDto.dsl)
         if (!pipelineInDb) {
-            pipeline.status = scraper.constants.PipelineStatuses.NOT_RUNNING
+            pipeline.status = PipelineStatuses.NOT_RUNNING
             pipeline.user = user
             pipeline.isDebugMode = false
         }
@@ -145,7 +153,7 @@ class PipelineDataController {
         clonePipeline.runIntervalMin = 0
         clonePipeline.lastStartedOn = null
         clonePipeline.lastCompletedOn = null
-        clonePipeline.status = scraper.constants.PipelineStatuses.NOT_RUNNING
+        clonePipeline.status = PipelineStatuses.NOT_RUNNING
         pipelineService.save(clonePipeline)
         return PipelineMapper.toPipelineDto(clonePipeline)
     }
@@ -161,7 +169,7 @@ class PipelineDataController {
         if (!pipelineOptional.present) {
             throw new Exception("pipeline with id ${pipelineId} not found")
         }
-        scraper.model.Task task = taskService.findLastCompletedTask(pipelineId)
+        Task task = taskService.findLastCompletedTask(pipelineId)
         if (!task) {
             return new ArrayList<HashMap>()
         }
@@ -176,7 +184,7 @@ class PipelineDataController {
     @GetMapping("/data/csv/{pipelineId}")
     List<HashMap> getCsvData(@PathVariable String pipelineId, HttpServletResponse response) {
         PageRequest page = PageRequest.of(0, 1)
-        List<scraper.model.Task> tasks = taskService
+        List<Task> tasks = taskService
                 .findByPipelineAndErrorOrderByStartOnDesc(pipelineId, null, page)
         if (tasks.size() == 0) {
             return

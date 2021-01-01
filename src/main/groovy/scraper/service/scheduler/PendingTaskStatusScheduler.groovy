@@ -2,12 +2,15 @@ package scraper.service.scheduler
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import scraper.constants.PipelineStatuses
+import scraper.model.Task
 import scraper.service.TaskDependenciesService
+import scraper.service.TaskService
 
 @Component
 class PendingTaskStatusScheduler extends AbstractTaskStatusScheduler {
 
-    PendingTaskStatusScheduler(scraper.service.TaskService taskService) {
+    PendingTaskStatusScheduler(TaskService taskService) {
         this.taskService = taskService
     }
 
@@ -15,12 +18,12 @@ class PendingTaskStatusScheduler extends AbstractTaskStatusScheduler {
     TaskDependenciesService taskDependenciesService
 
     @Override
-    Boolean checkChangeTaskStatus(scraper.model.Task task) {
-        if (task.status != scraper.constants.PipelineStatuses.PENDING) {
+    Boolean checkChangeTaskStatus(Task task) {
+        if (task.status != PipelineStatuses.PENDING) {
             return false
         }
         Boolean needDeps = taskDependenciesService.checkNeedDependencies(task)
-        String newStatus = needDeps ? scraper.constants.PipelineStatuses.NEED_DEPS : scraper.constants.PipelineStatuses.NEED_RUN
+        String newStatus = needDeps ? PipelineStatuses.NEED_DEPS : PipelineStatuses.NEED_RUN
         task.startOnUtc = new Date()
         this.taskService.update(task)
         changeStatus(task.id, newStatus)

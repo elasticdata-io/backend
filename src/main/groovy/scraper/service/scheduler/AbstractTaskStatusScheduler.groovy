@@ -1,7 +1,9 @@
 package scraper.service.scheduler
 
+import scraper.service.TaskService
+
 abstract class AbstractTaskStatusScheduler implements TaskStatusScheduler {
-    protected scraper.service.TaskService taskService
+    protected TaskService taskService
 
     void changeStatus(String taskId, String newStatus) {
         taskService.updateStatus(taskId, newStatus)

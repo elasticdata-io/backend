@@ -1,5 +1,7 @@
 package scraper.service.scheduler
 
+import scraper.model.Task
+
 interface TaskStatusScheduler {
-    Boolean checkChangeTaskStatus(scraper.model.Task task)
+    Boolean checkChangeTaskStatus(Task task)
 }

@@ -2,6 +2,7 @@ package scraper.service
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import scraper.model.Task
 
 @Service
 class TaskDependenciesService {
@@ -15,7 +16,7 @@ class TaskDependenciesService {
     @Autowired
     PipelineService pipelineService
 
-    Boolean checkNeedDependencies(scraper.model.Task task) {
+    Boolean checkNeedDependencies(Task task) {
         def taskDependencies = task.taskDependencies
         if (taskDependencies && !taskDependencies.empty) {
             return false
@@ -28,7 +29,7 @@ class TaskDependenciesService {
         return dependencies && dependencies.empty == false
     }
 
-    List<scraper.model.Task> createTaskDependencies(scraper.model.Task task) {
+    List<Task> createTaskDependencies(Task task) {
         def taskDependencies = task.taskDependencies
         if (taskDependencies && !taskDependencies.empty) {
             return []

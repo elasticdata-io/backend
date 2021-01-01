@@ -1,14 +1,15 @@
 package scraper.dto.mapper
 
 import org.springframework.stereotype.Component
+import scraper.dto.model.task.UserInteractionDto
 import scraper.model.TaskUserInteraction
 
 @Component
 class UserInteractionMapper {
 
-    static scraper.dto.model.task.UserInteractionDto toUserInteractionDto(TaskUserInteraction taskUserInteraction) {
+    static UserInteractionDto toUserInteractionDto(TaskUserInteraction taskUserInteraction) {
         def state = taskUserInteraction.lastPageState as HashMap<String, Object>
-        return new scraper.dto.model.task.UserInteractionDto(
+        return new UserInteractionDto(
                 id: taskUserInteraction.id,
                 jpegScreenshotLink: state.get('jpegScreenshotLink') as String,
                 pageElements: state.get('pageElements') as List<HashMap>,

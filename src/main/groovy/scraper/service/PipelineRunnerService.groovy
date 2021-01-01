@@ -13,6 +13,7 @@ import scraper.dto.model.task.PendingApiTaskDto
 import scraper.dto.model.task.PendingTaskDto
 import scraper.dto.model.task.PipelineRunDto
 import scraper.model.Pipeline
+import scraper.model.Task
 import scraper.model.mapper.PipelineDslMapper
 
 @Service
@@ -43,7 +44,7 @@ class PipelineRunnerService {
         if (dto && dto.hookUrl) {
             pipeline.hookUrl = dto.hookUrl
         }
-        scraper.model.Task task
+        Task task
         if (dto && dto.withoutDependencies) {
             task = taskService.createAndRunWithoutDependencies(pipeline)
         } else {
@@ -59,24 +60,24 @@ class PipelineRunnerService {
         if (!pipeline) {
             throw new Exception("pipeline with id: ${pipelineId} not found")
         }
-        scraper.model.Task task = taskService.createAndRun(pipeline)
+        Task task = taskService.createAndRun(pipeline)
         def pendingTaskDto = TaskMapper.toPendingTaskDto(task)
         return pendingTaskDto
     }
 
-    scraper.model.Task pendingFromDependencies(String pipelineId, String parentTaskId) {
+    Task pendingFromDependencies(String pipelineId, String parentTaskId) {
         logger.info("pendingFromDependencies: ${pipelineId}")
         Pipeline pipeline = pipelineService.findById(pipelineId)
         if (!pipeline) {
             throw new Exception("pipeline with id: ${pipelineId} not found")
         }
-        scraper.model.Task task = new scraper.model.Task(parentTaskId: parentTaskId)
+        Task task = new Task(parentTaskId: parentTaskId)
         return taskService.createWithoutRun(pipeline, task)
     }
 
     PendingTaskDto stoppingFromClient(String taskId) {
         logger.info("stoppingFromClient: ${taskId}")
-        scraper.model.Task task = taskService.findById(taskId)
+        Task task = taskService.findById(taskId)
         if (!task) {
             throw new Exception("task id id: ${taskId} not found")
         }

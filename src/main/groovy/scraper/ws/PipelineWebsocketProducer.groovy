@@ -3,6 +3,7 @@ package scraper.ws
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
+import scraper.dto.model.pipeline.PipelineDto
 
 @Service
 class PipelineWebsocketProducer {
@@ -10,7 +11,7 @@ class PipelineWebsocketProducer {
     @Autowired
     private SimpMessagingTemplate messagingTemplate
 
-    void change(scraper.dto.model.pipeline.PipelineDto pipelineDto) {
+    void change(PipelineDto pipelineDto) {
         String channel = '/pipeline/change/' + pipelineDto.userId
         messagingTemplate.convertAndSend(channel, pipelineDto)
     }

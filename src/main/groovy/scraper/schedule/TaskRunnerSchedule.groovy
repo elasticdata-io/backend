@@ -3,6 +3,8 @@ package scraper.schedule
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import scraper.model.Task
+import scraper.service.TaskService
 import scraper.service.scheduler.NeedRunTaskStatusScheduler
 import scraper.service.scheduler.StoppingTaskStatusScheduler
 import scraper.service.scheduler.WaitDepsTaskStatusScheduler
@@ -20,11 +22,11 @@ class TaskRunnerSchedule {
     StoppingTaskStatusScheduler stoppingTaskStatusScheduler
 
     @Autowired
-    scraper.service.TaskService taskService
+    TaskService taskService
 
     @Scheduled(cron='*/5 * * * * * ')
     void checkRunTask() {
-        List<scraper.model.Task> tasks = taskService.findNeedRunTasks()
+        List<Task> tasks = taskService.findNeedRunTasks()
         if (tasks.size()) {
             // logger.info("find ${tasks.size()} need run tasks")
         }

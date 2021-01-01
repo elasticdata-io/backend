@@ -4,12 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import scraper.model.User
 import scraper.model.UserToken
+import scraper.repository.UserTokenRepository
 
 @Service
 class UserTokenService {
 
     @Autowired
-    scraper.repository.UserTokenRepository userTokenRepository
+    UserTokenRepository userTokenRepository
 
 
     UserToken findLastToken(User user) {

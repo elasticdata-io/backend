@@ -14,4 +14,5 @@ class UserDto {
     String picture
     Boolean isAdmin
     Boolean hasTelegram
+    String apiToken
 }

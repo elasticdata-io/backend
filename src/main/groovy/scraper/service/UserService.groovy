@@ -3,17 +3,22 @@ package scraper.service
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Service
-import scraper.auth.TokenService
+import scraper.constants.ApiLevel
 import scraper.constants.PipelineStatuses
 import scraper.model.Task
 import scraper.model.User
 import scraper.repository.UserRepository
+import scraper.service.auth.ApiTokenService
+import scraper.service.auth.JwtTokenService
 
 @Service
 class UserService {
 
     @Autowired
-    TokenService tokenService
+    JwtTokenService jwtTokenService
+
+    @Autowired
+    ApiTokenService apiTokenService
 
     @Autowired
     UserRepository userRepository
@@ -31,7 +36,7 @@ class UserService {
     }
 
     User findByToken(String token) {
-        String userId = tokenService.getUserId(token)
+        String userId = jwtTokenService.getUserId(token)
         return findById(userId)
     }
 
@@ -56,6 +61,10 @@ class UserService {
             )
             userRepository.save(user)
         }
+        if (!user.apiToken) {
+            user.apiToken = apiTokenService.createToken(email, ApiLevel.THIRD_PARTY_APP)
+            userRepository.save(user)
+        }
         return user
     }
 
@@ -78,6 +87,10 @@ class UserService {
                     login: email,
                     isActive: true,
             )
+            userRepository.save(user)
+        }
+        if (!user.apiToken) {
+            user.apiToken = apiTokenService.createToken(email, ApiLevel.THIRD_PARTY_APP)
             userRepository.save(user)
         }
         return user

@@ -19,13 +19,13 @@ import scraper.dto.model.pipeline.PipelineDto
 import scraper.model.Pipeline
 import scraper.model.Task
 import scraper.model.User
-import scraper.auth.TokenService
 import scraper.repository.PipelineRepository
 import scraper.repository.UserRepository
 import scraper.repository.UserTokenRepository
 import scraper.service.PipelineService
 import scraper.service.TaskService
 import scraper.service.UserService
+import scraper.service.auth.JwtTokenService
 import scraper.service.converter.CsvDataConverter
 
 import javax.servlet.http.HttpServletResponse
@@ -53,7 +53,7 @@ class PipelineDataController {
     UserService userService
 
     @Autowired
-    TokenService tokenService
+    JwtTokenService tokenService
 
     @Autowired
     CsvDataConverter csvConverter

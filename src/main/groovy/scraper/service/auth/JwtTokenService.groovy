@@ -1,4 +1,4 @@
-package scraper.auth
+package scraper.service.auth
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.CompressionCodecs
@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse
 import javax.xml.bind.DatatypeConverter
 
 @Service
-class TokenService {
+class JwtTokenService {
 
     public static final String KEY = "sad234234asd12312k_!sdasd"
 

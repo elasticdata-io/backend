@@ -14,8 +14,8 @@ import scraper.dto.mapper.TaskMapper
 import scraper.dto.model.task.TaskDto
 import scraper.model.Task
 import scraper.repository.PipelineRepository
-import scraper.auth.TokenService
 import scraper.service.TaskService
+import scraper.service.auth.JwtTokenService
 
 @RestController
 @RequestMapping("/pipeline-task")
@@ -28,7 +28,7 @@ class PipelineTaskController {
     TaskService taskService
 
     @Autowired
-    TokenService tokenService
+    JwtTokenService tokenService
 
     @Autowired
     AmqpTemplate rabbitTemplate

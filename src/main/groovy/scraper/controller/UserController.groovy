@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import scraper.auth.TokenService
 import scraper.dto.mapper.UserMapper
 import scraper.dto.model.user.UserDto
 import scraper.service.UserService
+import scraper.service.auth.JwtTokenService
 
 import javax.servlet.http.HttpServletRequest
 
@@ -21,7 +21,7 @@ class UserController {
     private UserService userService
 
     @Autowired
-    private TokenService tokenService
+    private JwtTokenService tokenService
 
     @GetMapping("/current")
     UserDto current(@RequestHeader("token") String token) {

@@ -1,4 +1,4 @@
-package scraper.auth;
+package scraper.service.auth;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -11,8 +11,8 @@ import scraper.dto.SimpleResponse
 import scraper.model.User
 import scraper.repository.UserRepository
 import scraper.repository.UserTokenRepository
+import scraper.service.auth.JwtTokenService
 import scraper.util.EmailValidator
-import scraper.auth.TokenService
 
 import javax.servlet.http.HttpServletRequest
 
@@ -27,7 +27,7 @@ class UserDataController {
     UserRepository userRepository
 
     @Autowired
-    TokenService tokenService
+    JwtTokenService tokenService
 
     @Autowired
     EmailValidator emailValidator

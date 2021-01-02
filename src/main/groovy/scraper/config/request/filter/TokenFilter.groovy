@@ -3,7 +3,8 @@ package scraper.config.request.filter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.GenericFilterBean
-import scraper.auth.TokenService
+import scraper.service.auth.ApiTokenService
+import scraper.service.auth.JwtTokenService
 
 import javax.servlet.FilterChain
 import javax.servlet.ServletRequest
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletResponse
 class TokenFilter extends GenericFilterBean {
 
     String TOKEN_HEADER_NAME = 'token'
+    String API_PARAMETER_NAME = 'API_KEY'
 
     String SWAGGER_API = '/api/v3/api-docs'
     String SWAGGER_UI = '/api/swagger-ui'
@@ -39,7 +41,10 @@ class TokenFilter extends GenericFilterBean {
     ]
 
     @Autowired
-    TokenService tokenService
+    JwtTokenService jwtTokenService
+
+    @Autowired
+    ApiTokenService apiTokenService
 
     @Override
     void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
@@ -51,16 +56,26 @@ class TokenFilter extends GenericFilterBean {
             chain.doFilter(request, response)
             return
         }
-        if (checkToken(request)) {
+        if (checkJwtToken(request)) {
+            chain.doFilter(request, response)
+            return
+        }
+        if (checkApiKey(request)) {
             chain.doFilter(request, response)
             return
         }
         httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, 'Unauthorized')
     }
 
-    private boolean checkToken(ServletRequest request) {
+    private boolean checkJwtToken(ServletRequest request) {
         HttpServletRequest httpRequest = request as HttpServletRequest
         String token = httpRequest.getHeader(TOKEN_HEADER_NAME) ?: httpRequest.getParameter(TOKEN_HEADER_NAME)
-        return tokenService.checkToken(token)
+        return jwtTokenService.checkToken(token)
+    }
+
+    private boolean checkApiKey(ServletRequest request) {
+        HttpServletRequest httpRequest = request as HttpServletRequest
+        String token = httpRequest.getHeader(API_PARAMETER_NAME) ?: httpRequest.getParameter(API_PARAMETER_NAME)
+        return apiTokenService.checkToken(token)
     }
 }

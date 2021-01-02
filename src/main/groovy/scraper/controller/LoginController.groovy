@@ -14,8 +14,8 @@ import scraper.dto.SimpleResponse
 import scraper.model.User
 import scraper.repository.UserRepository
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import scraper.auth.TokenService
 import scraper.service.UserService
+import scraper.service.auth.JwtTokenService
 
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
@@ -38,7 +38,7 @@ class LoginController {
     private UserRepository userRepository
 
     @Autowired
-    private TokenService tokenService
+    private JwtTokenService tokenService
 
     @RequestMapping()
     SimpleResponse login(@RequestParam String login, @RequestParam String password, HttpServletRequest request)

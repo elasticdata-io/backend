@@ -16,7 +16,8 @@ class UserMapper {
             firstName: user.firstName,
             picture: user.picture,
             isAdmin: user.isAdmin,
-            hasTelegram: user.telegramChatId
+            hasTelegram: user.telegramChatId,
+            apiToken: user.apiToken
         )
     }
 

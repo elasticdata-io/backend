@@ -21,5 +21,5 @@ public class User {
 	public String telegramChatId;
 	public Boolean isActive;
 	public Boolean isAdmin;
-	public String apiJwtToken;
+	public String apiToken;
 }

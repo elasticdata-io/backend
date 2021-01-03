@@ -42,4 +42,4 @@ env:
     value: proxy
 
   - name: BOT_TELEGRAM_ENABLED
-    value: true
+    value: "true"

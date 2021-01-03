@@ -44,8 +44,8 @@ spring:
   data:
     mongodb:
       database: ${MONGODB_DB:scraper-service}
-      host: ${MONGODB_HOST:mongodb.mongodb}
-      port: ${MONGODB_PORT:27017}
+      host: ${MONGODB_HOST:k8s}
+      port: ${MONGODB_PORT:32619}
       username: ${MONGODB_USER:guest}
       password: ${MONGODB_PASSWORD:guest}
       authentication-database: ${MONGODB_AUTH_DB:admin}
@@ -93,4 +93,4 @@ management:
       exposure:
         include: health,prometheus
 proxy.static.url: ${PROXY_STATIC_URL:k8s:30220}
-bot.telegram.enabled: ${BOT_TELEGRAM_ENABLED:true}
+bot.telegram.enabled: ${BOT_TELEGRAM_ENABLED:false}

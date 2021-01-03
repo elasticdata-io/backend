@@ -40,3 +40,6 @@ env:
     value: wJalrXUtnFEMI/9874c97c907209cpuvpw97bpb/asdasdasdasdasd
   - name: PROXY_STATIC_URL
     value: proxy
+
+  - name: BOT_TELEGRAM_ENABLED
+    value: true

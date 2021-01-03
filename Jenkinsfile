@@ -69,6 +69,7 @@ spec:
                             stage('helm upgrade backend') {
                                 def now = new Date()
                                 def dateFormatted = now.format("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                                sh "helm delete backend"
                                 sh "helm template --dry-run --debug backend \
                                     -f install/helm/backend/values.yaml \
                                     -f install/helm/backend/${VALUES_FILE} \

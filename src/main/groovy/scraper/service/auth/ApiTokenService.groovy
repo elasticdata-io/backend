@@ -22,9 +22,9 @@ class ApiTokenService {
      * @return Token string if password is valid.
      * @throws Exception
      */
-    String createToken(String email, ApiLevel apiLevel) throws Exception {
+    String createToken(String userId, ApiLevel apiLevel) throws Exception {
         String compactJws =  Jwts.builder()
-                .setId(email)
+                .setId(userId)
                 .setHeaderParam('apiLevel', apiLevel)
                 .signWith(SignatureAlgorithm.HS256, KEY)
                 .compact()

@@ -70,16 +70,15 @@ class UserService {
 
     User createOrUpdateFromFacebook(OAuth2User principal) {
         def attributes = principal.attributes
+        def facebookUserId = attributes['id'] as String
         def email = attributes.email as String
         def firstName = attributes['given_name'] as String
         def lastName = attributes['last_name'] as String
-        def facebookUserId = attributes['id'] as String
         //def picture = attributes['picture'] as String
-
         def user = userRepository.findByEmail(email)
         if (!user) {
             user = new User(
-                    email: email,
+                    email: email ?: facebookUserId,
                     firstName: firstName,
                     lastName: lastName,
                     facebookUserId: facebookUserId,
@@ -90,7 +89,7 @@ class UserService {
             userRepository.save(user)
         }
         if (!user.apiToken) {
-            user.apiToken = apiTokenService.createToken(email, ApiLevel.THIRD_PARTY_APP)
+            user.apiToken = apiTokenService.createToken(user.id, ApiLevel.THIRD_PARTY_APP)
             userRepository.save(user)
         }
         return user

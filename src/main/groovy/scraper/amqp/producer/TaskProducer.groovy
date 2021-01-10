@@ -2,6 +2,8 @@ package scraper.amqp.producer
 
 import groovy.json.JsonBuilder
 import groovy.json.JsonOutput
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -11,9 +13,11 @@ import scraper.amqp.dto.ExecuteCommandDto
 import scraper.model.Task
 import scraper.proxy.ProxyAssigner
 import scraper.service.PipelineService
+import scraper.service.TariffPlanService
 
 @Service
 class TaskProducer {
+    private Logger logger = LogManager.getRootLogger()
 
     @Value('${spring.rabbitmq.exchange.runTask}')
     private String runTaskExchangeName
@@ -33,6 +37,9 @@ class TaskProducer {
     @Autowired
     PipelineService pipelineService
 
+    @Autowired
+    TariffPlanService tariffPlanService
+
     /**
      * @param taskId
      */
@@ -47,7 +54,8 @@ class TaskProducer {
             pipelineSettings: pipeline.dsl?.settings
         )
         def message = new JsonBuilder(map).toString()
-        String workingType = 'A'
+        String workingType = getWorkerType(task.userId)
+        logger.info("logger type is ${workingType}")
         String routingKey = "${routingConstants.TASK_RUN_ROUTING_KEY}.${workingType}"
         rabbitTemplate.convertAndSend(runTaskExchangeName, routingKey, message)
     }
@@ -77,6 +85,14 @@ class TaskProducer {
         )
         String message = new JsonBuilder(map).toString()
         rabbitTemplate.convertAndSend(inboxFanoutExchangeName, '', message)
+    }
+
+    private String getWorkerType(String userId) {
+        def tariffPlan = tariffPlanService.getTariffPlanByUserId(userId)
+        if (tariffPlan.configuration.privateWorkers > 0) {
+            return userId
+        }
+        return 'A'
     }
 }
 

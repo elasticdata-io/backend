@@ -26,6 +26,9 @@ class UserService {
     @Autowired
     TaskService taskService
 
+    @Autowired
+    TariffPlanService tariffPlanService
+
     User findById(String id) {
         Optional<User> user = userRepository.findById(id)
         return user.present ? user.get() : null
@@ -95,15 +98,17 @@ class UserService {
         return user
     }
 
-    Number getMaxAvailableWorkers() {
-        // todo : get from database by user
-        return 2
+    Number getMaxAvailableWorkers(String userId) {
+        def tariffPlan = tariffPlanService.getTariffPlanByUserId(userId)
+        def privateWorkers = tariffPlan.configuration.privateWorkers as double
+        def sharedWorkers = tariffPlan.configuration.sharedWorkers as double
+        return Math.max(privateWorkers, sharedWorkers)
     }
 
     Boolean hasFreeWorker(String userId) {
         def statuses = [PipelineStatuses.RUNNING, PipelineStatuses.QUEUE]
         List<Task> tasks = taskService.findByStatusInAndUserId(statuses, userId)
-        if (tasks.size() >= maxAvailableWorkers) {
+        if (tasks.size() >= getMaxAvailableWorkers(userId)) {
             // logger.debug("not has free worker for user: ${userId}")
             return false
         }

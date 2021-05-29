@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
+import scraper.constants.WorkerTypes
 import scraper.model.types.PipelineDsl
 
 @Document(collection = "pipeline")
@@ -126,6 +127,8 @@ class Pipeline {
     @DBRef
     @JsonIgnore
     public User user
+
+    public String assignWorkerType = WorkerTypes.SHARED
 
     void setDsl(PipelineDsl dsl) {
         this.jsonCommands = JsonOutput.toJson(dsl)

@@ -2,6 +2,7 @@ package scraper.dto.model.pipeline
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
+import scraper.constants.WorkerTypes
 
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -30,4 +31,5 @@ class PipelineDto {
     Number lastParseBytes
     String pipelineVersion
     String hookUrl
+    String assignWorkerType = WorkerTypes.SHARED
 }

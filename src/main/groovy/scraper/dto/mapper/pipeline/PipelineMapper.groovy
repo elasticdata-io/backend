@@ -28,6 +28,7 @@ class PipelineMapper {
             jsonCommands: pipelineDto.jsonCommands,
             dsl: DslMapper.toDslEntity(pipelineDto.dsl),
             hookUrl: pipelineDto.hookUrl,
+            assignWorkerType: pipelineDto.assignWorkerType,
         )
     }
 
@@ -56,6 +57,7 @@ class PipelineMapper {
                 lastParseBytes: pipeline.parseBytes,
                 pipelineVersion: pipeline.pipelineVersion,
                 hookUrl: pipeline.hookUrl,
+                assignWorkerType: pipeline.assignWorkerType,
         )
     }
 

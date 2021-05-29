@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndex
 import org.springframework.data.mongodb.core.index.IndexDirection
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
+import scraper.constants.WorkerTypes
 import scraper.model.types.PipelineDsl
 
 @Document(collection = "task")
@@ -63,6 +64,7 @@ class Task {
     public Number docsCount
     public Number docsBytes
     public String commandsInformationLink
+    public String assignWorkerType = WorkerTypes.SHARED
 
     public Boolean withoutDependencies
     public String parentTaskId

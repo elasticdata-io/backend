@@ -160,6 +160,7 @@ class TaskService {
         task.pipelineId = pipeline.id
         task.userId = pipeline.user.id
         task.hookUrl = pipeline.hookUrl
+        task.assignWorkerType = pipeline.assignWorkerType
         task.dsl = pipeline.dsl ?: PipelineDslMapper.toPipelineDsl(pipeline.jsonCommands)
         taskRepository.save(task)
         update(task)

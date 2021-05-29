@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import scraper.amqp.RoutingConstants
 import scraper.amqp.dto.ExecuteCommandDto
+import scraper.constants.WorkerTypes
 import scraper.model.Task
 import scraper.proxy.ProxyAssigner
 import scraper.service.PipelineService
@@ -54,9 +55,9 @@ class TaskProducer {
             pipelineSettings: pipeline.dsl?.settings
         )
         def message = new JsonBuilder(map).toString()
-        String workingType = getWorkerType(task.userId)
-        logger.info("logger type is ${workingType}")
-        String routingKey = "${routingConstants.TASK_RUN_ROUTING_KEY}.${workingType}"
+        String workerType = getWorkerType(task.assignWorkerType, task.userId)
+        logger.info("logger type is ${workerType}")
+        String routingKey = "${routingConstants.TASK_RUN_ROUTING_KEY}.${workerType}"
         rabbitTemplate.convertAndSend(runTaskExchangeName, routingKey, message)
     }
 
@@ -87,12 +88,12 @@ class TaskProducer {
         rabbitTemplate.convertAndSend(inboxFanoutExchangeName, '', message)
     }
 
-    private String getWorkerType(String userId) {
+    private String getWorkerType(String assignWorkerType, String userId) {
         def tariffPlan = tariffPlanService.getTariffPlanByUserId(userId)
         if (tariffPlan.configuration.privateWorkers > 0) {
-            return userId
+            return WorkerTypes.CLOUD + "_" + userId
         }
-        return 'A'
+        return WorkerTypes.SHARED
     }
 }
 

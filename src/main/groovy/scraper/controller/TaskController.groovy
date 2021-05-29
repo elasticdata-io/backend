@@ -39,7 +39,7 @@ class TaskController {
      * @param taskId
      * @return
      */
-    @GetMapping("{taskId}")
+    @GetMapping("/{taskId}")
     TaskEditDto get(@PathVariable String taskId) {
         return taskService.getTaskEditDto(taskId)
     }
@@ -74,7 +74,7 @@ class TaskController {
         return taskService.getTask(taskId)
     }
 
-    @PatchMapping("{id}")
+    @PatchMapping("/{id}")
     TaskDto runFromApi(@PathVariable String id,
                        @RequestBody JsonPatch jsonPatch) {
         return taskService.patch(id, jsonPatch)

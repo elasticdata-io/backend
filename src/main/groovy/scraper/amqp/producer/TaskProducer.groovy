@@ -56,7 +56,7 @@ class TaskProducer {
         )
         def message = new JsonBuilder(map).toString()
         String workerType = getWorkerType(task.assignWorkerType, task.userId)
-        logger.info("logger type is ${workerType}")
+        logger.info("worker type is ${workerType}")
         String routingKey = "${routingConstants.TASK_RUN_ROUTING_KEY}.${workerType}"
         rabbitTemplate.convertAndSend(runTaskExchangeName, routingKey, message)
     }

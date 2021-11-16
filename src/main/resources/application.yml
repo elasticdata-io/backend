@@ -94,3 +94,4 @@ management:
         include: health,prometheus
 proxy.static.url: ${PROXY_STATIC_URL:k8s:30220}
 bot.telegram.enabled: ${BOT_TELEGRAM_ENABLED:false}
+workermanager.url: ${WORKER_MANAGER_URL:http://localhost:3005/worker-manager}

@@ -9,10 +9,8 @@ import org.apache.http.impl.client.HttpClients
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import scraper.dto.mapper.TaskMapper
 import scraper.dto.model.UpdateDeploymentDto
 import scraper.dto.model.UserTariffPlanSubscriptionDto
-import scraper.dto.model.task.HookTaskDto
 import scraper.model.TariffPlan
 import scraper.model.TariffPlanSubscription
 import scraper.repository.TariffPlanRepository
@@ -20,6 +18,9 @@ import scraper.repository.TariffPlanSubscriptionRepository
 
 @Service
 class TariffPlanService {
+    @Value('${app.version}')
+    String appVersion
+
     @Value('${workermanager.url}')
     String workerManagerUrl
 
@@ -63,7 +64,7 @@ class TariffPlanService {
         try {
             UpdateDeploymentDto dto = new UpdateDeploymentDto(
                 userId: userId,
-                mode: 'dev',
+                mode: appVersion == 'development' ? 'dev': 'prod',
                 replicas: replicas
             )
             String json = new JsonBuilder(dto).toPrettyString()

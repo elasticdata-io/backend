@@ -41,5 +41,8 @@ env:
   - name: PROXY_STATIC_URL
     value: proxy
 
+  - name: WORKER_MANAGER_URL
+    value: https://app.elasticdata.io/worker-manager
+
   - name: BOT_TELEGRAM_ENABLED
     value: "false"

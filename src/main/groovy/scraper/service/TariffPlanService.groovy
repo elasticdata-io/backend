@@ -1,6 +1,6 @@
 package scraper.service
 
-
+import groovy.time.TimeCategory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -29,12 +29,14 @@ class TariffPlanService {
         def tariffPlan = tariffPlanRepository.findByKey(dto.tariffPlanKey)
         def tariffPlanSubscription = tariffPlanSubscriptionRepository.findByUserId(dto.userId)
         if (!tariffPlanSubscription) {
-            tariffPlanSubscription = new TariffPlanSubscription(
-                userId: dto.userId,
-                tariffPlanId: tariffPlan.id,
-                startedOnUtc: new Date(),
-                expiredOnUtc: new Date() + 30
-            )
+            use( TimeCategory ) {
+                tariffPlanSubscription = new TariffPlanSubscription(
+                    userId: dto.userId,
+                    tariffPlanId: tariffPlan.id,
+                    startedOnUtc: new Date(),
+                    expiredOnUtc: new Date() + 30.days
+                )
+            }
         }
         tariffPlanSubscription.tariffPlanId = tariffPlan.id
         tariffPlanSubscriptionRepository.save(tariffPlanSubscription)

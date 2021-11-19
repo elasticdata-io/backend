@@ -14,4 +14,5 @@ public interface PipelineRepository extends MongoRepository<Pipeline, String> {
 	Pipeline findByIdAndUser(String id, String userId);
 	List<Pipeline> findByUserAndIdNotIn(String userId, List<String> dependsOn);
 	List<Pipeline> findByStatusNot(String status);
+	List<Pipeline> findByRunIntervalMinIsNotNull();
 }

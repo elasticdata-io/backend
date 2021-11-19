@@ -107,6 +107,10 @@ class TaskService {
         return tasks.first()
     }
 
+    Task findLastTask(String pipelineId) {
+        return taskRepository.findFirstByPipelineIdOrderByStartOnUtcDesc(pipelineId)
+    }
+
     Task findLastCompletedTask(String pipelineId) {
         return findLastTask(pipelineId, [PipelineStatuses.COMPLETED])
     }

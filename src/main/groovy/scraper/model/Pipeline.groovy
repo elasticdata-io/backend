@@ -77,7 +77,7 @@ class Pipeline {
     /**
      * The interval at which the parser will start.
      */
-    Integer runIntervalMin
+    Number runIntervalMin = null
 
     /**
      * Created on date time.

@@ -55,7 +55,7 @@ class TariffPlanService {
         return tariffPlan.present ? tariffPlan.get() : null
     }
 
-    Boolean hasCostSubscription(String userId) {
+    Boolean notFreeSubscription(String userId) {
         def tariffPlanSubscription = tariffPlanSubscriptionRepository.findByUserId(userId)
         if (!tariffPlanSubscription) {
             return false

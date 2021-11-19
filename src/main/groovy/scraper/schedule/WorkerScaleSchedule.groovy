@@ -28,13 +28,14 @@ class WorkerScaleSchedule {
     void checkScaleDownDeployment() {
         def users = userService.findAll()
         users.forEach( {
+            def notFreeSubscription = tariffPlanService.notFreeSubscription(it.id)
+            if(!notFreeSubscription) {
+                return
+            }
             List<String> inProcessingStatuses = PipelineStatuses.getInProcessing()
             def tasks = taskService.findByStatusInAndUserId(inProcessingStatuses, it.id)
             if (tasks.isEmpty()) {
-                def hasCostSubscription = tariffPlanService.hasCostSubscription(it.id)
-                if (hasCostSubscription) {
-                    workerManagerClient.scale(it.id, 0)
-                }
+                workerManagerClient.scale(it.id, 0)
             }
         })
     }
@@ -43,6 +44,10 @@ class WorkerScaleSchedule {
     void checkScaleUpDeployment() {
         def users = userService.findAll()
         users.forEach( {
+            def notFreeSubscription = tariffPlanService.notFreeSubscription(it.id)
+            if(!notFreeSubscription) {
+                return
+            }
             def statuses = [PipelineStatuses.QUEUE, PipelineStatuses.PENDING]
             def pendingTasks = taskService.findByStatusInAndUserId(statuses, it.id)
             int desiredWorkers = pendingTasks.size() as int

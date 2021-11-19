@@ -6,6 +6,7 @@ import scraper.constants.PipelineStatuses
 import scraper.model.Task
 import scraper.service.TaskDependenciesService
 import scraper.service.TaskService
+import scraper.service.workermanager.WorkersScaler
 
 @Component
 class PendingTaskStatusScheduler extends AbstractTaskStatusScheduler {
@@ -13,6 +14,9 @@ class PendingTaskStatusScheduler extends AbstractTaskStatusScheduler {
     PendingTaskStatusScheduler(TaskService taskService) {
         this.taskService = taskService
     }
+
+    @Autowired
+    WorkersScaler workersScaler
 
     @Autowired
     TaskDependenciesService taskDependenciesService
@@ -27,6 +31,7 @@ class PendingTaskStatusScheduler extends AbstractTaskStatusScheduler {
         task.startOnUtc = new Date()
         this.taskService.update(task)
         changeStatus(task.id, newStatus)
+        workersScaler.checkReplicasUp(task.userId)
         return true
     }
 }

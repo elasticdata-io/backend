@@ -1,34 +1,29 @@
 package scraper.service
 
-import groovy.json.JsonBuilder
-import org.apache.http.client.methods.HttpPost
-import org.apache.http.entity.ContentType
-import org.apache.http.entity.StringEntity
-import org.apache.http.impl.client.CloseableHttpClient
-import org.apache.http.impl.client.HttpClients
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import scraper.dto.model.UpdateDeploymentDto
 import scraper.dto.model.UserTariffPlanSubscriptionDto
 import scraper.model.TariffPlan
 import scraper.model.TariffPlanSubscription
 import scraper.repository.TariffPlanRepository
 import scraper.repository.TariffPlanSubscriptionRepository
+import scraper.service.workermanager.WorkerManagerClient
 
 @Service
 class TariffPlanService {
     @Value('${app.version}')
     String appVersion
 
-    @Value('${workermanager.url}')
-    String workerManagerUrl
-
     @Autowired
     TariffPlanRepository tariffPlanRepository
 
     @Autowired
     TariffPlanSubscriptionRepository tariffPlanSubscriptionRepository
+
+    @Autowired
+    WorkerManagerClient workerManagerClient
 
     void subscribe(UserTariffPlanSubscriptionDto dto) {
         def tariffPlan = tariffPlanRepository.findByKey(dto.tariffPlanKey)
@@ -43,7 +38,8 @@ class TariffPlanService {
         }
         tariffPlanSubscription.tariffPlanId = tariffPlan.id
         tariffPlanSubscriptionRepository.save(tariffPlanSubscription)
-        updateDeployment(dto.userId, tariffPlan.configuration.privateWorkers)
+        def mode = appVersion == 'development' ? 'dev': 'prod'
+        workerManagerClient.updateFromTemplate(dto.userId, tariffPlan.configuration.privateWorkers, mode)
     }
 
     List<TariffPlan> getAll() {
@@ -59,27 +55,13 @@ class TariffPlanService {
         return tariffPlan.present ? tariffPlan.get() : null
     }
 
-    private updateDeployment(String userId, Number replicas) {
-        CloseableHttpClient httpClient = HttpClients.createDefault()
-        try {
-            UpdateDeploymentDto dto = new UpdateDeploymentDto(
-                userId: userId,
-                mode: appVersion == 'development' ? 'dev': 'prod',
-                replicas: replicas
-            )
-            String json = new JsonBuilder(dto).toPrettyString()
-            StringEntity requestEntity = new StringEntity(
-                    json,
-                    ContentType.APPLICATION_JSON
-            )
-            String url = workerManagerUrl + '/deployments/template'
-            HttpPost postMethod = new HttpPost(url)
-            postMethod.setEntity(requestEntity)
-            httpClient.execute(postMethod)
-            httpClient.close()
-        } catch (e) {
-            httpClient.close()
-            println e
+    Boolean hasCostSubscription(String userId) {
+        def tariffPlanSubscription = tariffPlanSubscriptionRepository.findByUserId(userId)
+        if (!tariffPlanSubscription) {
+            return false
         }
+        def tariffPlanGetter = tariffPlanRepository.findById(tariffPlanSubscription.tariffPlanId)
+        def tariffPlan = tariffPlanGetter.present ? tariffPlanGetter.get() : null
+        return tariffPlan.key != 'free'
     }
 }

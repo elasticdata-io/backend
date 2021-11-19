@@ -29,6 +29,10 @@ class UserService {
     @Autowired
     TariffPlanService tariffPlanService
 
+    List<User> findAll() {
+        return userRepository.findAll()
+    }
+
     User findById(String id) {
         Optional<User> user = userRepository.findById(id)
         return user.present ? user.get() : null

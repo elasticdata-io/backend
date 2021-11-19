@@ -7,6 +7,7 @@ import scraper.constants.PipelineStatuses
 import scraper.model.Pipeline
 import scraper.repository.PipelineRepository
 import groovy.time.TimeCategory
+import scraper.service.PipelineRunnerService
 import scraper.service.TaskService
 
 @Component
@@ -17,6 +18,9 @@ class PipelineIntervalSchedule {
 
     @Autowired
     PipelineRepository pipelineRepository
+
+    @Autowired
+    PipelineRunnerService pipelineRunnerService
 
     @Scheduled(cron='0/10 * * * * *')
     void checkRunPipeline() {
@@ -34,7 +38,7 @@ class PipelineIntervalSchedule {
                 def minutes = (pipeline.runIntervalMin as int).minutes
                 def needStartTime = lastCompletedOn + minutes
                 if (now >= needStartTime) {
-                    taskService.createAndRun(pipeline)
+                    pipelineRunnerService.pendingFromClient(pipeline.id)
                 }
             }
         }

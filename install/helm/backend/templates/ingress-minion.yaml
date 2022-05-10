@@ -12,6 +12,7 @@ spec:
       http:
         paths:
           - path: /api
+            pathType: Prefix
             backend:
               service:
                 name: {{ template "backend.fullname" . }}

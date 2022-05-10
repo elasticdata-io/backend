@@ -31,7 +31,7 @@ spec:
             - name: MONGODB_HOST
               value: {{ .Values.env.MONGODB_HOST }}
             - name: MONGODB_PORT
-              value: {{ .Values.env.MONGODB_PORT }}
+              value: {{ .Values.env.MONGODB_PORT | quote }}
             - name: MONGODB_USER
               value: {{ .Values.env.MONGODB_USER }}
             - name: MONGODB_PASSWORD
@@ -42,7 +42,7 @@ spec:
             - name: RABBITMQ_HOST
               value: {{ .Values.env.RABBITMQ_HOST }}
             - name: RABBITMQ_PORT
-              value: {{ .Values.env.RABBITMQ_PORT }}
+              value: {{ .Values.env.RABBITMQ_PORT | quote }}
             - name: RABBITMQ_USER
               value: user
             - name: RABBITMQ_PASSWORD

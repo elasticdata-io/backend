@@ -61,6 +61,10 @@ spec:
 
             - name: ES_ENABLED
               value: {{ .Values.env.ES_ENABLED | quote }}
+            - name: GOOGLE_SIGNIN_CALLBACK_URL
+              value: {{ .Values.env.GOOGLE_SIGNIN_CALLBACK_URL }}
+            - name: FACEBOOK_SIGNIN_CALLBACK_URL
+              value: {{ .Values.env.FACEBOOK_SIGNIN_CALLBACK_URL }}
 
 #          livenessProbe:
 #            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}

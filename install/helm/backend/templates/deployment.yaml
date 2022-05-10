@@ -43,9 +43,9 @@ spec:
               value: admin
 
             - name: RABBITMQ_HOST
-              value: rabbitmq.rabbitmq
+              value: {{ .Values.RABBITMQ_HOST }}
             - name: RABBITMQ_PORT
-              value: "5672"
+              value: {{ .Values.RABBITMQ_PORT }}
             - name: RABBITMQ_USER
               value: user
             - name: RABBITMQ_PASSWORD

@@ -28,6 +28,9 @@ spec:
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           env:
+            - name: SPRING_SERVER_PORT
+              value: {{ .Values.env.SPRING_SERVER_PORT | quote }}
+
             - name: MONGODB_HOST
               value: {{ .Values.env.MONGODB_HOST }}
             - name: MONGODB_PORT

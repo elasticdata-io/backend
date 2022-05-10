@@ -47,6 +47,9 @@ spec:
                         container('docker') {
                             env.DOCKER_TAG = "${BRANCH_NAME}_02_${BUILD_NUMBER}"
                             stage('build application') {
+                                sh 'docker login  \
+                                    -u ${DOCKER_CONTAINER_LOGIN}  \
+                                    -p ${DOCKER_CONTAINER_PASSWORD}'
                                 sh 'docker build -f install/Dockerfile -t ${DOCKER_CONTAINER_PREFIX}/scraper-backend:${DOCKER_TAG} .'
                             }
                             stage('publish application') {

@@ -29,20 +29,20 @@ spec:
               protocol: TCP
           env:
             - name: MONGODB_HOST
-              value: {{ .Values.MONGODB_HOST }}
+              value: {{ .Values.env.MONGODB_HOST }}
             - name: MONGODB_PORT
-              value: {{ .Values.MONGODB_PORT }}
+              value: {{ .Values.env.MONGODB_PORT }}
             - name: MONGODB_USER
-              value: {{ .Values.MONGODB_USER }}
+              value: {{ .Values.env.MONGODB_USER }}
             - name: MONGODB_PASSWORD
-              value: {{ .Values.MONGODB_PASSWORD }}
+              value: {{ .Values.env.MONGODB_PASSWORD }}
             - name: MONGODB_AUTH_DB
-              value: {{ .Values.MONGODB_AUTH_DB }}
+              value: {{ .Values.env.MONGODB_AUTH_DB }}
 
             - name: RABBITMQ_HOST
-              value: {{ .Values.RABBITMQ_HOST }}
+              value: {{ .Values.env.RABBITMQ_HOST }}
             - name: RABBITMQ_PORT
-              value: {{ .Values.RABBITMQ_PORT }}
+              value: {{ .Values.env.RABBITMQ_PORT }}
             - name: RABBITMQ_USER
               value: user
             - name: RABBITMQ_PASSWORD
@@ -54,7 +54,7 @@ spec:
               value: {{ .Values.APP_LAST_UPDATED }}
 
             - name: BOT_TELEGRAM_ENABLED
-              value: {{ .Values.BOT_TELEGRAM_ENABLED }}
+              value: {{ .Values.env.BOT_TELEGRAM_ENABLED }}
 
           livenessProbe:
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}

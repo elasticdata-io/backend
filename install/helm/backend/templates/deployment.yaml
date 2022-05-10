@@ -31,10 +31,6 @@ spec:
           env:
 {{ toYaml . | indent 12  }}
           {{ end }}
-            - name: MONGODB_HOST
-              value: {{ .Values.MONGODB_HOST }}
-            - name: MONGODB_PORT
-              value: {{ .Values.MONGODB_PORT | quote }}
             - name: MONGODB_USER
               value: guest
             - name: MONGODB_PASSWORD

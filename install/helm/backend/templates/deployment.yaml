@@ -54,7 +54,10 @@ spec:
               value: {{ .Values.APP_LAST_UPDATED }}
 
             - name: BOT_TELEGRAM_ENABLED
-              value: {{ .Values.env.BOT_TELEGRAM_ENABLED }}
+              value: {{ .Values.env.BOT_TELEGRAM_ENABLED | quote }}
+
+            - name: ES_ENABLED
+              value: {{ .Values.env.ES_ENABLED | quote }}
 
           livenessProbe:
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}

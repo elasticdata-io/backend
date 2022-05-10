@@ -27,16 +27,17 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-          {{- with .Values.env }}
           env:
-{{ toYaml . | indent 12  }}
-          {{ end }}
+            - name: MONGODB_HOST
+              value: {{ .Values.MONGODB_HOST }}
+            - name: MONGODB_PORT
+              value: {{ .Values.MONGODB_PORT }}
             - name: MONGODB_USER
-              value: guest
+              value: {{ .Values.MONGODB_USER }}
             - name: MONGODB_PASSWORD
-              value: guest
+              value: {{ .Values.MONGODB_PASSWORD }}
             - name: MONGODB_AUTH_DB
-              value: admin
+              value: {{ .Values.MONGODB_AUTH_DB }}
 
             - name: RABBITMQ_HOST
               value: {{ .Values.RABBITMQ_HOST }}
@@ -51,6 +52,9 @@ spec:
               value: {{ .Values.APP_VERSION }}
             - name: APP_LAST_UPDATED
               value: {{ .Values.APP_LAST_UPDATED }}
+
+            - name: BOT_TELEGRAM_ENABLED
+              value: {{ .Values.BOT_TELEGRAM_ENABLED }}
 
           livenessProbe:
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}

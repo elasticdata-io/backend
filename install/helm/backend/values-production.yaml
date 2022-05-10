@@ -1,53 +1,27 @@
 
 env:
-  - name: MONGODB_HOST
-    value: mongodb
-  - name: MONGODB_PORT
-    value: "27017"
-
-  - name: SPRING_LOG_LEVEL
-    value: ERROR
-  - name: SPRING_SERVER_PORT
-    value: "8080"
-  - name: GOOGLE_SIGNIN_CALLBACK_URL
-    value: http://app.elasticdata.io/#/enter/
-  - name: FACEBOOK_SIGNIN_CALLBACK_URL
-    value: http://app.elasticdata.io/#/enter/
-
-  - name: RABBITMQ_QUEUE_RUN_HOOKS
-    value: PROD_RUN_HOOKS
-
-  - name: RABBITMQ_RUN_TASK_EXCHANGE_NAME
-    value: PROD_RUN_TASK
-  - name: RABBITMQ_INBOX_FANOUT_EXCHANGE_NAME
-    value: PROD_INBOX_FANOUT
-
-  - name: RABBITMQ_RUN_TASK_ROUTING_KEY
-    value: PROD_RUN_TASK
-  - name: RABBITMQ_ROUTING_TASK_RUN
-    value: PROD_RUN_HOOKS
-
-  - name: ES_HOST_NAME
-    value: elasticsearch-master.elasticsearch
-  - name: ES_HTTP_PORT
-    value: "9200"
-  - name: ES_ENABLED
-    value: "false"
-  - name: PROXY_SERVICE_URL
-    value: http://proxy
-  - name: MINIO_URL
-    value: https://storage.elasticdata.io
-  - name: MINIO_PUBLIC_URL
-    value: https://storage.elasticdata.io
-  - name: MINIO_ACCESS_KEY
-    value: elasticdataio
-  - name: MINIO_SECRET_KEY
-    value: wJalrXUtnFEMI/9874c97c907209cpuvpw97bpb/asdasdasdasdasd
-  - name: PROXY_STATIC_URL
-    value: proxy
-
-  - name: WORKER_MANAGER_URL
-    value: https://app.elasticdata.io/worker-manager
-
-  - name: BOT_TELEGRAM_ENABLED
-    value: "false"
+  MONGODB_HOST: mongodb
+  MONGODB_PORT: "27017"
+  MONGODB_USER: "guest"
+  MONGODB_PASSWORD: "guest"
+  MONGODB_AUTH_DB: "admin"
+  SPRING_LOG_LEVEL: ERROR
+  SPRING_SERVER_PORT: "8080"
+  GOOGLE_SIGNIN_CALLBACK_URL: http://app.elasticdata.io/#/enter/
+  FACEBOOK_SIGNIN_CALLBACK_URL: http://app.elasticdata.io/#/enter/
+  RABBITMQ_QUEUE_RUN_HOOKS: PROD_RUN_HOOKS
+  RABBITMQ_RUN_TASK_EXCHANGE_NAME: PROD_RUN_TASK
+  RABBITMQ_INBOX_FANOUT_EXCHANGE_NAME: PROD_INBOX_FANOUT
+  RABBITMQ_RUN_TASK_ROUTING_KEY: PROD_RUN_TASK
+  RABBITMQ_ROUTING_TASK_RUN: PROD_RUN_HOOKS
+  ES_HOST_NAME: elasticsearch-master.elasticsearch
+  ES_HTTP_PORT: "9200"
+  ES_ENABLED: "false"
+  PROXY_SERVICE_URL: http://proxy
+  MINIO_URL: https://storage.elasticdata.io
+  MINIO_PUBLIC_URL: https://storage.elasticdata.io
+  MINIO_ACCESS_KEY: elasticdataio
+  MINIO_SECRET_KEY: wJalrXUtnFEMI/9874c97c907209cpuvpw97bpb/asdasdasdasdasd
+  PROXY_STATIC_URL: proxy
+  WORKER_MANAGER_URL: https://app.elasticdata.io/worker-manager
+  BOT_TELEGRAM_ENABLED: "false"

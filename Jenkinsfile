@@ -18,7 +18,7 @@ spec:
       path: /home/s/.kube
   containers:
   - name: k8s-helm
-    image: lachlanevenson/k8s-helm:v3.0.0-beta.3
+    image: lachlanevenson/k8s-helm:v3.6.0
     command:
     - cat
     tty: true
@@ -47,25 +47,15 @@ spec:
                         container('docker') {
                             env.DOCKER_TAG = "${BRANCH_NAME}_02_${BUILD_NUMBER}"
                             stage('build application') {
-                                sh 'docker build -f install/Dockerfile -t localhost:32000/scraper-backend:${DOCKER_TAG} .'
+                                sh 'docker build -f install/Dockerfile -t ${DOCKER_CONTAINER_PREFIX}/scraper-backend:${DOCKER_TAG} .'
                             }
                             stage('publish application') {
-                                sh 'docker push localhost:32000/scraper-backend:${DOCKER_TAG}'
+                                sh 'docker push ${DOCKER_CONTAINER_PREFIX}/scraper-backend:${DOCKER_TAG}'
                             }
                             stage('rm application') {}
                         }
                         container('k8s-helm') {
-                            stage('SET ENV') {
-                                if (env.BRANCH_NAME == 'dev') {
-                                    env.VALUES_FILE = 'values.yaml'
-                                }
-                                if (env.BRANCH_NAME == 'test') {
-                                    env.VALUES_FILE = 'values-test.yaml'
-                                }
-                                if (env.BRANCH_NAME == 'master') {
-                                    env.VALUES_FILE = 'values-prod.yaml'
-                                }
-                            }
+
                             stage('helm upgrade backend') {
                                 def now = new Date()
                                 def dateFormatted = now.format("yyyy-MM-dd'T'HH:mm:ss'Z'")
@@ -73,7 +63,8 @@ spec:
                                     -f install/helm/backend/values.yaml \
                                     -f install/helm/backend/${VALUES_FILE} \
                                     --version 2.0.${BUILD_NUMBER}\
-                                    --namespace scraper \
+                                    --namespace app \
+                                    --set image.repository=${DOCKER_CONTAINER_PREFIX}/scraper-backend \
                                     --set image.tag=${DOCKER_TAG} \
                                     --set APP_VERSION=2.0.${BUILD_NUMBER} \
                                     --set APP_LAST_UPDATED=${dateFormatted} \
@@ -82,7 +73,8 @@ spec:
                                     -f install/helm/backend/values.yaml \
                                     -f install/helm/backend/${VALUES_FILE} \
                                     --version 2.0.${BUILD_NUMBER}\
-                                    --namespace scraper \
+                                    --namespace app \
+                                    --set image.repository=${DOCKER_CONTAINER_PREFIX}/scraper-backend \
                                     --set image.tag=${DOCKER_TAG} \
                                     --set APP_VERSION=2.0.${BUILD_NUMBER} \
                                     --set APP_LAST_UPDATED=${dateFormatted} \

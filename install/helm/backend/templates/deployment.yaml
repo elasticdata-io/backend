@@ -77,20 +77,20 @@ spec:
             - name: RABBITMQ_ROUTING_TASK_RUN
               value: {{ .Values.env.RABBITMQ_ROUTING_TASK_RUN }}
 
-          livenessProbe:
-            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
-            periodSeconds:  {{ .Values.livenessProbe.periodSeconds }}
-            failureThreshold:  {{ .Values.livenessProbe.failureThreshold }}
-            httpGet:
-              path: /api/liveness
-              port: http
-          readinessProbe:
-            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
-            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
-            httpGet:
-              path: /api/actuator/health
-              port: http
+#          livenessProbe:
+#            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+#            periodSeconds:  {{ .Values.livenessProbe.periodSeconds }}
+#            failureThreshold:  {{ .Values.livenessProbe.failureThreshold }}
+#            httpGet:
+#              path: /api/liveness
+#              port: http
+#          readinessProbe:
+#            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+#            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+#            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+#            httpGet:
+#              path: /api/actuator/health
+#              port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

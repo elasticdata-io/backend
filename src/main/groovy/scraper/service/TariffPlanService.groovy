@@ -25,6 +25,22 @@ class TariffPlanService {
     @Autowired
     WorkerManagerClient workerManagerClient
 
+    void autoSubscribe(String userId) {
+        def tariffPlan = tariffPlanRepository.findByKey('free')
+        def tariffPlanSubscription = tariffPlanSubscriptionRepository.findByUserId(userId)
+        if (!tariffPlanSubscription) {
+            use( TimeCategory ) {
+                tariffPlanSubscription = new TariffPlanSubscription(
+                        userId: userId,
+                        tariffPlanId: tariffPlan.id,
+                        startedOnUtc: new Date(),
+                        expiredOnUtc: new Date() + 30.days
+                )
+                tariffPlanSubscriptionRepository.save(tariffPlanSubscription)
+            }
+        }
+    }
+
     void subscribe(UserTariffPlanSubscriptionDto dto) {
         def tariffPlan = tariffPlanRepository.findByKey(dto.tariffPlanKey)
         def tariffPlanSubscription = tariffPlanSubscriptionRepository.findByUserId(dto.userId)
@@ -40,8 +56,8 @@ class TariffPlanService {
         }
         tariffPlanSubscription.tariffPlanId = tariffPlan.id
         tariffPlanSubscriptionRepository.save(tariffPlanSubscription)
-        def mode = appVersion == 'development' ? 'dev': 'prod'
-        workerManagerClient.updateFromTemplate(dto.userId, tariffPlan.configuration.privateWorkers, mode)
+        // def mode = appVersion == 'development' ? 'dev': 'prod'
+        // workerManagerClient.updateFromTemplate(dto.userId, tariffPlan.configuration.privateWorkers, mode)
     }
 
     List<TariffPlan> getAll() {

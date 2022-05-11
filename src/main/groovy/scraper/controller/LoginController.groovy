@@ -14,6 +14,7 @@ import scraper.dto.SimpleResponse
 import scraper.model.User
 import scraper.repository.UserRepository
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import scraper.service.TariffPlanService
 import scraper.service.UserService
 import scraper.service.auth.JwtTokenService
 
@@ -39,6 +40,9 @@ class LoginController {
 
     @Autowired
     private JwtTokenService tokenService
+
+    @Autowired
+    private TariffPlanService tariffPlanService
 
     @RequestMapping()
     SimpleResponse login(@RequestParam String login, @RequestParam String password, HttpServletRequest request)
@@ -78,6 +82,7 @@ class LoginController {
         RedirectView redirectView = new RedirectView()
         String token = tokenService.makeToken(user.login)
         tokenService.saveUserToken(token, request)
+        tariffPlanService.autoSubscribe(user.id)
         def redirectUrl = googleSignInCallbackUrl + "${user.id}?token=${token}"
         redirectView.setUrl(redirectUrl)
         return redirectView
@@ -89,6 +94,7 @@ class LoginController {
         RedirectView redirectView = new RedirectView()
         String token = tokenService.makeToken(user.login)
         tokenService.saveUserToken(token, request)
+        tariffPlanService.autoSubscribe(user.id)
         def redirectUrl = facebookSignInCallbackUrl + "${user.id}?token=${token}"
         redirectView.setUrl(redirectUrl)
         return redirectView

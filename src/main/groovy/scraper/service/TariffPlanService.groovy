@@ -34,7 +34,7 @@ class TariffPlanService {
                         userId: userId,
                         tariffPlanId: tariffPlan.id,
                         startedOnUtc: new Date(),
-                        expiredOnUtc: new Date() + 30.days
+                        expiredOnUtc: new Date() + 365.days
                 )
                 tariffPlanSubscriptionRepository.save(tariffPlanSubscription)
             }

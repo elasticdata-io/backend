@@ -30,4 +30,4 @@ env:
   MINIO_SECRET_KEY: wJalrXUtnFEMI/9874c97c907209cpuvpw97bpb/asdasdasdasdasd
   PROXY_STATIC_URL: proxy
   WORKER_MANAGER_URL: https://app.elasticdata.io/worker-manager
-  BOT_TELEGRAM_ENABLED: "false"
+  BOT_TELEGRAM_ENABLED: "true"

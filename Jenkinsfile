@@ -37,7 +37,6 @@ spec:
     }
     environment {
         DOCKER_TAG = ''
-        dateFormatted = ''
     }
     stages {
         stage('docker build & push') {
@@ -47,11 +46,10 @@ spec:
                     script{
                         def now = new Date()
                         env.dateFormatted = now.format("yyyy-MM-dd'T'HH:mm:ss'Z'")
-                        env.DOCKER_TAG = env.GIT_COMMIT
                     }
                     sh 'docker login -u bombascter -p "!Prisoner31!"'
                     sh 'docker build -f install/Dockerfile -t bombascter/scraper-backend:${GIT_COMMIT} .'
-                    sh 'docker push bombascter/scraper-backend:${DOCKER_TAG}'
+                    sh 'docker push bombascter/scraper-backend:${GIT_COMMIT}'
                 }
             }
         }
@@ -62,19 +60,19 @@ spec:
 //                     def dateFormatted = now.format("yyyy-MM-dd'T'HH:mm:ss'Z'")
                     sh "helm template --dry-run --debug backend \
                         -f install/helm/backend/values-production.yaml \
-                        --version 2.0.${currentBuild.number}\
+                        --version 2.0.${EXECUTOR_NUMBER}\
                         --namespace app \
                         --set image.repository=bombascter/scraper-backend \
                         --set image.tag=${DOCKER_TAG} \
-                        --set APP_VERSION=2.0.${currentBuild.number} \
+                        --set APP_VERSION=2.0.${EXECUTOR_NUMBER} \
                         install/helm/backend"
                     sh "helm upgrade --install backend \
                         -f install/helm/backend/values-production.yaml \
-                        --version 2.0.${currentBuild.number}\
+                        --version 2.0.${EXECUTOR_NUMBER}\
                         --namespace app \
                         --set image.repository=bombascter/scraper-backend \
-                        --set image.tag=${DOCKER_TAG} \
-                        --set APP_VERSION=2.0.${currentBuild.number} \
+                        --set image.tag=${GIT_COMMIT} \
+                        --set APP_VERSION=2.0.${EXECUTOR_NUMBER} \
                         install/helm/backend"
                 }
             }

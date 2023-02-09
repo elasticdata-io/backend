@@ -43,8 +43,10 @@ spec:
     stages {
         stage('env') {
             steps {
-                script {
-                    GIT_COMMIT_HASH = sh "(git log -n 1 --pretty=format:'%H')"
+                container('docker') {
+                    script {
+                        GIT_COMMIT_HASH = sh "(git log -n 1 --pretty=format:'%H')"
+                    }
                 }
             }
         }

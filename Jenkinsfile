@@ -41,7 +41,7 @@ spec:
     stages {
         stage('docker build & push') {
             steps {
-                checkout scm
+                // checkout scm
                 container('docker') {
                     script{
                         def now = new Date()

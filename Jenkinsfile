@@ -63,7 +63,7 @@ spec:
                         --version 2.0.${EXECUTOR_NUMBER}\
                         --namespace app \
                         --set image.repository=bombascter/scraper-backend \
-                        --set image.tag=${DOCKER_TAG} \
+                        --set image.tag=${GIT_COMMIT} \
                         --set APP_VERSION=2.0.${EXECUTOR_NUMBER} \
                         install/helm/backend"
                     sh "helm upgrade --install backend \

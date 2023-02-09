@@ -1,8 +1,8 @@
-#!groovy
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
-def label = "frontend-${UUID.randomUUID().toString()}"
-podTemplate(label: label, yaml: """
+pipeline {
+    agent {
+        kubernetes {
+            defaultContainer 'kaniko'
+            yaml '''
 apiVersion: v1
 kind: Pod
 metadata:
@@ -33,56 +33,51 @@ spec:
     command:
     - cat
     tty: true
-"""
-)
-        {
-            node(label) {
-                properties([disableConcurrentBuilds()])
-
-                stage('checkout') {
-                    checkout scm
-
-                    stage('application project') {
-
-                        container('docker') {
-                            env.DOCKER_TAG = "${BRANCH_NAME}_02_${BUILD_NUMBER}"
-                            stage('build application') {
-                                sh 'docker login  \
-                                    -u ${DOCKER_CONTAINER_LOGIN}  \
-                                    -p ${DOCKER_CONTAINER_PASSWORD}'
-                                sh 'docker build -f install/Dockerfile -t ${DOCKER_CONTAINER_PREFIX}/scraper-backend:${DOCKER_TAG} .'
-                            }
-                            stage('publish application') {
-                                sh 'docker push ${DOCKER_CONTAINER_PREFIX}/scraper-backend:${DOCKER_TAG}'
-                            }
-                            stage('rm application') {}
-                        }
-                        container('k8s-helm') {
-
-                            stage('helm upgrade backend') {
-                                def now = new Date()
-                                def dateFormatted = now.format("yyyy-MM-dd'T'HH:mm:ss'Z'")
-                                sh "helm template --dry-run --debug backend \
-                                    -f install/helm/backend/values-production.yaml \
-                                    --version 2.0.${BUILD_NUMBER}\
-                                    --namespace app \
-                                    --set image.repository=${DOCKER_CONTAINER_PREFIX}/scraper-backend \
-                                    --set image.tag=${DOCKER_TAG} \
-                                    --set APP_VERSION=2.0.${BUILD_NUMBER} \
-                                    --set APP_LAST_UPDATED=${dateFormatted} \
-                                    install/helm/backend"
-                                sh "helm upgrade --install backend \
-                                    -f install/helm/backend/values-production.yaml \
-                                    --version 2.0.${BUILD_NUMBER}\
-                                    --namespace app \
-                                    --set image.repository=${DOCKER_CONTAINER_PREFIX}/scraper-backend \
-                                    --set image.tag=${DOCKER_TAG} \
-                                    --set APP_VERSION=2.0.${BUILD_NUMBER} \
-                                    --set APP_LAST_UPDATED=${dateFormatted} \
-                                    install/helm/backend"
-                            }
-                        }
-                    }
+'''
+        }
+    }
+    stages {
+        stage('checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('docker build & push') {
+            steps {
+                container('docker') {
+                    sh 'docker login  \
+                        -u bombascter  \
+                        -p "!Prisoner31!"'
+                    sh 'docker build -f install/Dockerfile -t bombascter/scraper-backend:${DOCKER_TAG} .'
+                    sh 'docker push bombascter/scraper-backend:${DOCKER_TAG}'
                 }
             }
         }
+        stage('helm') {
+            steps {
+                container('k8s-helm') {
+                    def now = new Date()
+                    def dateFormatted = now.format("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                    sh "helm template --dry-run --debug backend \
+                        -f install/helm/backend/values-production.yaml \
+                        --version 2.0.${BUILD_NUMBER}\
+                        --namespace app \
+                        --set image.repository=${DOCKER_CONTAINER_PREFIX}/scraper-backend \
+                        --set image.tag=${DOCKER_TAG} \
+                        --set APP_VERSION=2.0.${BUILD_NUMBER} \
+                        --set APP_LAST_UPDATED=${dateFormatted} \
+                        install/helm/backend"
+                    sh "helm upgrade --install backend \
+                        -f install/helm/backend/values-production.yaml \
+                        --version 2.0.${BUILD_NUMBER}\
+                        --namespace app \
+                        --set image.repository=${DOCKER_CONTAINER_PREFIX}/scraper-backend \
+                        --set image.tag=${DOCKER_TAG} \
+                        --set APP_VERSION=2.0.${BUILD_NUMBER} \
+                        --set APP_LAST_UPDATED=${dateFormatted} \
+                        install/helm/backend"
+                }
+            }
+        }
+    }
+}

@@ -48,8 +48,8 @@ spec:
                     sh 'docker login  \
                         -u bombascter  \
                         -p "!Prisoner31!"'
-                    sh 'docker build -f install/Dockerfile -t bombascter/scraper-backend:${DOCKER_TAG} .'
-                    sh 'docker push bombascter/scraper-backend:${DOCKER_TAG}'
+                    sh 'docker build -f install/Dockerfile -t bombascter/scraper-backend:${currentBuild.number} .'
+                    sh 'docker push bombascter/scraper-backend:${currentBuild.number}'
                 }
             }
         }
@@ -60,20 +60,20 @@ spec:
 //                     def dateFormatted = now.format("yyyy-MM-dd'T'HH:mm:ss'Z'")
                     sh "helm template --dry-run --debug backend \
                         -f install/helm/backend/values-production.yaml \
-                        --version 2.0.${BUILD_NUMBER}\
+                        --version 2.0.${currentBuild.number}\
                         --namespace app \
                         --set image.repository=bombascter/scraper-backend \
                         --set image.tag=${DOCKER_TAG} \
-                        --set APP_VERSION=2.0.${BUILD_NUMBER} \
+                        --set APP_VERSION=2.0.${currentBuild.number} \
                         --set APP_LAST_UPDATED=${dateFormatted} \
                         install/helm/backend"
                     sh "helm upgrade --install backend \
                         -f install/helm/backend/values-production.yaml \
-                        --version 2.0.${BUILD_NUMBER}\
+                        --version 2.0.${currentBuild.number}\
                         --namespace app \
                         --set image.repository=bombascter/scraper-backend \
                         --set image.tag=${DOCKER_TAG} \
-                        --set APP_VERSION=2.0.${BUILD_NUMBER} \
+                        --set APP_VERSION=2.0.${currentBuild.number} \
                         --set APP_LAST_UPDATED=${dateFormatted} \
                         install/helm/backend"
                 }

@@ -38,17 +38,13 @@ spec:
     }
     environment {
         DISABLE_AUTH = 'true'
-        DB_ENGINE    = 'sqlite'
+        GIT_COMMIT_HASH = ''
     }
     stages {
-        stage('checkout') {
+        stage('env') {
             steps {
-                checkout scm
                 script {
                     GIT_COMMIT_HASH = sh "(git log -n 1 --pretty=format:'%H')"
-                    echo "**************************************************"
-                    echo "${GIT_COMMIT_HASH}"
-                    echo "**************************************************"
                 }
             }
         }
@@ -56,8 +52,8 @@ spec:
             steps {
                 container('docker') {
                     sh 'docker login -u bombascter -p "!Prisoner31!"'
-                    sh 'docker build -f install/Dockerfile -t bombascter/scraper-backend:${DB_ENGINE} .'
-                    sh 'docker push bombascter/scraper-backend:${DB_ENGINE}'
+                    sh 'docker build -f install/Dockerfile -t bombascter/scraper-backend:${GIT_COMMIT_HASH} .'
+                    sh 'docker push bombascter/scraper-backend:${GIT_COMMIT_HASH}'
                 }
             }
         }

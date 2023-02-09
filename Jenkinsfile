@@ -47,10 +47,10 @@ spec:
                     script{
                         def now = new Date()
                         env.dateFormatted = now.format("yyyy-MM-dd'T'HH:mm:ss'Z'")
-                        env.DOCKER_TAG = sh "(git log -n 1 --pretty=format:'%H')"
+                        env.DOCKER_TAG = env.GIT_COMMIT
                     }
                     sh 'docker login -u bombascter -p "!Prisoner31!"'
-                    sh 'docker build -f install/Dockerfile -t bombascter/scraper-backend:${DOCKER_TAG} .'
+                    sh 'docker build -f install/Dockerfile -t bombascter/scraper-backend:${GIT_COMMIT} .'
                     sh 'docker push bombascter/scraper-backend:${DOCKER_TAG}'
                 }
             }

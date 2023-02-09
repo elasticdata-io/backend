@@ -36,13 +36,19 @@ spec:
         }
     }
     environment {
-        DOCKER_TAG = sh "(git log -n 1 --pretty=format:'%H')"
+        DOCKER_TAG = ''
+        dateFormatted = ''
     }
     stages {
         stage('docker build & push') {
             steps {
                 checkout scm
                 container('docker') {
+                    script{
+                        def now = new Date()
+                        env.dateFormatted = now.format("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                        env.DOCKER_TAG = sh "(git log -n 1 --pretty=format:'%H')"
+                    }
                     sh 'docker login -u bombascter -p "!Prisoner31!"'
                     sh 'docker build -f install/Dockerfile -t bombascter/scraper-backend:${DOCKER_TAG} .'
                     sh 'docker push bombascter/scraper-backend:${DOCKER_TAG}'

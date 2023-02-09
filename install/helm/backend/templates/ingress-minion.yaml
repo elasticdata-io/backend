@@ -8,10 +8,6 @@ metadata:
     nginx.org/mergeable-ingress-type: minion
     nginx.org/websocket-services: "backend"
 spec:
-  tls:
-    - hosts:
-        - {{ .Values.ingress.host }}
-      secretName: backend-tls-secret
   rules:
     - host: {{ .Values.ingress.host }}
       http:

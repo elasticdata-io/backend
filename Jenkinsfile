@@ -49,11 +49,9 @@ spec:
         stage('docker build & push') {
             steps {
                 container('docker') {
-                    sh 'docker login  \
-                        -u bombascter  \
-                        -p "!Prisoner31!"'
-                    sh 'docker build -f install/Dockerfile -t bombascter/scraper-backend:${currentBuild.number} .'
-                    sh 'docker push bombascter/scraper-backend:${currentBuild.number}'
+                    sh 'docker login -u bombascter -p "!Prisoner31!"'
+                    sh 'docker build -f install/Dockerfile -t bombascter/scraper-backend:${DB_ENGINE} .'
+                    sh 'docker push bombascter/scraper-backend:${DB_ENGINE}'
                 }
             }
         }

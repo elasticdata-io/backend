@@ -56,13 +56,13 @@ spec:
         stage('helm') {
             steps {
                 container('k8s-helm') {
-                    def now = new Date()
-                    def dateFormatted = now.format("yyyy-MM-dd'T'HH:mm:ss'Z'")
+//                     def now = new Date()
+//                     def dateFormatted = now.format("yyyy-MM-dd'T'HH:mm:ss'Z'")
                     sh "helm template --dry-run --debug backend \
                         -f install/helm/backend/values-production.yaml \
                         --version 2.0.${BUILD_NUMBER}\
                         --namespace app \
-                        --set image.repository=${DOCKER_CONTAINER_PREFIX}/scraper-backend \
+                        --set image.repository=bombascter/scraper-backend \
                         --set image.tag=${DOCKER_TAG} \
                         --set APP_VERSION=2.0.${BUILD_NUMBER} \
                         --set APP_LAST_UPDATED=${dateFormatted} \
@@ -71,7 +71,7 @@ spec:
                         -f install/helm/backend/values-production.yaml \
                         --version 2.0.${BUILD_NUMBER}\
                         --namespace app \
-                        --set image.repository=${DOCKER_CONTAINER_PREFIX}/scraper-backend \
+                        --set image.repository=bombascter/scraper-backend \
                         --set image.tag=${DOCKER_TAG} \
                         --set APP_VERSION=2.0.${BUILD_NUMBER} \
                         --set APP_LAST_UPDATED=${dateFormatted} \

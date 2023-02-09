@@ -36,8 +36,7 @@ spec:
         }
     }
     environment {
-        DISABLE_AUTH = 'true'
-        GIT_COMMIT_HASH = sh "(git log -n 1 --pretty=format:'%H')"
+        DOCKER_TAG = sh "(git log -n 1 --pretty=format:'%H')"
     }
     stages {
         stage('docker build & push') {
@@ -45,8 +44,8 @@ spec:
                 checkout scm
                 container('docker') {
                     sh 'docker login -u bombascter -p "!Prisoner31!"'
-                    sh 'docker build -f install/Dockerfile -t bombascter/scraper-backend:${GIT_COMMIT_HASH} .'
-                    sh 'docker push bombascter/scraper-backend:${GIT_COMMIT_HASH}'
+                    sh 'docker build -f install/Dockerfile -t bombascter/scraper-backend:${DOCKER_TAG} .'
+                    sh 'docker push bombascter/scraper-backend:${DOCKER_TAG}'
                 }
             }
         }

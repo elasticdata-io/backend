@@ -61,7 +61,6 @@ spec:
                         --set image.repository=bombascter/scraper-backend \
                         --set image.tag=${DOCKER_TAG} \
                         --set APP_VERSION=2.0.${currentBuild.number} \
-                        --set APP_LAST_UPDATED=${dateFormatted} \
                         install/helm/backend"
                     sh "helm upgrade --install backend \
                         -f install/helm/backend/values-production.yaml \
@@ -70,7 +69,6 @@ spec:
                         --set image.repository=bombascter/scraper-backend \
                         --set image.tag=${DOCKER_TAG} \
                         --set APP_VERSION=2.0.${currentBuild.number} \
-                        --set APP_LAST_UPDATED=${dateFormatted} \
                         install/helm/backend"
                 }
             }
